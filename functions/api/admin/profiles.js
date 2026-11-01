@@ -2,7 +2,9 @@ import { json, readCookie, tokenDigest, COOKIE } from "../auth/_session.js";
 
 async function requireAdmin(request, env) {
   if (!env.DB) return { error: json({ message: "База даних недоступна." }, 503) };
-  if (request.headers.get("Origin") && request.headers.get("Origin") !== new URL(request.url).origin) return { error: json({ message: "Запит відхилено." }, 403) };
+  if (request.headers.get("Origin") && request.headers.get("Origin") !== new URL(request.url).origin) {
+    return { error: json({ message: "Запит відхилено." }, 403) };
+  }
   const token = readCookie(request, COOKIE);
   if (!token || token.length > 128) return { error: json({ message: "Потрібна авторизація." }, 401) };
   const digest = await tokenDigest(token);
@@ -17,58 +19,65 @@ export async function onRequestGet({ request, env }) {
   try {
     const auth = await requireAdmin(request, env);
     if (auth.error) return auth.error;
-    const result = await env.DB.prepare(
-      `SELECT a.id, a.service_number, a.personnel_id, a.active,
-        p.full_name, p.age, p.contact, p.rank, p.unit, p.mos,
-        p.service_status, p.service_note, p.updated_at
-       FROM personnel_accounts a LEFT JOIN personnel_profiles p ON p.account_id=a.id
-       WHERE a.role='soldier' ORDER BY a.service_number ASC`
+    if (!env.SHEETS_API_URL || !env.SHEETS_API_SECRET) {
+      return json({ message: "Інтеграцію з реєстром не налаштовано." }, 503);
+    }
+
+    const accounts = await env.DB.prepare(
+      "SELECT id, service_number, personnel_id, active FROM personnel_accounts WHERE role='soldier' ORDER BY service_number ASC"
     ).all();
-    return json({ success: true, profiles: result.results || [] });
+
+    const profiles = await Promise.all((accounts.results || []).map(async account => {
+      try {
+        const response = await fetch(env.SHEETS_API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            secret: env.SHEETS_API_SECRET,
+            action: "profile",
+            serviceNumber: account.service_number
+          })
+        });
+        if (!response.ok) throw new Error("Sheets API HTTP " + response.status);
+        const result = await response.json();
+        const row = result.success && result.profile ? result.profile : null;
+        return {
+          id: account.id,
+          service_number: account.service_number,
+          personnel_id: account.personnel_id,
+          active: Boolean(account.active),
+          found_in_registry: Boolean(row),
+          full_name: row?.["ПІБ"] || "",
+          rank: row?.["Звання"] || "",
+          unit: row?.["Підрозділ"] || "",
+          mos: row?.["MOS"] || "",
+          service_status: row?.["Статус служби"] || "",
+          updated_at: row?.["Останнє оновлення"] || ""
+        };
+      } catch (error) {
+        console.error("SANG admin Sheets profile read error:", account.service_number, error);
+        return {
+          id: account.id,
+          service_number: account.service_number,
+          personnel_id: account.personnel_id,
+          active: Boolean(account.active),
+          found_in_registry: false,
+          lookup_error: true
+        };
+      }
+    }));
+
+    return json({ success: true, profiles });
   } catch (error) {
     console.error("SANG admin profile list error:", error);
-    return json({ message: "Не вдалося завантажити профілі." }, 500);
-  }
-}
-
-export async function onRequestPatch({ request, env }) {
-  try {
-    const auth = await requireAdmin(request, env);
-    if (auth.error) return auth.error;
-    let body;
-    try { body = await request.json(); } catch { return json({ message: "Некоректний запит." }, 400); }
-    const accountId = Number(body.accountId);
-    const fields = ["rank", "unit", "mos", "serviceStatus", "serviceNote"];
-    if (!Number.isSafeInteger(accountId) || accountId < 1) return json({ message: "Некоректний обліковий запис." }, 400);
-    const values = {};
-    const limits = { rank: 80, unit: 80, mos: 40, serviceStatus: 80, serviceNote: 1000 };
-    for (const field of fields) {
-      if (typeof body[field] !== "string" || body[field].trim().length > limits[field]) {
-        return json({ message: "Перевірте заповнення службових полів." }, 400);
-      }
-      values[field] = body[field].trim();
-    }
-    const target = await env.DB.prepare("SELECT id FROM personnel_accounts WHERE id=? AND role='soldier'").bind(accountId).first();
-    if (!target) return json({ message: "Військовослужбовця не знайдено." }, 404);
-    await env.DB.prepare(
-      `INSERT INTO personnel_profiles (account_id, rank, unit, mos, service_status, service_note, updated_by, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-       ON CONFLICT(account_id) DO UPDATE SET
-         rank=excluded.rank, unit=excluded.unit, mos=excluded.mos,
-         service_status=excluded.service_status, service_note=excluded.service_note,
-         updated_by=excluded.updated_by, updated_at=CURRENT_TIMESTAMP`
-    ).bind(accountId, values.rank, values.unit, values.mos, values.serviceStatus, values.serviceNote, auth.actor.id).run();
-    await env.DB.prepare("INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,'service_profile_updated',?)")
-      .bind(auth.actor.id, accountId).run();
-    return json({ success: true, message: "Службовий профіль оновлено." });
-  } catch (error) {
-    console.error("SANG admin profile update error:", error);
-    return json({ message: "Не вдалося зберегти службовий профіль." }, 500);
+    return json({ message: "Не вдалося завантажити профілі з реєстру." }, 500);
   }
 }
 
 export async function onRequest(context) {
   if (context.request.method === "GET") return onRequestGet(context);
-  if (context.request.method === "PATCH") return onRequestPatch(context);
-  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, PATCH" });
+  if (context.request.method === "PATCH" || context.request.method === "POST" || context.request.method === "PUT" || context.request.method === "DELETE") {
+    return json({ message: "Зміна службових даних через сайт вимкнена. Джерело даних — реєстр Google Sheets." }, 405, { Allow: "GET" });
+  }
+  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET" });
 }
