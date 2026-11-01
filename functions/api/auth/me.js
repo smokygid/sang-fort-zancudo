@@ -8,7 +8,7 @@ export async function onRequestGet({ request, env }) {
   try {
     const digest = await tokenDigest(token);
     const session = await env.DB.prepare(
-      `SELECT a.service_number, a.personnel_id, a.role
+      `SELECT a.service_number, a.personnel_id, a.role, a.must_change_password
        FROM cabinet_sessions s
        JOIN personnel_accounts a ON a.id = s.account_id
        WHERE s.id = ? AND s.expires_at > ? AND a.active = 1
@@ -21,7 +21,8 @@ export async function onRequestGet({ request, env }) {
       soldier: {
         serviceNumber: session.service_number,
         personnelId: session.personnel_id,
-        role: session.role
+        role: session.role,
+        mustChangePassword: session.must_change_password === 1
       }
     });
   } catch {
