@@ -82,8 +82,14 @@
       <h2>Керування обліковими записами</h2>
       <p>Створення доступу та контроль активності облікових записів особового складу.</p>
       <form id="account-create-form" class="admin-create-form">
-        <div><label for="new-service-number">Військовий номер</label><input id="new-service-number" name="serviceNumber" placeholder="SA-FZ-260002" maxlength="32" required></div>
-        <div><label for="new-personnel-id">ID особової справи</label><input id="new-personnel-id" name="personnelId" placeholder="Унікальний ID" maxlength="64" required></div>
+        <div class="registry-account-picker">
+          <label for="registry-soldier-select">Оберіть військовослужбовця з реєстру Google Sheets</label>
+          <select id="registry-soldier-select" name="serviceNumber" required>
+            <option value="">Завантаження реєстру…</option>
+          </select>
+          <p id="registry-soldier-details" class="form-hint">До списку потрапляють лише військовослужбовці, для яких ще не створено обліковий запис.</p>
+          <button id="refresh-registry-soldiers" class="cabinet-logout" type="button">ОНОВИТИ СПИСОК</button>
+        </div>
         <button class="cabinet-logout" type="submit">СТВОРИТИ ДОСТУП</button>
       </form>
       <p id="admin-message" role="status"></p>
