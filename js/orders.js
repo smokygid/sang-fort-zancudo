@@ -96,7 +96,7 @@ function renderOrders(target, orders, isAdmin) {
   if (!target) return;
   target.replaceChildren();
   const shell = document.createElement("div");
-  shell.className = "orders-interface";
+  shell.className = "orders-interface orders-registry";
 
   const toolbar = document.createElement("div");
   toolbar.className = "orders-toolbar";
