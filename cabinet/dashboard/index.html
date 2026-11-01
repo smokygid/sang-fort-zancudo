@@ -23,6 +23,21 @@
       <h1>ОСОБИСТИЙ <span>КАБІНЕТ</span></h1>
       <p id="dashboard-status" role="status">Перевірка службової сесії…</p>
     </section>
+    <section id="password-change" class="dashboard-card password-change" hidden>
+      <p class="card-kicker">ПЕРШИЙ ВХІД</p>
+      <h2>Створіть власний пароль</h2>
+      <p>Тимчасовий пароль більше не використовуватиметься. Задайте новий пароль, який знаєте лише ви.</p>
+      <form id="password-change-form">
+        <label for="current-password">Тимчасовий пароль</label>
+        <input id="current-password" type="password" autocomplete="current-password" required>
+        <label for="new-password">Новий пароль</label>
+        <input id="new-password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required>
+        <label for="confirm-password">Повторіть новий пароль</label>
+        <input id="confirm-password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required>
+        <button class="cabinet-logout" type="submit">ЗБЕРЕГТИ НОВИЙ ПАРОЛЬ</button>
+        <p id="password-message" role="status"></p>
+      </form>
+    </section>
     <section id="dashboard-content" class="dashboard-grid" hidden>
       <article class="dashboard-card dashboard-identity">
         <p class="card-kicker">ОБЛІКОВИЙ ЗАПИС</p>
