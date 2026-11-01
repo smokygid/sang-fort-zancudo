@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadAccounts() {
   const tbody = document.getElementById("accounts-list");
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="5">Завантаження…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6">Завантаження…</td></tr>';
   try {
     const response = await fetch("/api/admin/accounts", { credentials: "same-origin", cache: "no-store" });
     const data = await response.json();
@@ -87,18 +87,31 @@ async function loadAccounts() {
         td.textContent = value;
         tr.appendChild(td);
       }
+      const actionCell = document.createElement("td");
+      if (account.role !== "admin") {
+        const action = document.createElement("button");
+        action.type = "button";
+        action.className = "cabinet-logout account-status-button";
+        action.dataset.accountId = String(account.id);
+        action.dataset.nextActive = account.active ? "false" : "true";
+        action.textContent = account.active ? "ЗАБЛОКУВАТИ" : "РОЗБЛОКУВАТИ";
+        actionCell.appendChild(action);
+      } else {
+        actionCell.textContent = "—";
+      }
+      tr.appendChild(actionCell);
       tbody.appendChild(tr);
     }
     if (!data.accounts || !data.accounts.length) {
       const tr = document.createElement("tr");
       const td = document.createElement("td");
-      td.colSpan = 5; td.textContent = "Облікових записів поки немає."; tr.appendChild(td); tbody.appendChild(tr);
+      td.colSpan = 6; td.textContent = "Облікових записів поки немає."; tr.appendChild(td); tbody.appendChild(tr);
     }
   } catch (error) {
     tbody.replaceChildren();
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 5; td.textContent = error.message; tr.appendChild(td); tbody.appendChild(tr);
+    td.colSpan = 6; td.textContent = error.message; tr.appendChild(td); tbody.appendChild(tr);
   }
 }
 
@@ -144,4 +157,30 @@ document.addEventListener("DOMContentLoaded", () => {
       button.disabled = false;
     }
   });
+});
+
+
+document.addEventListener("click", async event => {
+  const button = event.target.closest(".account-status-button");
+  if (!button) return;
+  const accountId = Number(button.dataset.accountId);
+  const active = button.dataset.nextActive === "true";
+  const action = active ? "розблокувати" : "заблокувати";
+  if (!Number.isSafeInteger(accountId) || !confirm("Підтвердити: " + action + " цей обліковий запис?")) return;
+  button.disabled = true;
+  try {
+    const response = await fetch("/api/admin/accounts", {
+      method: "PATCH", credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ accountId, active })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Не вдалося змінити статус.");
+    await loadAccounts();
+    const message = document.getElementById("admin-message");
+    if (message) message.textContent = data.message;
+  } catch (error) {
+    alert(error.message);
+    button.disabled = false;
+  }
 });
