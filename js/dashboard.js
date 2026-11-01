@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("personnel-id").textContent = result.soldier.personnelId;
     document.getElementById("soldier-role").textContent = result.soldier.role === "admin" ? "Командування" : "Військовослужбовець";
 
-    loadOwnProfile();
+    setupAvatarPicker(result.soldier.serviceNumber);\n    loadOwnProfile();
     const adminPanel = document.getElementById("admin-panel");
     if (result.soldier.role === "admin" && adminPanel) {
       adminPanel.hidden = false;
@@ -225,6 +225,42 @@ document.addEventListener("click", async event => {
 });
 
 
+const SANG_AVATARS = [
+  {id:"helmet",label:"Шолом",symbol:"🪖",tone:"olive"},
+  {id:"soldier",label:"Військовий",symbol:"🎖️",tone:"blue"},
+  {id:"eagle",label:"Орел",symbol:"🦅",tone:"gold"},
+  {id:"shield",label:"Щит",symbol:"🛡️",tone:"steel"},
+  {id:"skull",label:"Тактичний",symbol:"☠",tone:"dark"},
+  {id:"star",label:"Зірка",symbol:"★",tone:"gold"},
+  {id:"cross",label:"Медик",symbol:"✚",tone:"med"},
+  {id:"chevron",label:"Шеврони",symbol:"⌃",tone:"olive"}
+];
+function setupAvatarPicker(serviceNumber) {
+  const avatar=document.getElementById("sidebar-avatar");
+  const picker=document.getElementById("avatar-picker");
+  const options=document.getElementById("avatar-options");
+  if(!avatar||!picker||!options)return;
+  const key="sang-avatar:"+serviceNumber;
+  const render=()=>{
+    const selected=localStorage.getItem(key)||"";
+    const item=SANG_AVATARS.find(a=>a.id===selected);
+    avatar.textContent=item?item.symbol:"S";
+    avatar.dataset.tone=item?item.tone:"default";
+    avatar.setAttribute("aria-label",item?"Аватар: "+item.label:"Аватар не обрано");
+    options.replaceChildren();
+    SANG_AVATARS.forEach(a=>{
+      const b=document.createElement("button");b.type="button";b.className="avatar-option"+(a.id===selected?" selected":"");b.dataset.avatar=a.id;b.setAttribute("aria-pressed",String(a.id===selected));
+      const icon=document.createElement("span");icon.className="avatar-option-icon";icon.dataset.tone=a.tone;icon.textContent=a.symbol;
+      const label=document.createElement("small");label.textContent=a.label;b.append(icon,label);
+      b.addEventListener("click",()=>{localStorage.setItem(key,a.id);render();picker.hidden=true;});
+      options.appendChild(b);
+    });
+  };
+  render();
+  document.getElementById("avatar-change-button")?.addEventListener("click",()=>{picker.hidden=false;});
+  document.getElementById("avatar-picker-close")?.addEventListener("click",()=>{picker.hidden=true;});
+  picker.addEventListener("click",e=>{if(e.target===picker)picker.hidden=true;});
+}
 function buildRankInsignia(rank) {
   const value = String(rank || "").trim().toLocaleLowerCase("uk");
   const svgNS = "http://www.w3.org/2000/svg";
