@@ -125,29 +125,3 @@
 .topbar-logo{display:flex;align-items:center;flex:0 0 auto;width:150px;height:54px;overflow:hidden}
 .topbar-logo img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}
 @media(max-width:760px){.topbar-logo{width:112px;height:42px;margin:0 auto 7px}.cabinet-topbar-inner{display:flex;flex-direction:column;align-items:stretch;gap:0}}
-
-/* SANG selectable profile avatar */
-.sidebar-avatar-wrap{display:grid;justify-items:center;gap:8px;margin:0 auto 12px}
-.sidebar-avatar{width:82px;height:82px;margin:0;border:2px solid #c9a44a;border-radius:50%;background:radial-gradient(circle at 35% 25%,#344b5c,#0a1420 72%);display:grid;place-items:center;color:#e0c36a;font-size:38px;font-weight:800;box-shadow:0 0 0 5px #c9a44a12;overflow:hidden}
-.sidebar-avatar[data-tone="olive"]{background:linear-gradient(145deg,#596448,#17251d)}
-.sidebar-avatar[data-tone="blue"]{background:linear-gradient(145deg,#49677b,#142435)}
-.sidebar-avatar[data-tone="gold"]{background:linear-gradient(145deg,#806b3b,#292315)}
-.sidebar-avatar[data-tone="steel"]{background:linear-gradient(145deg,#647786,#1a2935)}
-.sidebar-avatar[data-tone="dark"]{background:linear-gradient(145deg,#4b4b4b,#111)}
-.sidebar-avatar[data-tone="med"]{background:linear-gradient(145deg,#6b4545,#25191b)}
-.avatar-change-button{border:0;background:transparent;color:#c9a44a;font-size:9px;font-weight:800;letter-spacing:1px;cursor:pointer;padding:4px 6px}
-.avatar-change-button:hover{color:#f0d27d;text-decoration:underline}
-.avatar-picker{position:fixed;z-index:30;left:50%;top:50%;transform:translate(-50%,-50%);width:min(390px,calc(100vw - 32px));padding:18px;background:#101e2d;border:1px solid #c9a44a;box-shadow:0 20px 70px #000b}
-.avatar-picker[hidden]{display:none!important}
-.avatar-picker-head{display:flex;justify-content:space-between;align-items:center;color:#f0f3f6;margin-bottom:14px}
-.avatar-picker-head button{background:none;border:0;color:#e0c36a;font-size:25px;cursor:pointer}
-.avatar-options{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.avatar-option{display:grid;justify-items:center;gap:6px;padding:9px 4px;background:#091522;border:1px solid #34485b;color:#b9c5d0;cursor:pointer}
-.avatar-option.selected{border-color:#e0c36a;background:#c9a44a18}
-.avatar-option-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#344b5c,#0a1420);font-size:25px;border:1px solid #65788a}
-.avatar-option-icon[data-tone="olive"]{background:linear-gradient(145deg,#596448,#17251d)}
-.avatar-option-icon[data-tone="gold"]{background:linear-gradient(145deg,#806b3b,#292315)}
-.avatar-option-icon[data-tone="med"]{background:linear-gradient(145deg,#6b4545,#25191b)}
-.avatar-option small{font-size:10px}
-.avatar-picker>p{font-size:10px!important;color:#8798a8!important;margin:12px 0 0}
-@media(max-width:650px){.sidebar-avatar-wrap{grid-row:span 3;align-self:center}.sidebar-avatar{width:46px;height:46px;font-size:23px}.avatar-change-button{font-size:8px;letter-spacing:0}}
