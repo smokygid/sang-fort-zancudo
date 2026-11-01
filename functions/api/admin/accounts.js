@@ -35,6 +35,36 @@ export async function onRequestGet({ request, env }) {
   try {
     const auth = await requireAdmin(request, env);
     if (auth.error) return auth.error;
+    const url = new URL(request.url);
+    if (url.searchParams.get("source") === "registry") {
+      if (!env.SHEETS_API_URL || !env.SHEETS_API_SECRET) {
+        return json({ message: "Інтеграцію з реєстром не налаштовано." }, 503);
+      }
+      const response = await fetch(env.SHEETS_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ secret: env.SHEETS_API_SECRET, action: "roster" })
+      });
+      if (!response.ok) return json({ message: "Не вдалося отримати реєстр Google Sheets." }, 502);
+      const registry = await response.json();
+      if (!registry.success || !Array.isArray(registry.soldiers)) {
+        return json({ message: registry.message || "Некоректна відповідь реєстру." }, 502);
+      }
+      const existing = await env.DB.prepare("SELECT service_number FROM personnel_accounts").all();
+      const registered = new Set((existing.results || []).map(row => row.service_number));
+      const soldiers = registry.soldiers
+        .filter(person => person.serviceNumber && !registered.has(person.serviceNumber))
+        .map(person => ({
+          serviceNumber: person.serviceNumber,
+          personnelId: person.personnelId || person.serviceNumber,
+          fullName: person.fullName || "",
+          rank: person.rank || "",
+          unit: person.unit || "",
+          mos: person.mos || "",
+          serviceStatus: person.serviceStatus || ""
+        }));
+      return json({ success: true, soldiers });
+    }
     const result = await env.DB.prepare(
       "SELECT id, service_number, personnel_id, role, active, must_change_password, created_at FROM personnel_accounts ORDER BY role DESC, service_number ASC"
     ).all();
@@ -52,11 +82,27 @@ export async function onRequestPost({ request, env }) {
   let body;
   try { body = await request.json(); } catch { return json({ message: "Некоректний запит." }, 400); }
   const serviceNumber = typeof body.serviceNumber === "string" ? body.serviceNumber.trim().toUpperCase() : "";
-  const personnelId = typeof body.personnelId === "string" ? body.personnelId.trim() : "";
-  if (!/^[A-Z0-9-]{3,32}$/.test(serviceNumber) || !/^[A-Za-z0-9_-]{2,64}$/.test(personnelId)) {
-    return json({ message: "Перевірте військовий номер та ID особової справи." }, 400);
+  if (!/^[A-Z0-9-]{3,32}$/.test(serviceNumber)) {
+    return json({ message: "Оберіть військовослужбовця з реєстру." }, 400);
+  }
+  if (!env.SHEETS_API_URL || !env.SHEETS_API_SECRET) {
+    return json({ message: "Інтеграцію з реєстром не налаштовано." }, 503);
   }
   try {
+    const registryResponse = await fetch(env.SHEETS_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ secret: env.SHEETS_API_SECRET, action: "profile", serviceNumber })
+    });
+    if (!registryResponse.ok) return json({ message: "Не вдалося перевірити військовослужбовця в реєстрі." }, 502);
+    const registry = await registryResponse.json();
+    if (!registry.success || !registry.profile) {
+      return json({ message: "Військовослужбовця немає в реєстрі Google Sheets." }, 404);
+    }
+    const personnelId = String(registry.profile["ID"] || serviceNumber).trim();
+    if (!/^[A-Za-z0-9_-]{2,64}$/.test(personnelId)) {
+      return json({ message: "У записі реєстру некоректний ID." }, 400);
+    }
     const password = temporaryPassword();
     const salt = crypto.getRandomValues(new Uint8Array(16));
     const passwordHash = await hashPassword(password, salt);
