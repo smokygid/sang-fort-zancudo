@@ -72,8 +72,13 @@ export async function onRequestGet({ request, env }) {
     }
 
     const orders = payload.orders.map(normalizeOrder)
-      .filter(order => auth.actor.role === "admin" || !isCancelled(order))
-      .filter(order => auth.actor.role === "admin" || !order.service_number || order.service_number === auth.actor.service_number)
+      .filter(order => {
+        if (auth.actor.role === "admin") return true;
+        if (isCancelled(order)) return false;
+        // Загальні накази (без військового номера) доступні всьому особовому складу.
+        // Персональні накази доступні лише адресату.
+        return !order.service_number || order.service_number === auth.actor.service_number;
+      })
       .sort((a, b) => String(b.issued_at || b.order_date).localeCompare(String(a.issued_at || a.order_date)))
       .slice(0, 300);
 
