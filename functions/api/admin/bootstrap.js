@@ -44,7 +44,8 @@ export async function onRequestPost({ request, env }) {
       "INSERT INTO personnel_accounts (service_number,password_hash,password_salt,password_iterations,personnel_id,role,active,must_change_password) VALUES (?,?,?,?,?,'admin',1,1)"
     ).bind(serviceNumber, hash, b64(salt), 310000, personnelId).run();
     return json({ success: true, serviceNumber, temporaryPassword: password, message: "Збережіть тимчасовий пароль. Він більше не буде показаний." }, 201);
-  } catch {
+  } catch (error) {
+    console.error("SANG bootstrap error:", error);
     return json({ message: "Не вдалося створити початковий обліковий запис." }, 500);
   }
 }
