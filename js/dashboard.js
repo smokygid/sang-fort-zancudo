@@ -225,6 +225,46 @@ document.addEventListener("click", async event => {
 });
 
 
+function buildRankInsignia(rank) {
+  const value = String(rank || "").trim().toLocaleLowerCase("uk");
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("viewBox", "0 0 180 92");
+  svg.setAttribute("class", "rank-insignia-svg");
+  svg.setAttribute("aria-hidden", "true");
+  const add = (tag, attrs) => {
+    const node = document.createElementNS(svgNS, tag);
+    Object.entries(attrs).forEach(([key, val]) => node.setAttribute(key, val));
+    svg.appendChild(node);
+  };
+  add("rect", {x:2,y:2,width:176,height:88,rx:8,fill:"#263b2d",stroke:"#b9a36a","stroke-width":3});
+  add("path", {d:"M8 8 H172 V84 H8 Z",fill:"none",stroke:"#63765c","stroke-width":1});
+  const star = (x,y,size=9) => {
+    let pts=[]; for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?size*.43:size;pts.push((x+Math.cos(a)*r)+","+(y+Math.sin(a)*r));}
+    add("polygon",{points:pts.join(" "),fill:"#e6d39a",stroke:"#8e7742","stroke-width":1});
+  };
+  const chevron = (y, count=1) => {
+    for(let i=0;i<count;i++){const yy=y+i*12;add("path",{d:`M ${48-i*5} ${yy} L90 ${yy+19} L${132+i*5} ${yy}`,fill:"none",stroke:"#d8c28a","stroke-width":7,"stroke-linecap":"square","stroke-linejoin":"miter"});}
+  };
+  const bar = (x,y,w=28,h=9) => add("rect",{x,y,width:w,height:h,rx:2,fill:"#d8c28a",stroke:"#8e7742","stroke-width":1});
+  if (/генерал/.test(value)) {
+    const n=value.includes("армії")||value.includes("армии")?5:value.includes("полковник")?4:value.includes("лейтенант")?3:value.includes("майор")?2:1;
+    for(let i=0;i<n;i++) star(90-(n-1)*17/2+i*17,46,8);
+  } else if (/полковник/.test(value)) {
+    add("path",{d:"M90 20 l15 12 -15 12 -15 -12 Z",fill:"#d8c28a",stroke:"#8e7742","stroke-width":2});
+  } else if (/підполковник|подполковник/.test(value)) {
+    add("path",{d:"M90 22 l15 13 -15 13 -15 -13 Z",fill:"#d8c28a",stroke:"#8e7742","stroke-width":2});
+  } else if (/майор/.test(value)) {
+    add("path",{d:"M90 28 l14 14 -14 14 -14 -14 Z",fill:"#d8c28a",stroke:"#8e7742","stroke-width":2});
+  } else if (/капітан|капитан/.test(value)) { bar(57,37,66,12); }
+  else if (/лейтенант/.test(value)) { bar(76,37,28,12); }
+  else if (/сержант-майор|перший сержант/.test(value)) { chevron(20,3); bar(77,68,26,8); }
+  else if (/старший сержант|штаб-сержант/.test(value)) { chevron(28,3); }
+  else if (/сержант|капрал/.test(value)) { chevron(34,/сержант/.test(value)?2:1); }
+  else { bar(76,38,28,10); }
+  return svg;
+}
+
 async function loadOwnProfile() {
   try {
     const response = await fetch("/api/profile", { credentials: "same-origin", cache: "no-store" });
@@ -239,6 +279,8 @@ async function loadOwnProfile() {
     document.getElementById("profile-age").value = p.age ?? "";
     document.getElementById("profile-contact").value = p.contact || "";
     document.getElementById("profile-rank").textContent = p.rank || "Не зазначено";
+    const insignia = document.getElementById("identity-rank-insignia");
+    if (insignia) { insignia.replaceChildren(buildRankInsignia(p.rank)); insignia.setAttribute("aria-label", "Знаки розрізнення: " + (p.rank || "звання не зазначено")); insignia.title = p.rank || "Звання не зазначено"; }
     document.getElementById("profile-unit").textContent = p.unit || "Не зазначено";
     const sidebarRank = document.getElementById("sidebar-soldier-rank");
     const rankCopy = document.getElementById("profile-rank-copy");
