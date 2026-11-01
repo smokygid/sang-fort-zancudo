@@ -106,6 +106,13 @@
     <section id="audit-panel" class="dashboard-card admin-panel" hidden>
       <div class="admin-list-heading"><h3>Журнал аудиту дій</h3><button id="refresh-audit" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
       <p>Останні дії командування та зміни облікових записів.</p>
+      <div class="audit-filters">
+        <label>Військовослужбовець<select id="audit-filter-soldier"><option value="">Усі військовослужбовці</option></select></label>
+        <label>Тип дії<select id="audit-filter-action"><option value="">Усі дії</option></select></label>
+        <label>Від дати<input id="audit-filter-from" type="date"></label>
+        <label>До дати<input id="audit-filter-to" type="date"></label>
+        <button id="audit-filter-reset" class="cabinet-logout" type="button">СКИНУТИ</button>
+      </div>
       <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Дата та час</th><th>Виконавець</th><th>Дія</th><th>Обліковий запис</th></tr></thead><tbody id="audit-list"><tr><td colspan="4">Завантаження…</td></tr></tbody></table></div>
     </section>
     <p class="dashboard-note">ІНФОРМАЦІЯ ДЛЯ СЛУЖБОВОГО КОРИСТУВАННЯ · НЕ ПЕРЕДАВАЙТЕ ДАНІ ВХОДУ ІНШИМ ОСОБАМ</p>
