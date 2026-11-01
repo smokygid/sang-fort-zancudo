@@ -69,6 +69,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
+async function loadRegistrySoldiers() {
+  const selector = document.getElementById("registry-soldier-select");
+  const details = document.getElementById("registry-soldier-details");
+  if (!selector) return;
+  selector.replaceChildren(new Option("Завантаження реєстру…", ""));
+  try {
+    const response = await fetch("/api/admin/accounts?source=registry", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Не вдалося завантажити реєстр.");
+    selector.replaceChildren();
+    selector.appendChild(new Option("Оберіть військовослужбовця", ""));
+    for (const soldier of data.soldiers || []) {
+      const label = [soldier.fullName, soldier.serviceNumber, soldier.rank].filter(Boolean).join(" · ");
+      selector.appendChild(new Option(label, soldier.serviceNumber));
+    }
+    if (details) {
+      details.textContent = data.soldiers?.length
+        ? "Доступні лише записи з реєстру, для яких ще немає облікового запису."
+        : "Немає доступних записів: усім знайденим військовослужбовцям уже створено доступ або реєстр порожній.";
+    }
+  } catch (error) {
+    selector.replaceChildren(new Option("Не вдалося завантажити список", ""));
+    if (details) details.textContent = error.message;
+  }
+}
+
+
 async function loadAccounts() {
   const tbody = document.getElementById("accounts-list");
   if (!tbody) return;
@@ -140,8 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST", credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          serviceNumber: form.serviceNumber.value.trim(),
-          personnelId: form.personnelId.value.trim()
+          serviceNumber: document.getElementById("registry-soldier-select").value
         })
       });
       const data = await response.json();
@@ -423,3 +452,18 @@ async function loadAuditLog() {
     tbody.appendChild(row);
   }
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const selector = document.getElementById("registry-soldier-select");
+  const refresh = document.getElementById("refresh-registry-soldiers");
+  if (selector) {
+    loadRegistrySoldiers();
+    selector.addEventListener("change", () => {
+      const option = selector.selectedOptions[0];
+      const details = document.getElementById("registry-soldier-details");
+      if (option && option.value && details) details.textContent = "Обрано: " + option.textContent + ". Дані буде повторно перевірено на сервері перед створенням доступу.";
+    });
+  }
+  if (refresh) refresh.addEventListener("click", loadRegistrySoldiers);
+});
