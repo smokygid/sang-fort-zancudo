@@ -62,6 +62,20 @@
         <p>Розділ готується до підключення.</p>
       </article>
     </section>
+    <section id="admin-panel" class="dashboard-card admin-panel" hidden>
+      <p class="card-kicker">ПАНЕЛЬ КОМАНДУВАННЯ</p>
+      <h2>Керування обліковими записами</h2>
+      <p>Створення доступу та контроль активності облікових записів особового складу.</p>
+      <form id="account-create-form" class="admin-create-form">
+        <div><label for="new-service-number">Військовий номер</label><input id="new-service-number" name="serviceNumber" placeholder="SA-FZ-260002" maxlength="32" required></div>
+        <div><label for="new-personnel-id">ID особової справи</label><input id="new-personnel-id" name="personnelId" placeholder="Унікальний ID" maxlength="64" required></div>
+        <button class="cabinet-logout" type="submit">СТВОРИТИ ДОСТУП</button>
+      </form>
+      <p id="admin-message" role="status"></p>
+      <div id="new-account-result" class="temporary-credential" hidden></div>
+      <div class="admin-list-heading"><h3>Зареєстровані облікові записи</h3><button id="refresh-accounts" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ID справи</th><th>Роль</th><th>Статус</th><th>Пароль</th></tr></thead><tbody id="accounts-list"><tr><td colspan="5">Завантаження…</td></tr></tbody></table></div>
+    </section>
     <p class="dashboard-note">ІНФОРМАЦІЯ ДЛЯ СЛУЖБОВОГО КОРИСТУВАННЯ · НЕ ПЕРЕДАВАЙТЕ ДАНІ ВХОДУ ІНШИМ ОСОБАМ</p>
   </main>
   <script src="../../js/dashboard.js" defer></script>
