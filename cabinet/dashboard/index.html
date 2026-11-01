@@ -89,17 +89,15 @@
       <p id="admin-message" role="status"></p>
       <div id="new-account-result" class="temporary-credential" hidden></div>
       <section class="admin-profile-editor">
-        <h3>Службові профілі особового складу</h3>
-        <form id="service-profile-form" class="profile-form">
-          <label for="service-profile-account">Військовослужбовець</label><select id="service-profile-account" required><option value="">Оберіть військовослужбовця</option></select>
-          <label for="service-profile-rank">Звання</label><input id="service-profile-rank" maxlength="80">
-          <label for="service-profile-unit">Підрозділ</label><input id="service-profile-unit" maxlength="80">
-          <label for="service-profile-mos">MOS</label><input id="service-profile-mos" maxlength="40">
-          <label for="service-profile-status">Статус служби</label><input id="service-profile-status" maxlength="80">
-          <label for="service-profile-note">Службові примітки</label><textarea id="service-profile-note" maxlength="1000" rows="3"></textarea>
-          <button class="cabinet-logout" type="submit">ЗБЕРЕГТИ СЛУЖБОВІ ДАНІ</button>
-          <p id="service-profile-message" role="status"></p>
-        </form>
+        <h3>Особовий склад · дані з реєстру</h3>
+        <p>Переглядова копія відомостей із Google Sheets. Редагування на сайті вимкнено.</p>
+        <p id="service-profile-message" role="status"></p>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Військовий №</th><th>ПІБ</th><th>Звання</th><th>Підрозділ</th><th>MOS</th><th>Статус служби</th><th>Реєстр</th></tr></thead>
+            <tbody id="service-profiles-list"><tr><td colspan="7">Завантаження…</td></tr></tbody>
+          </table>
+        </div>
       </section>
       <section class="admin-orders-editor">
         <h3>Публікація наказу або розпорядження</h3>
