@@ -20,6 +20,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const adminPanel = document.getElementById("admin-panel");
     if (result.soldier.role === "admin" && adminPanel) {
       adminPanel.hidden = false;
+      const auditPanel = document.getElementById("audit-panel");
+      if (auditPanel) auditPanel.hidden = false;
       loadAccounts();
       loadAdminProfiles();
       loadAuditLog();
@@ -122,6 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("account-create-form");
   const refresh = document.getElementById("refresh-accounts");
   if (refresh) refresh.addEventListener("click", loadAccounts);
+  const refreshAudit = document.getElementById("refresh-audit");
+  if (refreshAudit) refreshAudit.addEventListener("click", loadAuditLog);
   if (!form) return;
   form.addEventListener("submit", async event => {
     event.preventDefault();
