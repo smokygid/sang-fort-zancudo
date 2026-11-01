@@ -46,10 +46,24 @@
         <div class="identity-meta"><span>Внутрішній ID</span><b id="personnel-id">—</b></div>
         <div class="identity-meta"><span>Рівень доступу</span><b id="soldier-role">—</b></div>
       </article>
-      <article class="dashboard-card">
-        <p class="card-kicker">СЛУЖБОВА ІНФОРМАЦІЯ</p>
+      <article class="dashboard-card profile-card">
+        <p class="card-kicker">ОСОБИСТІ ДАНІ</p>
         <h2>Мій профіль</h2>
-        <p>Персональні дані та службові відомості будуть доступні після підключення реєстру SANG.</p>
+        <form id="personal-profile-form" class="profile-form">
+          <label for="profile-full-name">ПІБ</label><input id="profile-full-name" maxlength="120" required>
+          <label for="profile-age">Вік</label><input id="profile-age" type="number" min="16" max="100">
+          <label for="profile-contact">Контактні дані</label><input id="profile-contact" maxlength="160" placeholder="Телефон, Discord тощо">
+          <button class="cabinet-logout" type="submit">ЗБЕРЕГТИ ОСОБИСТІ ДАНІ</button>
+          <p id="personal-profile-message" role="status"></p>
+        </form>
+        <div class="service-profile">
+          <p class="card-kicker">СЛУЖБОВІ ВІДОМОСТІ · ЛИШЕ ПЕРЕГЛЯД</p>
+          <div class="identity-meta"><span>Звання</span><b id="profile-rank">—</b></div>
+          <div class="identity-meta"><span>Підрозділ</span><b id="profile-unit">—</b></div>
+          <div class="identity-meta"><span>MOS</span><b id="profile-mos">—</b></div>
+          <div class="identity-meta"><span>Статус служби</span><b id="profile-service-status">—</b></div>
+          <p id="profile-service-note">Службові примітки відсутні.</p>
+        </div>
       </article>
       <article class="dashboard-card">
         <p class="card-kicker">ДОКУМЕНТИ</p>
@@ -73,8 +87,21 @@
       </form>
       <p id="admin-message" role="status"></p>
       <div id="new-account-result" class="temporary-credential" hidden></div>
+      <section class="admin-profile-editor">
+        <h3>Службові профілі особового складу</h3>
+        <form id="service-profile-form" class="profile-form">
+          <label for="service-profile-account">Військовослужбовець</label><select id="service-profile-account" required><option value="">Оберіть військовослужбовця</option></select>
+          <label for="service-profile-rank">Звання</label><input id="service-profile-rank" maxlength="80">
+          <label for="service-profile-unit">Підрозділ</label><input id="service-profile-unit" maxlength="80">
+          <label for="service-profile-mos">MOS</label><input id="service-profile-mos" maxlength="40">
+          <label for="service-profile-status">Статус служби</label><input id="service-profile-status" maxlength="80">
+          <label for="service-profile-note">Службові примітки</label><textarea id="service-profile-note" maxlength="1000" rows="3"></textarea>
+          <button class="cabinet-logout" type="submit">ЗБЕРЕГТИ СЛУЖБОВІ ДАНІ</button>
+          <p id="service-profile-message" role="status"></p>
+        </form>
+      </section>
       <div class="admin-list-heading"><h3>Зареєстровані облікові записи</h3><button id="refresh-accounts" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
-      <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ID справи</th><th>Роль</th><th>Статус</th><th>Пароль</th></tr></thead><tbody id="accounts-list"><tr><td colspan="5">Завантаження…</td></tr></tbody></table></div>
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ID справи</th><th>Роль</th><th>Статус</th><th>Пароль</th><th>Дія</th></tr></thead><tbody id="accounts-list"><tr><td colspan="5">Завантаження…</td></tr></tbody></table></div>
     </section>
     <p class="dashboard-note">ІНФОРМАЦІЯ ДЛЯ СЛУЖБОВОГО КОРИСТУВАННЯ · НЕ ПЕРЕДАВАЙТЕ ДАНІ ВХОДУ ІНШИМ ОСОБАМ</p>
   </main>
