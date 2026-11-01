@@ -307,52 +307,87 @@ const AUDIT_ACTION_LABELS = {
   service_profile_updated: "Оновлено службовий профіль"
 };
 
+let auditEntries = [];
+
+function renderAuditLog() {
+  const tbody = document.getElementById("audit-list");
+  if (!tbody) return;
+  const soldier = document.getElementById("audit-filter-soldier")?.value || "";
+  const action = document.getElementById("audit-filter-action")?.value || "";
+  const from = document.getElementById("audit-filter-from")?.value || "";
+  const to = document.getElementById("audit-filter-to")?.value || "";
+
+  const filtered = auditEntries.filter(entry => {
+    const target = entry.target_service_number || "";
+    const rawDate = entry.created_at ? String(entry.created_at).replace(" ", "T") : "";
+    const day = rawDate.slice(0, 10);
+    return (!soldier || target === soldier) &&
+      (!action || entry.action === action) &&
+      (!from || day >= from) &&
+      (!to || day <= to);
+  });
+
+  tbody.replaceChildren();
+  for (const entry of filtered) {
+    const row = document.createElement("tr");
+    const rawDate = entry.created_at ? String(entry.created_at).replace(" ", "T") : "";
+    const date = rawDate ? new Date(rawDate.endsWith("Z") ? rawDate : rawDate + "Z").toLocaleString("uk-UA") : "—";
+    const values = [date, entry.actor_service_number || "Невідомо", AUDIT_ACTION_LABELS[entry.action] || entry.action || "Невідома дія", entry.target_service_number || "—"];
+    for (const value of values) {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      row.appendChild(cell);
+    }
+    tbody.appendChild(row);
+  }
+  if (!filtered.length) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 4;
+    cell.textContent = auditEntries.length ? "За вибраними фільтрами записів не знайдено." : "Записів поки немає.";
+    row.appendChild(cell);
+    tbody.appendChild(row);
+  }
+}
+
+function setupAuditFilters() {
+  const soldier = document.getElementById("audit-filter-soldier");
+  const action = document.getElementById("audit-filter-action");
+  const from = document.getElementById("audit-filter-from");
+  const to = document.getElementById("audit-filter-to");
+  if (!soldier || soldier.dataset.ready) return;
+  soldier.dataset.ready = "true";
+  for (const id of [...new Set(auditEntries.map(e => e.target_service_number).filter(Boolean))].sort()) {
+    soldier.appendChild(new Option(id, id));
+  }
+  if (action.options.length <= 1) {
+    for (const [key, label] of Object.entries(AUDIT_ACTION_LABELS)) action.appendChild(new Option(label, key));
+  }
+  [soldier, action, from, to].forEach(control => control.addEventListener("change", renderAuditLog));
+  document.getElementById("audit-filter-reset")?.addEventListener("click", () => {
+    soldier.value = ""; action.value = ""; from.value = ""; to.value = "";
+    renderAuditLog();
+  });
+}
+
 async function loadAuditLog() {
   const tbody = document.getElementById("audit-list");
   if (!tbody) return;
-  tbody.replaceChildren();
-  const loadingRow = document.createElement("tr");
-  const loadingCell = document.createElement("td");
-  loadingCell.colSpan = 4;
-  loadingCell.textContent = "Завантаження…";
-  loadingRow.appendChild(loadingCell);
-  tbody.appendChild(loadingRow);
-
+  tbody.innerHTML = '<tr><td colspan="4">Завантаження…</td></tr>';
   try {
-    const response = await fetch("/api/admin/audit", {
-      credentials: "same-origin",
-      cache: "no-store"
-    });
+    const response = await fetch("/api/admin/audit", { credentials: "same-origin", cache: "no-store" });
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити журнал.");
-    tbody.replaceChildren();
-
-    for (const entry of data.entries || []) {
-      const row = document.createElement("tr");
-      const rawDate = entry.created_at ? String(entry.created_at).replace(" ", "T") : "";
-      const date = rawDate ? new Date(rawDate.endsWith("Z") ? rawDate : rawDate + "Z").toLocaleString("uk-UA") : "—";
-      const values = [
-        date,
-        entry.actor_service_number || "Невідомо",
-        AUDIT_ACTION_LABELS[entry.action] || entry.action || "Невідома дія",
-        entry.target_service_number || "—"
-      ];
-      for (const value of values) {
-        const cell = document.createElement("td");
-        cell.textContent = value;
-        row.appendChild(cell);
-      }
-      tbody.appendChild(row);
+    auditEntries = data.entries || [];
+    const soldier = document.getElementById("audit-filter-soldier");
+    if (soldier) {
+      const selected = soldier.value;
+      soldier.replaceChildren(new Option("Усі військовослужбовці", ""));
+      for (const id of [...new Set(auditEntries.map(e => e.target_service_number).filter(Boolean))].sort()) soldier.appendChild(new Option(id, id));
+      if ([...soldier.options].some(o => o.value === selected)) soldier.value = selected;
     }
-
-    if (!data.entries || data.entries.length === 0) {
-      const row = document.createElement("tr");
-      const cell = document.createElement("td");
-      cell.colSpan = 4;
-      cell.textContent = "Записів поки немає.";
-      row.appendChild(cell);
-      tbody.appendChild(row);
-    }
+    setupAuditFilters();
+    renderAuditLog();
   } catch (error) {
     tbody.replaceChildren();
     const row = document.createElement("tr");
@@ -363,4 +398,3 @@ async function loadAuditLog() {
     tbody.appendChild(row);
   }
 }
-
