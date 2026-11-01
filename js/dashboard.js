@@ -16,10 +16,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("personnel-id").textContent = result.soldier.personnelId;
     document.getElementById("soldier-role").textContent = result.soldier.role === "admin" ? "Командування" : "Військовослужбовець";
 
+    loadOwnProfile();
     const adminPanel = document.getElementById("admin-panel");
     if (result.soldier.role === "admin" && adminPanel) {
       adminPanel.hidden = false;
       loadAccounts();
+      loadAdminProfiles();
     }
 
     if (result.soldier.mustChangePassword) {
@@ -184,3 +186,109 @@ document.addEventListener("click", async event => {
     button.disabled = false;
   }
 });
+
+
+async function loadOwnProfile() {
+  try {
+    const response = await fetch("/api/profile", { credentials: "same-origin", cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Не вдалося завантажити профіль.");
+    const p = data.profile || {};
+    document.getElementById("profile-full-name").value = p.fullName || "";
+    document.getElementById("profile-age").value = p.age ?? "";
+    document.getElementById("profile-contact").value = p.contact || "";
+    document.getElementById("profile-rank").textContent = p.rank || "Не зазначено";
+    document.getElementById("profile-unit").textContent = p.unit || "Не зазначено";
+    document.getElementById("profile-mos").textContent = p.mos || "Не зазначено";
+    document.getElementById("profile-service-status").textContent = p.serviceStatus || "Не зазначено";
+    document.getElementById("profile-service-note").textContent = p.serviceNote || "Службові примітки відсутні.";
+  } catch (error) {
+    document.getElementById("personal-profile-message").textContent = error.message;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const personalForm = document.getElementById("personal-profile-form");
+  if (personalForm) personalForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const message = document.getElementById("personal-profile-message");
+    const button = personalForm.querySelector('button[type="submit"]');
+    button.disabled = true; message.textContent = "";
+    try {
+      const response = await fetch("/api/profile", {
+        method: "PATCH", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: document.getElementById("profile-full-name").value,
+          age: document.getElementById("profile-age").value,
+          contact: document.getElementById("profile-contact").value
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося зберегти дані.");
+      message.textContent = data.message;
+    } catch (error) { message.textContent = error.message; }
+    finally { button.disabled = false; }
+  });
+
+  const serviceForm = document.getElementById("service-profile-form");
+  if (serviceForm) serviceForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const message = document.getElementById("service-profile-message");
+    const button = serviceForm.querySelector('button[type="submit"]');
+    const accountId = Number(document.getElementById("service-profile-account").value);
+    if (!accountId) { message.textContent = "Оберіть військовослужбовця."; return; }
+    button.disabled = true; message.textContent = "";
+    try {
+      const response = await fetch("/api/admin/profiles", {
+        method: "PATCH", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          accountId,
+          rank: document.getElementById("service-profile-rank").value,
+          unit: document.getElementById("service-profile-unit").value,
+          mos: document.getElementById("service-profile-mos").value,
+          serviceStatus: document.getElementById("service-profile-status").value,
+          serviceNote: document.getElementById("service-profile-note").value
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося зберегти службові дані.");
+      message.textContent = data.message;
+      await loadAdminProfiles();
+    } catch (error) { message.textContent = error.message; }
+    finally { button.disabled = false; }
+  });
+
+  const selector = document.getElementById("service-profile-account");
+  if (selector) selector.addEventListener("change", () => {
+    const selected = window.sangProfiles?.find(p => String(p.id) === selector.value);
+    if (!selected) return;
+    document.getElementById("service-profile-rank").value = selected.rank || "";
+    document.getElementById("service-profile-unit").value = selected.unit || "";
+    document.getElementById("service-profile-mos").value = selected.mos || "";
+    document.getElementById("service-profile-status").value = selected.service_status || "";
+    document.getElementById("service-profile-note").value = selected.service_note || "";
+  });
+});
+
+async function loadAdminProfiles() {
+  const selector = document.getElementById("service-profile-account");
+  if (!selector) return;
+  try {
+    const response = await fetch("/api/admin/profiles", { credentials: "same-origin", cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Не вдалося завантажити профілі.");
+    window.sangProfiles = data.profiles || [];
+    const previous = selector.value;
+    selector.replaceChildren(new Option("Оберіть військовослужбовця", ""));
+    for (const p of window.sangProfiles) {
+      const option = new Option(p.full_name ? p.full_name + " · " + p.service_number : p.service_number, String(p.id));
+      selector.appendChild(option);
+    }
+    if (window.sangProfiles.some(p => String(p.id) === previous)) selector.value = previous;
+    selector.dispatchEvent(new Event("change"));
+  } catch (error) {
+    document.getElementById("service-profile-message").textContent = error.message;
+  }
+}
