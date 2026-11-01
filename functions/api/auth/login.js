@@ -1,6 +1,6 @@
 const SESSION_COOKIE = "__Host-sang_session";
 const SESSION_SECONDS = 60 * 60 * 8;
-const PBKDF2_ITERATIONS_MAX = 600000;
+const PBKDF2_ITERATIONS_MAX = 100000;
 
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
