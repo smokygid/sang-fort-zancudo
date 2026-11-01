@@ -278,23 +278,51 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadAdminProfiles() {
-  const selector = document.getElementById("service-profile-account");
-  if (!selector) return;
+  const tbody = document.getElementById("service-profiles-list");
+  const message = document.getElementById("service-profile-message");
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7">Завантаження реєстру…</td></tr>';
+  if (message) message.textContent = "";
   try {
     const response = await fetch("/api/admin/profiles", { credentials: "same-origin", cache: "no-store" });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Не вдалося завантажити профілі.");
-    window.sangProfiles = data.profiles || [];
-    const previous = selector.value;
-    selector.replaceChildren(new Option("Оберіть військовослужбовця", ""));
-    for (const p of window.sangProfiles) {
-      const option = new Option(p.full_name ? p.full_name + " · " + p.service_number : p.service_number, String(p.id));
-      selector.appendChild(option);
+    if (!response.ok) throw new Error(data.message || "Не вдалося завантажити реєстр.");
+    tbody.replaceChildren();
+    for (const p of data.profiles || []) {
+      const row = document.createElement("tr");
+      const values = [
+        p.service_number || "—",
+        p.full_name || "—",
+        p.rank || "—",
+        p.unit || "—",
+        p.mos || "—",
+        p.service_status || "—",
+        p.lookup_error ? "Помилка API" : (p.found_in_registry ? "Знайдено" : "Немає запису")
+      ];
+      for (const value of values) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      }
+      tbody.appendChild(row);
     }
-    if (window.sangProfiles.some(p => String(p.id) === previous)) selector.value = previous;
-    selector.dispatchEvent(new Event("change"));
+    if (!data.profiles || !data.profiles.length) {
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+      cell.colSpan = 7;
+      cell.textContent = "Облікових записів військовослужбовців поки немає.";
+      row.appendChild(cell);
+      tbody.appendChild(row);
+    }
   } catch (error) {
-    document.getElementById("service-profile-message").textContent = error.message;
+    tbody.replaceChildren();
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 7;
+    cell.textContent = error.message || "Помилка завантаження реєстру.";
+    row.appendChild(cell);
+    tbody.appendChild(row);
+    if (message) message.textContent = error.message;
   }
 }
 
