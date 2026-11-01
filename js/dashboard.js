@@ -519,6 +519,10 @@ function setupCabinetTabs() {
     const audit = document.getElementById("audit-panel");
     const dashboardContent = document.getElementById("dashboard-content");
     if (dashboardContent) dashboardContent.hidden = false;
+    const workspace = dashboardContent?.querySelector(".dashboard-workspace");
+    workspace?.querySelector(".workspace-heading")?.removeAttribute("hidden");
+    workspace?.querySelector("#profile-section")?.removeAttribute("hidden");
+    workspace?.querySelector(".cabinet-tab-panels")?.removeAttribute("hidden");
     if (command) command.hidden = true;
     if (audit) audit.hidden = true;
     document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link), .dashboard-nav a").forEach(link => {
@@ -552,7 +556,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function showAdminSection(section) {
     const showAudit = section === "audit";
     const dashboardContent = document.getElementById("dashboard-content");
-    if (dashboardContent) dashboardContent.hidden = true;
+    if (dashboardContent) dashboardContent.hidden = false;
+    const workspace = dashboardContent?.querySelector(".dashboard-workspace");
+    if (workspace) {
+      workspace.querySelector(".workspace-heading")?.setAttribute("hidden", "");
+      workspace.querySelector("#profile-section")?.setAttribute("hidden", "");
+      workspace.querySelector(".cabinet-tab-panels")?.setAttribute("hidden", "");
+    }
     command.hidden = showAudit;
     audit.hidden = !showAudit;
     commandLink.classList.toggle("topnav-active", !showAudit);
