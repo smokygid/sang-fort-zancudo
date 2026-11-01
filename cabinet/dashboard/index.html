@@ -39,44 +39,73 @@
         <p id="password-message" role="status"></p>
       </form>
     </section>
-    <section id="dashboard-content" class="dashboard-grid" hidden>
-      <article class="dashboard-card dashboard-identity">
-        <p class="card-kicker">ОБЛІКОВИЙ ЗАПИС</p>
-        <h2 id="soldier-number">—</h2>
-        <p>Військовий номер</p>
-        <div class="identity-meta"><span>Внутрішній ID</span><b id="personnel-id">—</b></div>
-        <div class="identity-meta"><span>Рівень доступу</span><b id="soldier-role">—</b></div>
-      </article>
-      <article class="dashboard-card profile-card">
-        <p class="card-kicker">ОСОБИСТІ ДАНІ</p>
-        <h2>Мій профіль</h2>
-        <form id="personal-profile-form" class="profile-form">
-          <label for="profile-full-name">ПІБ</label><input id="profile-full-name" maxlength="120" required>
-          <label for="profile-age">Вік</label><input id="profile-age" type="number" min="16" max="100">
-          <label for="profile-contact">Контактні дані</label><input id="profile-contact" maxlength="160" placeholder="Телефон, Discord тощо">
-          <button class="cabinet-logout" type="submit">ЗБЕРЕГТИ ОСОБИСТІ ДАНІ</button>
-          <p id="personal-profile-message" role="status"></p>
-        </form>
-        <div class="service-profile">
-          <p class="card-kicker">СЛУЖБОВІ ВІДОМОСТІ · ЛИШЕ ПЕРЕГЛЯД</p>
-          <div class="identity-meta"><span>Звання</span><b id="profile-rank">—</b></div>
-          <div class="identity-meta"><span>Підрозділ</span><b id="profile-unit">—</b></div>
-          <div class="identity-meta"><span>MOS</span><b id="profile-mos">—</b></div>
-          <div class="identity-meta"><span>Статус служби</span><b id="profile-service-status">—</b></div>
-          <p id="profile-service-note">Службові примітки відсутні.</p>
+    <section id="dashboard-content" class="dashboard-layout" hidden>
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-identity">
+          <div class="sidebar-avatar" aria-hidden="true">S</div>
+          <strong id="sidebar-soldier-name">Військовослужбовець SANG</strong>
+          <span id="sidebar-soldier-rank">Особовий склад</span>
+          <small id="soldier-number">—</small>
         </div>
-      </article>
-      <article class="dashboard-card orders-card">
-        <p class="card-kicker">ДОКУМЕНТИ КОМАНДУВАННЯ</p>
-        <h2>Накази та розпорядження</h2>
-        <p>Офіційні документи та розпорядження San Andreas National Guard.</p>
-        <div id="orders-list" class="orders-list"><p>Завантаження документів…</p></div>
-      </article>
-      <article class="dashboard-card">
-        <p class="card-kicker">ВІДЗНАКИ</p>
-        <h2>Нагороди та стягнення</h2>
-        <p>Розділ готується до підключення.</p>
-      </article>
+        <nav class="dashboard-nav" aria-label="Навігація кабінету">
+          <a class="active" href="#profile-section">Мій профіль</a>
+          <a href="#orders-section">Накази</a>
+          <a href="#awards-section">Дисципліна та відзнаки</a>
+          <a href="#service-section">Службові відомості</a>
+        </nav>
+        <div class="sidebar-motto">HONOR · DUTY · COUNTRY</div>
+      </aside>
+      <div class="dashboard-workspace">
+        <div class="workspace-heading">
+          <div><p class="eyebrow">ОСОБОВИЙ СКЛАД · FORT ZANCUDO</p><h1>Мій <span>профіль</span></h1></div>
+          <div class="workspace-account"><span>Військовий №</span><strong id="workspace-service-number">—</strong></div>
+        </div>
+        <article class="dashboard-card dashboard-identity" id="profile-section">
+          <div class="identity-rank-mark" aria-hidden="true">✦</div>
+          <div class="identity-data">
+            <div class="identity-meta"><span>ПІБ</span><b id="profile-display-name">—</b></div>
+            <div class="identity-meta"><span>Звання</span><b id="profile-rank">—</b></div>
+            <div class="identity-meta"><span>Підрозділ</span><b id="profile-unit">—</b></div>
+            <div class="identity-meta"><span>MOS</span><b id="profile-mos">—</b></div>
+          </div>
+          <div class="identity-status">
+            <span class="status-label">СТАТУС СЛУЖБИ</span>
+            <strong id="profile-service-status">—</strong>
+            <small>Внутрішній ID: <b id="personnel-id">—</b></small>
+            <small>Рівень доступу: <b id="soldier-role">—</b></small>
+          </div>
+        </article>
+        <div class="dashboard-content-grid">
+          <article class="dashboard-card profile-card">
+            <p class="card-kicker">ОСОБИСТІ ДАНІ</p>
+            <h2>Мої дані</h2>
+            <form id="personal-profile-form" class="profile-form">
+              <label for="profile-full-name">ПІБ</label><input id="profile-full-name" maxlength="120" required>
+              <label for="profile-age">Вік</label><input id="profile-age" type="number" min="16" max="100">
+              <label for="profile-contact">Контактні дані</label><input id="profile-contact" maxlength="160" placeholder="Телефон, Discord тощо">
+              <button class="cabinet-logout" type="submit">ЗБЕРЕГТИ ОСОБИСТІ ДАНІ</button>
+              <p id="personal-profile-message" role="status"></p>
+            </form>
+            <div class="service-profile" id="service-section">
+              <p class="card-kicker">СЛУЖБОВІ ВІДОМОСТІ · ЛИШЕ ПЕРЕГЛЯД</p>
+              <div class="identity-meta"><span>Звання</span><b id="profile-rank-copy">—</b></div>
+              <div class="identity-meta"><span>Підрозділ</span><b id="profile-unit-copy">—</b></div>
+              <div class="identity-meta"><span>MOS</span><b id="profile-mos-copy">—</b></div>
+              <p id="profile-service-note">Службові примітки відсутні.</p>
+            </div>
+          </article>
+          <article class="dashboard-card orders-card" id="orders-section">
+            <div class="orders-heading"><div><p class="card-kicker">ДОКУМЕНТИ КОМАНДУВАННЯ</p><h2>Накази та розпорядження</h2></div><span class="orders-emblem">SANG</span></div>
+            <p>Офіційні документи, що стосуються служби.</p>
+            <div id="orders-list" class="orders-list"><p>Завантаження документів…</p></div>
+          </article>
+          <article class="dashboard-card awards-card" id="awards-section">
+            <p class="card-kicker">СЛУЖБОВА ІСТОРІЯ</p>
+            <h2>Нагороди та стягнення</h2>
+            <p>Розділ готується до підключення.</p>
+          </article>
+        </div>
+      </div>
     </section>
     <section id="admin-panel" class="dashboard-card admin-panel" hidden>
       <p class="card-kicker">ПАНЕЛЬ КОМАНДУВАННЯ</p>
