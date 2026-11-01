@@ -1,12 +1,14 @@
 import { json } from "../auth/_session.js";
 
+const PASSWORD_ITERATIONS = 100000;
+
 function b64(bytes) {
   let s = "";
   for (const b of bytes) s += String.fromCharCode(b);
   return btoa(s);
 }
 
-async function makePasswordHash(password, salt, iterations = 310000) {
+async function makePasswordHash(password, salt, iterations = PASSWORD_ITERATIONS) {
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
   const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt, iterations }, key, 256);
   return b64(new Uint8Array(bits));
@@ -42,7 +44,7 @@ export async function onRequestPost({ request, env }) {
     const hash = await makePasswordHash(password, salt);
     await env.DB.prepare(
       "INSERT INTO personnel_accounts (service_number,password_hash,password_salt,password_iterations,personnel_id,role,active,must_change_password) VALUES (?,?,?,?,?,'admin',1,1)"
-    ).bind(serviceNumber, hash, b64(salt), 310000, personnelId).run();
+    ).bind(serviceNumber, hash, b64(salt), PASSWORD_ITERATIONS, personnelId).run();
     return json({ success: true, serviceNumber, temporaryPassword: password, message: "Збережіть тимчасовий пароль. Він більше не буде показаний." }, 201);
   } catch (error) {
     console.error("SANG bootstrap error:", error);
