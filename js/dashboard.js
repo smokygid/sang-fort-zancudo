@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!response.ok || !result.authenticated) throw new Error(result.message || "Не вдалося перевірити авторизацію.");
 
     document.getElementById("soldier-number").textContent = result.soldier.serviceNumber;
+    document.getElementById("workspace-service-number").textContent = result.soldier.serviceNumber;
     document.getElementById("personnel-id").textContent = result.soldier.personnelId;
     document.getElementById("soldier-role").textContent = result.soldier.role === "admin" ? "Командування" : "Військовослужбовець";
 
@@ -229,10 +230,22 @@ async function loadOwnProfile() {
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити профіль.");
     const p = data.profile || {};
     document.getElementById("profile-full-name").value = p.fullName || "";
+    const displayName = document.getElementById("profile-display-name");
+    const sidebarName = document.getElementById("sidebar-soldier-name");
+    if (displayName) displayName.textContent = p.fullName || "Не зазначено";
+    if (sidebarName) sidebarName.textContent = p.fullName || "Військовослужбовець SANG";
     document.getElementById("profile-age").value = p.age ?? "";
     document.getElementById("profile-contact").value = p.contact || "";
     document.getElementById("profile-rank").textContent = p.rank || "Не зазначено";
     document.getElementById("profile-unit").textContent = p.unit || "Не зазначено";
+    const sidebarRank = document.getElementById("sidebar-soldier-rank");
+    const rankCopy = document.getElementById("profile-rank-copy");
+    const unitCopy = document.getElementById("profile-unit-copy");
+    const mosCopy = document.getElementById("profile-mos-copy");
+    if (sidebarRank) sidebarRank.textContent = p.rank || "Особовий склад";
+    if (rankCopy) rankCopy.textContent = p.rank || "Не зазначено";
+    if (unitCopy) unitCopy.textContent = p.unit || "Не зазначено";
+    if (mosCopy) mosCopy.textContent = p.mos || "Не зазначено";
     document.getElementById("profile-mos").textContent = p.mos || "Не зазначено";
     document.getElementById("profile-service-status").textContent = p.serviceStatus || "Не зазначено";
     document.getElementById("profile-service-note").textContent = p.serviceNote || "Службові примітки відсутні.";
