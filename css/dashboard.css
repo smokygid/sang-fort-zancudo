@@ -5,3 +5,10 @@
 .profile-form{display:grid;gap:8px;margin-top:16px}.profile-form label{color:#aab7c4;font-size:12px;margin-top:5px}.profile-form input,.profile-form select,.profile-form textarea{width:100%;box-sizing:border-box;background:#07111d;border:1px solid #34485b;color:#fff;padding:11px;font:inherit}.profile-form textarea{resize:vertical}.profile-form button{justify-self:start;margin-top:10px}.service-profile{border-top:1px solid #ffffff20;margin-top:22px;padding-top:14px}.admin-profile-editor{border-top:1px solid #ffffff20;margin-top:30px;padding-top:18px}.admin-profile-editor h3{color:#e8edf2;font-size:17px}.profile-card{min-width:0}
 
 .admin-audit-section{border-top:1px solid #ffffff20;margin-top:32px;padding-top:18px}.audit-caption{font-size:12px;color:#8798a8!important;margin:0 0 12px}
+
+.audit-filters{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr)) auto;gap:12px;align-items:end;margin:18px 0}
+.audit-filters label{display:grid;gap:7px;color:#aab7c4;font-size:11px}
+.audit-filters select,.audit-filters input{min-width:0;width:100%;box-sizing:border-box;background:#07111d;border:1px solid #34485b;color:#fff;padding:10px;font:inherit}
+.audit-filters button{white-space:nowrap}
+@media(max-width:850px){.audit-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.audit-filters{grid-template-columns:1fr}}
