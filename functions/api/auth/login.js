@@ -76,7 +76,7 @@ export async function onRequestPost({ request, env }) {
 
   try {
     const account = await env.DB.prepare(
-      "SELECT id, password_hash, password_salt, password_iterations, active FROM personnel_accounts WHERE service_number = ? LIMIT 1"
+      "SELECT id, password_hash, password_salt, password_iterations, active, must_change_password FROM personnel_accounts WHERE service_number = ? LIMIT 1"
     ).bind(serviceNumber).first();
 
     if (!account || account.active !== 1) {
@@ -98,7 +98,7 @@ export async function onRequestPost({ request, env }) {
       "INSERT INTO cabinet_sessions (id, account_id, expires_at) VALUES (?, ?, ?)"
     ).bind(tokenHash, account.id, expiresAt).run();
 
-    return json({ redirect: "/cabinet/dashboard/" }, 200, {
+    return json({ redirect: "/cabinet/dashboard/", mustChangePassword: account.must_change_password === 1 }, 200, {
       "Set-Cookie": `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_SECONDS}`
     });
   } catch {
