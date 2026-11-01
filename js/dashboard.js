@@ -22,7 +22,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (result.soldier.role === "admin" && adminPanel) {
       adminPanel.hidden = false;
       const auditPanel = document.getElementById("audit-panel");
-      if (auditPanel) auditPanel.hidden = false;
+      if (auditPanel) auditPanel.hidden = true;
+      document.getElementById("command-nav-link").hidden = false;
+      document.getElementById("audit-nav-link").hidden = false;
       loadAccounts();
       loadAdminProfiles();
       loadAuditLog();
@@ -532,3 +534,22 @@ function setupCabinetTabs() {
   activate("profile");
 }
 document.addEventListener("DOMContentLoaded", setupCabinetTabs);
+
+document.addEventListener("DOMContentLoaded", () => {
+  const command = document.getElementById("admin-panel");
+  const audit = document.getElementById("audit-panel");
+  const commandLink = document.getElementById("command-nav-link");
+  const auditLink = document.getElementById("audit-nav-link");
+  if (!command || !audit || !commandLink || !auditLink) return;
+  function showAdminSection(section) {
+    const showAudit = section === "audit";
+    command.hidden = showAudit;
+    audit.hidden = !showAudit;
+    commandLink.classList.toggle("topnav-active", !showAudit);
+    auditLink.classList.toggle("topnav-active", showAudit);
+    const title = document.querySelector(".workspace-heading h1");
+    if (title) title.textContent = showAudit ? "Журнал аудиту дій" : "Панель командування";
+  }
+  commandLink.addEventListener("click", e => { e.preventDefault(); showAdminSection("command"); });
+  auditLink.addEventListener("click", e => { e.preventDefault(); showAdminSection("audit"); });
+});
