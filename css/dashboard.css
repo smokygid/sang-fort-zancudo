@@ -12,3 +12,15 @@
 .audit-filters button{white-space:nowrap}
 @media(max-width:850px){.audit-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.audit-filters{grid-template-columns:1fr}}
+
+.admin-orders-editor{border-top:1px solid #ffffff20;margin-top:30px;padding-top:18px}
+.admin-orders-editor h3{color:#e8edf2;font-size:17px}
+.order-form-actions{display:flex;gap:10px;flex-wrap:wrap}
+.order-form-actions button:disabled{opacity:.55;cursor:wait}
+.orders-list{display:grid;gap:12px;margin-top:18px}
+.order-item{background:#07111d;border:1px solid #c9a44a45;padding:16px}
+.order-item-top{display:flex;justify-content:space-between;gap:12px;color:#c9a44a;font-size:12px}
+.order-item h3{font-size:17px;margin:12px 0 6px;color:#edf2f6}
+.order-item .order-meta{font-size:11px;color:#c9a44a;margin:0 0 10px}
+.order-item .order-body{white-space:pre-wrap;overflow-wrap:anywhere;color:#b9c5d0;line-height:1.65;margin:0}
+@media(max-width:520px){.order-form-actions{display:grid}.order-form-actions button{width:100%}}
