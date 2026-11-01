@@ -120,3 +120,8 @@
 #audit-panel{padding:18px}
 #command-nav-link[hidden],#audit-nav-link[hidden]{display:none!important}
 @media(max-width:650px){.command-heading{padding:12px}.command-heading h2{font-size:16px}.command-section-heading span{display:none}#admin-panel,#audit-panel{padding:12px}}
+
+/* Graphic SANG logo in cabinet navigation */
+.topbar-logo{display:flex;align-items:center;flex:0 0 auto;width:150px;height:54px;overflow:hidden}
+.topbar-logo img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}
+@media(max-width:760px){.topbar-logo{width:112px;height:42px;margin:0 auto 7px}.cabinet-topbar-inner{display:flex;flex-direction:column;align-items:stretch;gap:0}}
