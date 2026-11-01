@@ -90,3 +90,17 @@
 .topbar-unit{text-align:right;color:#8293a3;font-size:8px;line-height:1.5;letter-spacing:1.3px;white-space:nowrap}
 .topbar-unit b{color:#c9a44a;font-size:10px}
 @media(max-width:760px){.cabinet-topbar-inner{width:calc(100% - 24px);display:block;padding-top:11px}.topbar-section-label{margin-bottom:8px}.topbar-mark{width:24px;height:24px}.topbar-unit{display:none}.cabinet-topnav{overflow-x:auto;min-height:44px;gap:0}.cabinet-topnav a{white-space:nowrap;padding:0 13px;font-size:11px}.cabinet-topnav a span{display:none}}
+
+/* Single-view cabinet navigation */
+.cabinet-tab-panels{display:block;min-width:0;margin-top:0}
+.cabinet-tab-panel[hidden]{display:none!important}
+.cabinet-tab-panel>.dashboard-card{width:100%;box-sizing:border-box}
+.cabinet-tab-panel .dashboard-content-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.cabinet-tab-panel .profile-card{max-width:none}
+.cabinet-tab-panel .orders-card{grid-row:auto}
+.cabinet-tab-panel .awards-card{grid-column:auto}
+.cabinet-tab-panel .service-tab-card{max-width:none}
+.cabinet-tab-panel .service-profile{margin:0;border:0;padding:0}
+.cabinet-tab-panel .service-profile .identity-meta{max-width:760px}
+.cabinet-topnav a,.dashboard-nav a{cursor:pointer}
+@media(max-width:650px){.cabinet-tab-panels{margin-top:0}}
