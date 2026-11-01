@@ -101,6 +101,19 @@
           <p id="service-profile-message" role="status"></p>
         </form>
       </section>
+      <section class="admin-orders-editor">
+        <h3>Публікація наказу або розпорядження</h3>
+        <form id="order-create-form" class="profile-form">
+          <label for="order-number">Номер документа</label><input id="order-number" maxlength="40" placeholder="№ 001/2026" required>
+          <label for="order-title">Назва документа</label><input id="order-title" maxlength="180" required>
+          <label for="order-category">Тип документа</label><select id="order-category"><option>Наказ</option><option>Розпорядження</option><option>Директива</option><option>Інше</option></select>
+          <label for="order-date">Дата документа</label><input id="order-date" type="date" required>
+          <label for="order-body">Текст документа</label><textarea id="order-body" rows="8" maxlength="20000" required></textarea>
+          <div class="order-form-actions"><button class="cabinet-logout" type="submit" name="publish" value="draft">ЗБЕРЕГТИ ЧЕРНЕТКУ</button><button class="cabinet-logout" type="submit" name="publish" value="published">ОПУБЛІКУВАТИ</button></div>
+          <p id="order-admin-message" role="status"></p>
+        </form>
+        <div id="admin-orders-list" class="orders-list"></div>
+      </section>
       <div class="admin-list-heading"><h3>Зареєстровані облікові записи</h3><button id="refresh-accounts" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
       <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ID справи</th><th>Роль</th><th>Статус</th><th>Пароль</th><th>Дія</th></tr></thead><tbody id="accounts-list"><tr><td colspan="5">Завантаження…</td></tr></tbody></table></div>
     </section>
@@ -119,5 +132,6 @@
     <p class="dashboard-note">ІНФОРМАЦІЯ ДЛЯ СЛУЖБОВОГО КОРИСТУВАННЯ · НЕ ПЕРЕДАВАЙТЕ ДАНІ ВХОДУ ІНШИМ ОСОБАМ</p>
   </main>
   <script src="../../js/dashboard.js" defer></script>
+  <script src="../../js/orders.js" defer></script>
 </body>
 </html>
