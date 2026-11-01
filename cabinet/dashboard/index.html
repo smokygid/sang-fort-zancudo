@@ -103,6 +103,11 @@
       <div class="admin-list-heading"><h3>Зареєстровані облікові записи</h3><button id="refresh-accounts" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
       <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ID справи</th><th>Роль</th><th>Статус</th><th>Пароль</th><th>Дія</th></tr></thead><tbody id="accounts-list"><tr><td colspan="5">Завантаження…</td></tr></tbody></table></div>
     </section>
+    <section id="audit-panel" class="dashboard-card admin-panel" hidden>
+      <div class="admin-list-heading"><h3>Журнал аудиту дій</h3><button id="refresh-audit" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
+      <p>Останні дії командування та зміни облікових записів.</p>
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Дата та час</th><th>Виконавець</th><th>Дія</th><th>Обліковий запис</th></tr></thead><tbody id="audit-list"><tr><td colspan="4">Завантаження…</td></tr></tbody></table></div>
+    </section>
     <p class="dashboard-note">ІНФОРМАЦІЯ ДЛЯ СЛУЖБОВОГО КОРИСТУВАННЯ · НЕ ПЕРЕДАВАЙТЕ ДАНІ ВХОДУ ІНШИМ ОСОБАМ</p>
   </main>
   <script src="../../js/dashboard.js" defer></script>
