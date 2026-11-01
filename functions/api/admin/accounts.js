@@ -1,5 +1,7 @@
 import { json, readCookie, tokenDigest, COOKIE } from "../auth/_session.js";
 
+const PASSWORD_ITERATIONS = 100000;
+
 function b64(bytes) {
   let s = "";
   for (const b of bytes) s += String.fromCharCode(b);
@@ -11,7 +13,7 @@ function temporaryPassword() {
   crypto.getRandomValues(bytes);
   return Array.from(bytes, b => alphabet[b % alphabet.length]).join("");
 }
-async function hashPassword(password, salt, iterations = 310000) {
+async function hashPassword(password, salt, iterations = PASSWORD_ITERATIONS) {
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
   const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt, iterations }, key, 256);
   return b64(new Uint8Array(bits));
@@ -42,12 +44,13 @@ export async function onRequestPost({ request, env }) {
     const passwordHash = await hashPassword(password, salt);
     const result = await env.DB.prepare(
       "INSERT INTO personnel_accounts (service_number,password_hash,password_salt,password_iterations,personnel_id,role,active,must_change_password) VALUES (?,?,?,?,?,'soldier',1,1)"
-    ).bind(serviceNumber, passwordHash, b64(salt), 310000, personnelId).run();
+    ).bind(serviceNumber, passwordHash, b64(salt), PASSWORD_ITERATIONS, personnelId).run();
     const targetId = result.meta?.last_row_id ?? null;
     await env.DB.prepare("INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,'account_created',?)").bind(actor.id, targetId).run();
     return json({ success: true, serviceNumber, temporaryPassword: password, message: "Передайте пароль військовослужбовцю особисто. Повторно його показати неможливо." }, 201);
   } catch (error) {
     if (String(error).includes("UNIQUE")) return json({ message: "Такий військовий номер або ID уже зареєстрований." }, 409);
+    console.error("SANG account creation error:", error);
     return json({ message: "Не вдалося створити обліковий запис." }, 500);
   }
 }
