@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("personnel-id").textContent = result.soldier.personnelId;
     document.getElementById("soldier-role").textContent = result.soldier.role === "admin" ? "Командування" : "Військовослужбовець";
 
+    const adminPanel = document.getElementById("admin-panel");
+    if (result.soldier.role === "admin" && adminPanel) {
+      adminPanel.hidden = false;
+      loadAccounts();
+    }
+
     if (result.soldier.mustChangePassword) {
       passwordPanel.hidden = false;
       status.textContent = "Для продовження роботи необхідно змінити тимчасовий пароль.";
@@ -54,5 +60,88 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: "{}" });
     } finally { location.replace("/cabinet/"); }
+  });
+});
+
+
+async function loadAccounts() {
+  const tbody = document.getElementById("accounts-list");
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="5">Завантаження…</td></tr>';
+  try {
+    const response = await fetch("/api/admin/accounts", { credentials: "same-origin", cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Не вдалося завантажити список.");
+    tbody.replaceChildren();
+    for (const account of data.accounts || []) {
+      const tr = document.createElement("tr");
+      const values = [
+        account.service_number,
+        account.personnel_id,
+        account.role === "admin" ? "Адміністратор" : "Військовослужбовець",
+        account.active ? "Активний" : "Заблокований",
+        account.must_change_password ? "Очікує зміни" : "Заданий"
+      ];
+      for (const value of values) {
+        const td = document.createElement("td");
+        td.textContent = value;
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+    if (!data.accounts || !data.accounts.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 5; td.textContent = "Облікових записів поки немає."; tr.appendChild(td); tbody.appendChild(tr);
+    }
+  } catch (error) {
+    tbody.replaceChildren();
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 5; td.textContent = error.message; tr.appendChild(td); tbody.appendChild(tr);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("account-create-form");
+  const refresh = document.getElementById("refresh-accounts");
+  if (refresh) refresh.addEventListener("click", loadAccounts);
+  if (!form) return;
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    const message = document.getElementById("admin-message");
+    const resultBox = document.getElementById("new-account-result");
+    const button = form.querySelector('button[type="submit"]');
+    message.textContent = "";
+    resultBox.hidden = true;
+    button.disabled = true;
+    try {
+      const response = await fetch("/api/admin/accounts", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          serviceNumber: form.serviceNumber.value.trim(),
+          personnelId: form.personnelId.value.trim()
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося створити доступ.");
+      resultBox.replaceChildren();
+      const title = document.createElement("strong");
+      title.textContent = "Тимчасовий пароль для " + data.serviceNumber;
+      const password = document.createElement("code");
+      password.textContent = data.temporaryPassword;
+      const note = document.createElement("p");
+      note.textContent = "Передайте пароль військовослужбовцю особисто. Після першого входу його потрібно змінити. Пароль буде показано лише зараз.";
+      resultBox.append(title, password, note);
+      resultBox.hidden = false;
+      message.textContent = data.message || "Обліковий запис створено.";
+      form.reset();
+      await loadAccounts();
+    } catch (error) {
+      message.textContent = error.message;
+    } finally {
+      button.disabled = false;
+    }
   });
 });
