@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       adminPanel.hidden = false;
       loadAccounts();
       loadAdminProfiles();
+      loadAuditLog();
     }
 
     if (result.soldier.mustChangePassword) {
