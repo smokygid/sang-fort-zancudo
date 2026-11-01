@@ -357,9 +357,6 @@ function setupAuditFilters() {
   const to = document.getElementById("audit-filter-to");
   if (!soldier || soldier.dataset.ready) return;
   soldier.dataset.ready = "true";
-  for (const id of [...new Set(auditEntries.map(e => e.target_service_number).filter(Boolean))].sort()) {
-    soldier.appendChild(new Option(id, id));
-  }
   if (action.options.length <= 1) {
     for (const [key, label] of Object.entries(AUDIT_ACTION_LABELS)) action.appendChild(new Option(label, key));
   }
