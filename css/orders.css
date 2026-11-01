@@ -1,0 +1,46 @@
+/* SANG compact orders registry */
+.orders-registry { margin: 0 0 58px; }
+.orders-list { width:100%; }
+.orders-interface { display:grid; gap:14px; }
+.orders-toolbar { display:flex; gap:10px; flex-wrap:wrap; }
+.orders-search,.orders-filter {
+  min-height:42px; border:1px solid rgba(255,255,255,.12); border-radius:4px;
+  background:#0b1726; color:#f3f6f8; padding:9px 13px; outline:none;
+}
+.orders-search { flex:1 1 260px; }
+.orders-filter { flex:0 1 210px; }
+.orders-search:focus,.orders-filter:focus { border-color:#c9a44a; }
+.orders-count { color:#9eacb9; font-size:11px; letter-spacing:.7px; text-transform:uppercase; }
+.orders-list-inner { display:grid; gap:9px; }
+.order-card { background:linear-gradient(110deg,#122235,#0d1b2a); border:1px solid rgba(255,255,255,.09); border-radius:5px; overflow:hidden; }
+.order-card[open] { border-color:rgba(201,164,74,.48); }
+.order-card-summary { list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:18px; padding:15px 18px; }
+.order-card-summary::-webkit-details-marker { display:none; }
+.order-card-main { min-width:0; flex:1; }
+.order-card-line { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.order-number { color:#e0c36a; font-size:13px; letter-spacing:.5px; }
+.order-date,.order-person,.order-preview { color:#9eacb9; font-size:12px; }
+.order-title { margin-top:5px; font-size:16px; line-height:1.35; }
+.order-person { margin-top:4px; }
+.order-preview { margin-top:5px; max-width:850px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.order-status { border:1px solid rgba(255,255,255,.15); border-radius:3px; padding:2px 7px; color:#b8c2cc; font-size:9px; text-transform:uppercase; letter-spacing:.5px; }
+.order-status.is-success { color:#83c99a; border-color:rgba(111,184,137,.35); }
+.order-status.is-progress { color:#e0c36a; border-color:rgba(201,164,74,.4); }
+.order-status.is-muted { color:#9eacb9; }
+.order-expand { color:#e0c36a; font-size:10px; white-space:nowrap; text-transform:uppercase; letter-spacing:.6px; }
+.order-card-details { padding:0 18px 16px; border-top:1px solid rgba(255,255,255,.07); }
+.order-detail-row { display:grid; grid-template-columns:145px 1fr; gap:12px; padding-top:13px; }
+.order-detail-label { color:#c9a44a; font-size:10px; text-transform:uppercase; letter-spacing:.7px; }
+.order-detail-row p,.order-admin-meta,.order-empty-details { color:#c2cbd3; font-size:12px; white-space:pre-line; }
+.order-card-links { display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }
+.order-doc-link { display:inline-flex; padding:7px 10px; border:1px solid rgba(201,164,74,.4); border-radius:3px; color:#e0c36a; font-size:10px; font-weight:700; }
+.order-doc-link:hover { background:rgba(201,164,74,.1); }
+.orders-empty { padding:22px; text-align:center; color:#9eacb9; background:#0d1b2a; border:1px dashed rgba(255,255,255,.12); }
+@media(max-width:600px) {
+ .order-card-summary { padding:13px; gap:10px; }
+ .order-title { font-size:14px; }
+ .order-preview { white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+ .order-expand { font-size:9px; }
+ .order-detail-row { grid-template-columns:1fr; gap:3px; }
+ .orders-filter { flex:1 1 100%; }
+}
