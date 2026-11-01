@@ -480,3 +480,55 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   if (refresh) refresh.addEventListener("click", loadRegistrySoldiers);
 });
+
+
+function setupCabinetTabs() {
+  const layout = document.querySelector("#dashboard-content .dashboard-workspace");
+  const grid = layout?.querySelector(".dashboard-content-grid");
+  const identity = layout?.querySelector("#profile-section");
+  if (!layout || !grid || !identity || layout.dataset.tabsReady) return;
+  layout.dataset.tabsReady = "true";
+
+  const profile = grid.querySelector(".profile-card");
+  const orders = grid.querySelector(".orders-card");
+  const awards = grid.querySelector(".awards-card");
+  const service = profile?.querySelector("#service-section");
+  const panels = document.createElement("div");
+  panels.className = "cabinet-tab-panels";
+  panels.innerHTML = '<section class="cabinet-tab-panel" data-panel="profile"></section><section class="cabinet-tab-panel" data-panel="orders" hidden></section><section class="cabinet-tab-panel" data-panel="awards" hidden></section><section class="cabinet-tab-panel" data-panel="service" hidden></section>';
+  identity.after(panels);
+  panels.querySelector('[data-panel="profile"]').appendChild(profile);
+  panels.querySelector('[data-panel="orders"]').appendChild(orders);
+  panels.querySelector('[data-panel="awards"]').appendChild(awards);
+  const servicePanel = panels.querySelector('[data-panel="service"]');
+  if (service) {
+    const serviceCard = document.createElement("article");
+    serviceCard.className = "dashboard-card service-tab-card";
+    serviceCard.appendChild(service);
+    servicePanel.appendChild(serviceCard);
+  }
+
+  const labels = {profile:"Мій профіль",orders:"Накази та розпорядження",awards:"Нагороди та стягнення",service:"Службові відомості"};
+  const heading = layout.querySelector(".workspace-heading h1");
+  function activate(name) {
+    if (!panels.querySelector('[data-panel="' + name + '"]')) name = "profile";
+    panels.querySelectorAll(".cabinet-tab-panel").forEach(panel => { panel.hidden = panel.dataset.panel !== name; });
+    document.querySelectorAll(".cabinet-topnav a, .dashboard-nav a").forEach(link => {
+      const key = link.dataset.cabinetTab;
+      link.classList.toggle("topnav-active", key === name);
+      link.classList.toggle("active", key === name);
+      if (key === name) link.setAttribute("aria-current","page"); else link.removeAttribute("aria-current");
+    });
+    if (heading) heading.textContent = labels[name];
+    history.replaceState(null,"", "#" + name);
+  }
+  document.querySelectorAll(".cabinet-topnav a, .dashboard-nav a").forEach((link,index) => {
+    const href = link.getAttribute("href") || "";
+    const key = href.includes("orders") ? "orders" : href.includes("awards") ? "awards" : href.includes("service") ? "service" : "profile";
+    link.dataset.cabinetTab = key;
+    link.setAttribute("href","#" + key);
+    link.addEventListener("click", event => { event.preventDefault(); activate(key); });
+  });
+  activate("profile");
+}
+document.addEventListener("DOMContentLoaded", setupCabinetTabs);
