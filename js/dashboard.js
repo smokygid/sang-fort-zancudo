@@ -515,16 +515,24 @@ function setupCabinetTabs() {
   function activate(name) {
     if (!panels.querySelector('[data-panel="' + name + '"]')) name = "profile";
     panels.querySelectorAll(".cabinet-tab-panel").forEach(panel => { panel.hidden = panel.dataset.panel !== name; });
-    document.querySelectorAll(".cabinet-topnav a, .dashboard-nav a").forEach(link => {
+    const command = document.getElementById("admin-panel");
+    const audit = document.getElementById("audit-panel");
+    const dashboardContent = document.getElementById("dashboard-content");
+    if (dashboardContent) dashboardContent.hidden = false;
+    if (command) command.hidden = true;
+    if (audit) audit.hidden = true;
+    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link), .dashboard-nav a").forEach(link => {
       const key = link.dataset.cabinetTab;
       link.classList.toggle("topnav-active", key === name);
       link.classList.toggle("active", key === name);
       if (key === name) link.setAttribute("aria-current","page"); else link.removeAttribute("aria-current");
     });
+    document.getElementById("command-nav-link")?.classList.remove("topnav-active");
+    document.getElementById("audit-nav-link")?.classList.remove("topnav-active");
     if (heading) heading.textContent = labels[name];
     history.replaceState(null,"", "#" + name);
   }
-  document.querySelectorAll(".cabinet-topnav a, .dashboard-nav a").forEach((link,index) => {
+  document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link), .dashboard-nav a").forEach((link,index) => {
     const href = link.getAttribute("href") || "";
     const key = href.includes("orders") ? "orders" : href.includes("awards") ? "awards" : href.includes("service") ? "service" : "profile";
     link.dataset.cabinetTab = key;
@@ -543,12 +551,19 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!command || !audit || !commandLink || !auditLink) return;
   function showAdminSection(section) {
     const showAudit = section === "audit";
+    const dashboardContent = document.getElementById("dashboard-content");
+    if (dashboardContent) dashboardContent.hidden = true;
     command.hidden = showAudit;
     audit.hidden = !showAudit;
     commandLink.classList.toggle("topnav-active", !showAudit);
     auditLink.classList.toggle("topnav-active", showAudit);
+    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link), .dashboard-nav a").forEach(link => {
+      link.classList.remove("topnav-active", "active");
+      link.removeAttribute("aria-current");
+    });
     const title = document.querySelector(".workspace-heading h1");
     if (title) title.textContent = showAudit ? "Журнал аудиту дій" : "Панель командування";
+    history.replaceState(null, "", showAudit ? "#audit" : "#command");
   }
   commandLink.addEventListener("click", e => { e.preventDefault(); showAdminSection("command"); });
   auditLink.addEventListener("click", e => { e.preventDefault(); showAdminSection("audit"); });
