@@ -104,3 +104,19 @@
 .cabinet-tab-panel .service-profile .identity-meta{max-width:760px}
 .cabinet-topnav a,.dashboard-nav a{cursor:pointer}
 @media(max-width:650px){.cabinet-tab-panels{margin-top:0}}
+
+.command-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 18px;margin:0 0 16px;background:linear-gradient(105deg,#142638,#0b1724);border:1px solid rgba(201,164,74,.42)}
+.command-heading h2{margin:4px 0;font-size:19px;color:#f0f3f6;letter-spacing:.6px}
+.command-heading p:not(.card-kicker){margin:3px 0 0;color:#91a1b0;font-size:11px}
+.command-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;margin:20px 0 12px;background:#0b1927;border-left:3px solid #c9a44a}
+.command-section-heading h3{margin:0;color:#e8edf2;font-size:14px}
+.command-section-heading span{color:#c9a44a;font-size:9px;letter-spacing:1px}
+.command-description{margin:0 0 12px;color:#91a1b0;font-size:11px}
+#admin-panel{padding:18px}
+#admin-panel .admin-create-form{margin-top:12px;gap:10px}
+#admin-panel .admin-profile-editor,#admin-panel .admin-orders-editor{margin-top:18px;padding-top:12px}
+#admin-panel .admin-table th,#admin-panel .admin-table td{padding:9px 10px;font-size:11px}
+#admin-panel .admin-list-heading{margin:18px 0 9px}
+#audit-panel{padding:18px}
+#command-nav-link[hidden],#audit-nav-link[hidden]{display:none!important}
+@media(max-width:650px){.command-heading{padding:12px}.command-heading h2{font-size:16px}.command-section-heading span{display:none}#admin-panel,#audit-panel{padding:12px}}
