@@ -1,72 +1,84 @@
 document.addEventListener("DOMContentLoaded", () => {
   loadOrders();
-  const form = document.getElementById("order-create-form");
-  if (!form) return;
-  form.addEventListener("submit", async event => {
-    event.preventDefault();
-    const button = event.submitter;
-    const message = document.getElementById("order-admin-message");
-    const buttons = [...form.querySelectorAll('button[type="submit"]')];
-    buttons.forEach(item => item.disabled = true);
-    message.textContent = "";
-    try {
-      const response = await fetch("/api/admin/orders", {
-        method: "POST", credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderNumber: document.getElementById("order-number").value,
-          title: document.getElementById("order-title").value,
-          category: document.getElementById("order-category").value,
-          orderDate: document.getElementById("order-date").value,
-          body: document.getElementById("order-body").value,
-          status: button?.value === "published" ? "published" : "draft"
-        })
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Не вдалося зберегти документ.");
-      message.textContent = data.message;
-      form.reset();
-      await loadOrders();
-    } catch (error) { message.textContent = error.message; }
-    finally { buttons.forEach(item => item.disabled = false); }
-  });
 });
+
+function addText(parent, tag, className, value) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  element.textContent = value || "";
+  parent.appendChild(element);
+  return element;
+}
+
+function addDocumentLink(parent, url, label) {
+  if (!url) return;
+  const link = document.createElement("a");
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.className = "text-link";
+  link.textContent = label;
+  parent.appendChild(link);
+}
 
 function renderOrders(target, orders, isAdmin) {
   if (!target) return;
   target.replaceChildren();
   if (!orders.length) {
-    const empty = document.createElement("p");
-    empty.textContent = "Документів поки немає.";
-    target.appendChild(empty);
+    addText(target, "p", "", "Документів поки немає.");
     return;
   }
+
   for (const order of orders) {
     const article = document.createElement("article");
     article.className = "order-item";
-    const top = document.createElement("div"); top.className = "order-item-top";
-    const number = document.createElement("strong"); number.textContent = order.order_number;
-    const date = document.createElement("time"); date.textContent = order.order_date;
-    top.append(number, date);
-    const title = document.createElement("h3"); title.textContent = order.title;
-    const meta = document.createElement("p"); meta.className = "order-meta";
-    meta.textContent = order.category + (isAdmin ? " · " + (order.status === "published" ? "Опубліковано" : order.status === "archived" ? "Архів" : "Чернетка") : "");
-    const body = document.createElement("p"); body.className = "order-body"; body.textContent = order.body;
-    article.append(top, title, meta, body);
+    const top = document.createElement("div");
+    top.className = "order-item-top";
+    addText(top, "strong", "", order.order_number || "Без номера");
+    addText(top, "time", "", order.issued_at || order.order_date);
+    article.appendChild(top);
+
+    addText(article, "h3", "", order.category || "Наказ");
+    if (order.full_name || order.service_number) {
+      addText(article, "p", "order-meta", [order.full_name, order.service_number].filter(Boolean).join(" · "));
+    }
+    if (order.basis) addText(article, "p", "order-body", "Підстава: " + order.basis);
+    if (order.additional_text) addText(article, "p", "order-body", order.additional_text);
+    if (order.previous_value || order.new_value) {
+      addText(article, "p", "order-meta", "Кадрова зміна: " + [order.previous_value, order.new_value].filter(Boolean).join(" → "));
+    }
+    if (isAdmin && (order.status || order.execution_status)) {
+      addText(article, "p", "order-meta", [order.status, order.execution_status].filter(Boolean).join(" · "));
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "order-actions";
+    addDocumentLink(actions, order.google_docs_url, "Google Docs ↗");
+    addDocumentLink(actions, order.pdf_url, "PDF ↗");
+    if (actions.childNodes.length) article.appendChild(actions);
     target.appendChild(article);
   }
 }
 
 async function loadOrders() {
-  const publicList = document.getElementById("orders-list");
-  const adminList = document.getElementById("admin-orders-list");
+  const targets = [
+    document.getElementById("orders-list"),
+    document.getElementById("admin-orders-list"),
+    document.getElementById("public-orders-list")
+  ].filter(Boolean);
+  if (!targets.length) return;
+
   try {
-    const response = await fetch("/api/orders", { credentials: "same-origin", cache: "no-store" });
+    const response = await fetch("/api/orders", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити документи.");
-    renderOrders(publicList, data.orders || [], false);
-    renderOrders(adminList, data.orders || [], true);
+    renderOrders(document.getElementById("orders-list"), data.orders || [], false);
+    renderOrders(document.getElementById("public-orders-list"), data.orders || [], false);
+    renderOrders(document.getElementById("admin-orders-list"), data.orders || [], true);
   } catch (error) {
-    [publicList, adminList].forEach(target => { if (target) target.textContent = error.message; });
+    targets.forEach(target => { target.textContent = error.message; });
   }
 }
