@@ -293,3 +293,70 @@ async function loadAdminProfiles() {
     document.getElementById("service-profile-message").textContent = error.message;
   }
 }
+
+
+const AUDIT_ACTION_LABELS = {
+  account_created: "Створено обліковий запис",
+  account_activated: "Обліковий запис розблоковано",
+  account_deactivated: "Обліковий запис заблоковано",
+  personal_profile_updated: "Оновлено особисті дані",
+  service_profile_updated: "Оновлено службовий профіль"
+};
+
+async function loadAuditLog() {
+  const tbody = document.getElementById("audit-list");
+  if (!tbody) return;
+  tbody.replaceChildren();
+  const loadingRow = document.createElement("tr");
+  const loadingCell = document.createElement("td");
+  loadingCell.colSpan = 4;
+  loadingCell.textContent = "Завантаження…";
+  loadingRow.appendChild(loadingCell);
+  tbody.appendChild(loadingRow);
+
+  try {
+    const response = await fetch("/api/admin/audit", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Не вдалося завантажити журнал.");
+    tbody.replaceChildren();
+
+    for (const entry of data.entries || []) {
+      const row = document.createElement("tr");
+      const rawDate = entry.created_at ? String(entry.created_at).replace(" ", "T") : "";
+      const date = rawDate ? new Date(rawDate.endsWith("Z") ? rawDate : rawDate + "Z").toLocaleString("uk-UA") : "—";
+      const values = [
+        date,
+        entry.actor_service_number || "Невідомо",
+        AUDIT_ACTION_LABELS[entry.action] || entry.action || "Невідома дія",
+        entry.target_service_number || "—"
+      ];
+      for (const value of values) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      }
+      tbody.appendChild(row);
+    }
+
+    if (!data.entries || data.entries.length === 0) {
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+      cell.colSpan = 4;
+      cell.textContent = "Записів поки немає.";
+      row.appendChild(cell);
+      tbody.appendChild(row);
+    }
+  } catch (error) {
+    tbody.replaceChildren();
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 4;
+    cell.textContent = error.message || "Помилка завантаження журналу.";
+    row.appendChild(cell);
+    tbody.appendChild(row);
+  }
+}
+
