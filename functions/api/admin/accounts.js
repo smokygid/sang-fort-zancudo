@@ -73,8 +73,37 @@ export async function onRequestPost({ request, env }) {
   }
 }
 
+export async function onRequestPatch({ request, env }) {
+  let auth;
+  try { auth = await requireAdmin(request, env); } catch { return json({ message: "Не вдалося перевірити права доступу." }, 500); }
+  if (auth.error) return auth.error;
+  let body;
+  try { body = await request.json(); } catch { return json({ message: "Некоректний запит." }, 400); }
+  const accountId = Number(body.accountId);
+  const active = body.active;
+  if (!Number.isSafeInteger(accountId) || accountId < 1 || typeof active !== "boolean") {
+    return json({ message: "Некоректні параметри облікового запису." }, 400);
+  }
+  if (accountId === auth.actor.id) return json({ message: "Не можна змінити статус власного облікового запису." }, 400);
+  try {
+    const target = await env.DB.prepare("SELECT id, role, active FROM personnel_accounts WHERE id=? LIMIT 1").bind(accountId).first();
+    if (!target) return json({ message: "Обліковий запис не знайдено." }, 404);
+    if (target.role === "admin") return json({ message: "Зміна статусу адміністратора через цю панель заборонена." }, 403);
+    if (Boolean(target.active) === active) return json({ success: true, active, message: "Статус не змінився." });
+    await env.DB.prepare("UPDATE personnel_accounts SET active=?, updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(active ? 1 : 0, accountId).run();
+    await env.DB.prepare("INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,?,?)")
+      .bind(auth.actor.id, active ? "account_activated" : "account_deactivated", accountId).run();
+    if (!active) await env.DB.prepare("DELETE FROM cabinet_sessions WHERE account_id=?").bind(accountId).run();
+    return json({ success: true, active, message: active ? "Обліковий запис активовано." : "Обліковий запис заблоковано." });
+  } catch (error) {
+    console.error("SANG account status error:", error);
+    return json({ message: "Не вдалося змінити статус облікового запису." }, 500);
+  }
+}
+
 export async function onRequest(context) {
   if (context.request.method === "GET") return onRequestGet(context);
   if (context.request.method === "POST") return onRequestPost(context);
-  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, POST" });
+  if (context.request.method === "PATCH") return onRequestPatch(context);
+  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, POST, PATCH" });
 }
