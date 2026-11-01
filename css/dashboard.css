@@ -125,3 +125,10 @@
 .topbar-logo{display:flex;align-items:center;flex:0 0 auto;width:150px;height:54px;overflow:hidden}
 .topbar-logo img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}
 @media(max-width:760px){.topbar-logo{width:112px;height:42px;margin:0 auto 7px}.cabinet-topbar-inner{display:flex;flex-direction:column;align-items:stretch;gap:0}}
+
+/* Cabinet header: keep Home and Logout beside the SANG logo. */
+.cabinet-page .site-header .container{min-height:72px;display:flex;align-items:center;justify-content:flex-start;gap:28px}
+.cabinet-page .site-header nav{display:flex;align-items:center;gap:16px;margin-left:0}
+.cabinet-page .site-header nav a{color:#e8edf2;text-decoration:none;font-size:12px;letter-spacing:1px}
+.cabinet-page .site-header nav a:hover{color:#e0c36a}
+@media(max-width:520px){.cabinet-page .site-header .container{gap:14px;min-height:64px}.cabinet-page .site-header nav{gap:10px}.cabinet-page .site-header nav a{font-size:10px}.cabinet-page .cabinet-logout{padding:8px 10px;font-size:10px}}
