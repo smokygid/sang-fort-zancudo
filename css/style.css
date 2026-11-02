@@ -2955,3 +2955,31 @@ tr:last-child td {
         padding-bottom: 64px;
     }
 }
+
+
+/* Homepage KMB banner: keep the action compact and aligned */
+.home-page .feature-banner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 28px;
+    padding: 34px 38px;
+}
+.home-page .feature-banner > a.btn {
+    justify-self: end;
+    width: auto;
+    min-width: 0;
+    min-height: 42px;
+    padding: 10px 18px;
+    font-size: 10px;
+    letter-spacing: .8px;
+}
+@media (max-width: 650px) {
+    .home-page .feature-banner {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 26px 22px;
+    }
+    .home-page .feature-banner > a.btn {
+        justify-self: start;
+    }
+}
