@@ -147,7 +147,7 @@ export async function onRequestPost({ request, env }) {
   } catch (error) {
     if (String(error).includes("UNIQUE")) return json({ message: "Документ із таким номером уже існує." }, 409);
     console.error("SANG order create error:", error);
-    return json({ message: "Не вдалося зберегти документ. Переконайтеся, що міграції 0004 та 0005 застосовані." }, 500);
+    return json({ message: "Не вдалося зберегти документ. Переконайтеся, що міграції 0004, 0005 та 0006 застосовані." }, 500);
   }
 }
 
