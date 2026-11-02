@@ -7,52 +7,55 @@ async function requireAdmin(request, env) {
   }
   const token = readCookie(request, COOKIE);
   if (!token || token.length > 128) return { error: json({ message: "Потрібна авторизація." }, 401) };
-  const digest = await tokenDigest(token);
   const actor = await env.DB.prepare(
-    "SELECT a.id, a.role FROM cabinet_sessions s JOIN personnel_accounts a ON a.id=s.account_id WHERE s.id=? AND s.expires_at>? AND a.active=1 LIMIT 1"
-  ).bind(digest, new Date().toISOString()).first();
+    "SELECT a.id,a.role FROM cabinet_sessions s JOIN personnel_accounts a ON a.id=s.account_id WHERE s.id=? AND s.expires_at>? AND a.active=1 LIMIT 1"
+  ).bind(await tokenDigest(token), new Date().toISOString()).first();
   if (!actor || actor.role !== "admin") return { error: json({ message: "Недостатньо прав." }, 403) };
   return { actor };
+}
+
+async function readRegistryProfile(env, serviceNumber) {
+  if (!env.SHEETS_API_URL || !env.SHEETS_API_SECRET) return null;
+  const response = await fetch(env.SHEETS_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ secret: env.SHEETS_API_SECRET, action: "profile", serviceNumber })
+  });
+  if (!response.ok) throw new Error("Sheets API HTTP " + response.status);
+  const result = await response.json();
+  return result.success && result.profile ? result.profile : null;
 }
 
 export async function onRequestGet({ request, env }) {
   try {
     const auth = await requireAdmin(request, env);
     if (auth.error) return auth.error;
-    if (!env.SHEETS_API_URL || !env.SHEETS_API_SECRET) {
-      return json({ message: "Інтеграцію з реєстром не налаштовано." }, 503);
-    }
 
     const accounts = await env.DB.prepare(
-      "SELECT id, service_number, personnel_id, active FROM personnel_accounts WHERE role='soldier' ORDER BY service_number ASC"
+      `SELECT a.id,a.service_number,a.personnel_id,a.active,
+        p.full_name,p.rank,p.unit,p.mos,p.service_status,p.service_note,p.updated_at
+       FROM personnel_accounts a
+       LEFT JOIN personnel_profiles p ON p.account_id=a.id
+       WHERE a.role='soldier'
+       ORDER BY a.service_number ASC`
     ).all();
 
     const profiles = await Promise.all((accounts.results || []).map(async account => {
       try {
-        const response = await fetch(env.SHEETS_API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            secret: env.SHEETS_API_SECRET,
-            action: "profile",
-            serviceNumber: account.service_number
-          })
-        });
-        if (!response.ok) throw new Error("Sheets API HTTP " + response.status);
-        const result = await response.json();
-        const row = result.success && result.profile ? result.profile : null;
+        const row = await readRegistryProfile(env, account.service_number);
         return {
           id: account.id,
           service_number: account.service_number,
           personnel_id: account.personnel_id,
           active: Boolean(account.active),
           found_in_registry: Boolean(row),
-          full_name: row?.["ПІБ"] || "",
-          rank: row?.["Звання"] || "",
-          unit: row?.["Підрозділ"] || "",
-          mos: row?.["MOS"] || "",
-          service_status: row?.["Статус служби"] || "",
-          updated_at: row?.["Останнє оновлення"] || ""
+          full_name: account.full_name || row?.["ПІБ"] || "",
+          rank: account.rank || row?.["Звання"] || "",
+          unit: account.unit || row?.["Підрозділ"] || "",
+          mos: account.mos || row?.["MOS"] || "",
+          service_status: account.service_status || row?.["Статус служби"] || "",
+          service_note: account.service_note || "",
+          updated_at: account.updated_at || row?.["Останнє оновлення"] || ""
         };
       } catch (error) {
         console.error("SANG admin Sheets profile read error:", account.service_number, error);
@@ -62,7 +65,14 @@ export async function onRequestGet({ request, env }) {
           personnel_id: account.personnel_id,
           active: Boolean(account.active),
           found_in_registry: false,
-          lookup_error: true
+          lookup_error: true,
+          full_name: account.full_name || "",
+          rank: account.rank || "",
+          unit: account.unit || "",
+          mos: account.mos || "",
+          service_status: account.service_status || "",
+          service_note: account.service_note || "",
+          updated_at: account.updated_at || ""
         };
       }
     }));
@@ -70,14 +80,71 @@ export async function onRequestGet({ request, env }) {
     return json({ success: true, profiles });
   } catch (error) {
     console.error("SANG admin profile list error:", error);
-    return json({ message: "Не вдалося завантажити профілі з реєстру." }, 500);
+    return json({ message: "Не вдалося завантажити профілі особового складу." }, 500);
+  }
+}
+
+export async function onRequestPatch({ request, env }) {
+  try {
+    const auth = await requireAdmin(request, env);
+    if (auth.error) return auth.error;
+
+    let body;
+    try { body = await request.json(); } catch { return json({ message: "Некоректний запит." }, 400); }
+    if (!body || typeof body !== "object" || Array.isArray(body)) return json({ message: "Некоректні параметри службового профілю." }, 400);
+
+    const allowed = new Set(["accountId", "rank", "unit", "mos", "serviceStatus", "serviceNote"]);
+    if (Object.keys(body).some(key => !allowed.has(key))) {
+      return json({ message: "Передано недозволені поля службового профілю." }, 400);
+    }
+
+    const accountId = Number(body.accountId);
+    if (!Number.isSafeInteger(accountId) || accountId < 1) return json({ message: "Оберіть коректний обліковий запис." }, 400);
+
+    const fields = [
+      ["rank", "Звання", 80],
+      ["unit", "Підрозділ", 80],
+      ["mos", "MOS", 40],
+      ["serviceStatus", "Статус служби", 80],
+      ["serviceNote", "Службова примітка", 500]
+    ];
+    const values = {};
+    for (const [key, label, max] of fields) {
+      if (typeof body[key] !== "string") return json({ message: `Поле «${label}» має бути текстовим.` }, 400);
+      values[key] = body[key].trim().replace(/\s+/g, " ");
+      if (values[key].length > max) return json({ message: `Поле «${label}» перевищує ${max} символів.` }, 400);
+    }
+
+    const target = await env.DB.prepare("SELECT id,role FROM personnel_accounts WHERE id=? LIMIT 1").bind(accountId).first();
+    if (!target) return json({ message: "Обліковий запис не знайдено." }, 404);
+    if (target.role !== "soldier") return json({ message: "Можна змінювати службові дані лише військовослужбовців." }, 403);
+
+    await env.DB.prepare(
+      `INSERT INTO personnel_profiles (account_id,rank,unit,mos,service_status,service_note,updated_by,updated_at)
+       VALUES (?,?,?,?,?,?,?,CURRENT_TIMESTAMP)
+       ON CONFLICT(account_id) DO UPDATE SET
+         rank=excluded.rank,
+         unit=excluded.unit,
+         mos=excluded.mos,
+         service_status=excluded.service_status,
+         service_note=excluded.service_note,
+         updated_by=excluded.updated_by,
+         updated_at=CURRENT_TIMESTAMP`
+    ).bind(accountId, values.rank, values.unit, values.mos, values.serviceStatus, values.serviceNote, auth.actor.id).run();
+
+    await env.DB.prepare(
+      "INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,'service_profile_updated',?)"
+    ).bind(auth.actor.id, accountId).run();
+
+    return json({ success: true, message: "Службові дані військовослужбовця оновлено." });
+  } catch (error) {
+    console.error("SANG admin profile update error:", error);
+    return json({ message: "Не вдалося зберегти службові дані." }, 500);
   }
 }
 
 export async function onRequest(context) {
   if (context.request.method === "GET") return onRequestGet(context);
-  if (context.request.method === "PATCH" || context.request.method === "POST" || context.request.method === "PUT" || context.request.method === "DELETE") {
-    return json({ message: "Зміна службових даних через сайт вимкнена. Джерело даних — реєстр Google Sheets." }, 405, { Allow: "GET" });
-  }
-  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET" });
+  if (context.request.method === "PATCH") return onRequestPatch(context);
+  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, PATCH" });
 }
