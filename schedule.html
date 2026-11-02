@@ -22,6 +22,31 @@
   .schedule-overview article{padding:21px;background:linear-gradient(145deg,#17283b,#0d1a2a);border:1px solid rgba(201,164,74,.25);border-radius:13px}
   .schedule-overview strong{display:block;color:#e0c36a;font-size:1.2rem;margin-bottom:5px}
   .schedule-overview span{color:#b9c5d2;font-size:.88rem}
+  .service-cycle{max-width:1080px;margin:10px auto 0}
+  .cycle-heading{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;padding:0 0 25px;border-bottom:1px solid rgba(201,164,74,.25)}
+  .cycle-overline{display:block;color:#e0c36a;font-size:.68rem;letter-spacing:.17em;font-weight:700}
+  .cycle-heading h3{font-size:clamp(1.55rem,3vw,2.2rem);margin:9px 0}
+  .cycle-heading p{max-width:690px;color:#aebdca;line-height:1.7;margin:0}
+  .cycle-status{flex:0 0 auto;display:flex;align-items:center;gap:9px;color:#aebdca;font-size:.68rem;letter-spacing:.12em;border:1px solid rgba(201,164,74,.25);padding:11px 14px;border-radius:8px;background:#101e2e}
+  .cycle-status i{width:7px;height:7px;border-radius:50%;background:#6bc48a;box-shadow:0 0 12px #6bc48a}
+  .cycle-status strong{color:#e0c36a;font-size:.9rem}
+  .cycle-track{position:relative;padding:24px 0 8px}
+  .cycle-track:before{content:"";position:absolute;left:27px;top:38px;bottom:35px;width:1px;background:linear-gradient(rgba(224,195,106,.8),rgba(224,195,106,.12))}
+  .cycle-phase{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr);gap:22px;padding:12px 0 20px}
+  .phase-marker{position:relative;z-index:1;display:flex;justify-content:center}
+  .phase-marker span{width:54px;height:54px;display:grid;place-items:center;background:#102136;border:1px solid rgba(224,195,106,.65);border-radius:12px;color:#e0c36a;font-weight:800;font-size:.92rem}
+  .phase-body{padding:19px 22px;background:linear-gradient(110deg,rgba(21,39,59,.96),rgba(10,22,36,.96));border:1px solid rgba(201,164,74,.16);border-radius:12px;transition:border-color .2s,transform .2s}
+  .cycle-phase:hover .phase-body{border-color:rgba(224,195,106,.48);transform:translateX(3px)}
+  .phase-code{color:#e0c36a;font-size:.65rem;letter-spacing:.15em}
+  .phase-body h3{margin:7px 0;font-size:1.12rem}
+  .phase-body p{color:#b9c5d2;line-height:1.7;margin:0}
+  .phase-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+  .phase-tags span{font-size:.62rem;letter-spacing:.08em;color:#c5d0da;padding:5px 8px;border:1px solid rgba(255,255,255,.1);border-radius:4px;background:rgba(255,255,255,.025)}
+  .cycle-command-note{display:flex;gap:17px;align-items:flex-start;padding:22px;background:linear-gradient(120deg,rgba(201,164,74,.12),rgba(15,30,47,.95));border:1px solid rgba(201,164,74,.32);border-radius:12px;margin-top:15px}
+  .note-mark{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border:1px solid #c9a44a;border-radius:8px;color:#e0c36a;font-weight:800}
+  .cycle-command-note h4{margin:5px 0 6px}
+  .cycle-command-note p{margin:0;color:#b9c5d2;line-height:1.7}
+  @media(max-width:760px){.cycle-heading{display:block}.cycle-status{width:max-content;margin-top:18px}.cycle-track:before{left:21px}.cycle-phase{grid-template-columns:44px minmax(0,1fr);gap:12px}.phase-marker span{width:42px;height:42px;border-radius:10px;font-size:.78rem}.phase-body{padding:16px}.cycle-command-note{padding:17px}}
   .schedule-page .schedule-list{max-width:1000px;margin:auto}
   .schedule-page .schedule-item{display:grid;grid-template-columns:105px 42px minmax(0,1fr);gap:18px;align-items:start;padding:17px 0;border-bottom:1px solid rgba(255,255,255,.08)}
   .schedule-page .schedule-time strong{color:#e0c36a;font-size:1.25rem}
@@ -123,305 +148,20 @@
             </div>
 
 
-            <div class="schedule-list">
-
-                <!-- 06:30 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>06:30</strong>
-                        <span>ПОЧАТОК</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        01
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Підйом особового складу</h3>
-
-                        <p>
-                            Початок службового дня. Підготовка
-                            військовослужбовців до ранкового шикування.
-                        </p>
-
-                        <span class="tag">РОЗПОРЯДОК</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 07:00 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>07:00</strong>
-                        <span>ШИКУВАННЯ</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        02
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Ранкове шикування</h3>
-
-                        <p>
-                            Перевірка особового складу, доведення
-                            завдань на день та розподіл військовослужбовців
-                            по підрозділах.
-                        </p>
-
-                        <span class="tag">КОМАНДУВАННЯ</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 07:30 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>07:30</strong>
-                        <span>ФІЗПІДГОТОВКА</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        03
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Ранкова фізична підготовка</h3>
-
-                        <p>
-                            Біг, силові вправи, підтягування,
-                            віджимання та інші нормативи фізичної
-                            підготовки.
-                        </p>
-
-                        <span class="tag">ПІДГОТОВКА</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 09:00 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>09:00</strong>
-                        <span>НАВЧАННЯ</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        04
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Теоретична підготовка</h3>
-
-                        <p>
-                            Вивчення статуту, військової дисципліни,
-                            структури SANG, службових процедур
-                            та правил взаємодії.
-                        </p>
-
-                        <span class="tag">НАВЧАЛЬНИЙ ЦЕНТР</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 11:00 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>11:00</strong>
-                        <span>СПЕЦПІДГОТОВКА</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        05
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Практичні заняття</h3>
-
-                        <p>
-                            Підготовка за напрямом служби:
-                            транспорт, медицина, військова поліція,
-                            розвідка, логістика та інші спеціальності.
-                        </p>
-
-                        <span class="tag">ПІДРОЗДІЛИ</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 13:00 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>13:00</strong>
-                        <span>ПЕРЕРВА</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        06
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Обід</h3>
-
-                        <p>
-                            Планова перерва особового складу.
-                            Після завершення — повернення
-                            до виконання службових завдань.
-                        </p>
-
-                        <span class="tag">РОЗПОРЯДОК</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 14:00 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>14:00</strong>
-                        <span>ПРАКТИКА</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        07
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Практична підготовка</h3>
-
-                        <p>
-                            Тактичні заняття, робота з транспортом,
-                            медична підготовка, орієнтування,
-                            взаємодія між підрозділами.
-                        </p>
-
-                        <span class="tag">ПОЛЬОВА ПІДГОТОВКА</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 16:00 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>16:00</strong>
-                        <span>СЛУЖБА</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        08
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Виконання службових завдань</h3>
-
-                        <p>
-                            Патрулювання, охорона військових об'єктів,
-                            забезпечення порядку та виконання поточних
-                            доручень командування.
-                        </p>
-
-                        <span class="tag">ОПЕРАТИВНА РОБОТА</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 18:00 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>18:00</strong>
-                        <span>ЗВІТНІСТЬ</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        09
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Підбиття підсумків</h3>
-
-                        <p>
-                            Доповіді командирів підрозділів,
-                            перевірка виконання завдань та
-                            фіксація результатів службового дня.
-                        </p>
-
-                        <span class="tag">ШТАБ</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 19:00 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>19:00</strong>
-                        <span>ШИКУВАННЯ</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        10
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Вечірнє шикування</h3>
-
-                        <p>
-                            Оголошення результатів дня, доведення
-                            інформації від командування та постановка
-                            завдань на наступну добу.
-                        </p>
-
-                        <span class="tag">КОМАНДУВАННЯ</span>
-                    </div>
-
-                </div>
-
-
-                <!-- 20:00 -->
-                <div class="schedule-item">
-
-                    <div class="schedule-time">
-                        <strong>20:00</strong>
-                        <span>ЗАВЕРШЕННЯ</span>
-                    </div>
-
-                    <div class="schedule-icon">
-                        11
-                    </div>
-
-                    <div class="schedule-content">
-                        <h3>Завершення основної служби</h3>
-
-                        <p>
-                            Перехід до вільного часу або продовження
-                            виконання службових завдань для особового
-                            складу, призначеного на чергування.
-                        </p>
-
-                        <span class="tag">СЛУЖБОВИЙ РЕЖИМ</span>
-                    </div>
-
-                </div>
-
+            <div class="service-cycle">
+              <div class="cycle-heading">
+                <div><span class="cycle-overline">FORT ZANCUDO / DAILY OPERATIONS</span><h3>Службовий цикл SANG</h3><p>П’ять основних етапів організації служби. Послідовність адаптується до оперативної обстановки та наказів командування.</p></div>
+                <div class="cycle-status"><i></i> SERVICE CYCLE <strong>24/7</strong></div>
+              </div>
+              <div class="cycle-track">
+                <article class="cycle-phase"><div class="phase-marker"><span>01</span></div><div class="phase-body"><span class="phase-code">PHASE 01 / READINESS</span><h3>Ранкова готовність</h3><p>Підготовка особового складу, перевірка присутності, шикування та доведення завдань на поточний період.</p><div class="phase-tags"><span>ШИКУВАННЯ</span><span>РОЗПОДІЛ ЗАВДАНЬ</span></div></div></article>
+                <article class="cycle-phase"><div class="phase-marker"><span>02</span></div><div class="phase-body"><span class="phase-code">PHASE 02 / TRAINING</span><h3>Бойова та фізична підготовка</h3><p>Фізичні нормативи, теоретичні заняття, вивчення статуту, тактики та службових процедур.</p><div class="phase-tags"><span>ФІЗПІДГОТОВКА</span><span>ТЕОРІЯ</span></div></div></article>
+                <article class="cycle-phase"><div class="phase-marker"><span>03</span></div><div class="phase-body"><span class="phase-code">PHASE 03 / SPECIALIZATION</span><h3>Спеціалізація підрозділів</h3><p>Профільні заняття з медицини, транспорту, військової поліції, розвідки, логістики та інших напрямів.</p><div class="phase-tags"><span>ПРАКТИКА</span><span>ПІДРОЗДІЛИ</span></div></div></article>
+                <article class="cycle-phase"><div class="phase-marker"><span>04</span></div><div class="phase-body"><span class="phase-code">PHASE 04 / OPERATIONS</span><h3>Виконання службових завдань</h3><p>Охорона військових об’єктів, чергування, патрулювання, забезпечення порядку та виконання доручень командування.</p><div class="phase-tags"><span>ЧЕРГУВАННЯ</span><span>ОПЕРАТИВНА РОБОТА</span></div></div></article>
+                <article class="cycle-phase"><div class="phase-marker"><span>05</span></div><div class="phase-body"><span class="phase-code">PHASE 05 / REPORTING</span><h3>Підбиття підсумків</h3><p>Доповіді командирів, перевірка виконання завдань, службова звітність і доведення подальших розпоряджень.</p><div class="phase-tags"><span>ЗВІТНІСТЬ</span><span>ШТАБ</span></div></div></article>
+              </div>
+              <div class="cycle-command-note"><span class="note-mark">!</span><div><span class="cycle-overline">КОМАНДНИЙ ПОРЯДОК</span><h4>Час визначається обстановкою</h4><p>Це не фіксований погодинний графік. Час шикувань, занять, чергувань і завершення основної служби командування повідомляє окремо. За потреби порядок етапів може змінюватися.</p></div></div>
             </div>
-
             <div class="schedule-flex-note">
               <div class="feature-icon">!</div>
               <div><span class="section-kicker">ГНУЧКИЙ РЕЖИМ СЛУЖБИ</span><h3>Часові орієнтири не є фіксованим графіком</h3><p>Наведені етапи показують типовий порядок організації служби. Фактичний час шикувань, тренувань, перерв і завершення основної служби визначається командуванням та повідомляється особовому складу окремо.</p></div>
