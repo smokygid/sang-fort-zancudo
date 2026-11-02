@@ -3301,3 +3301,39 @@ tr:last-child td {
 }
 .units-page .unit-top { margin-top: 20px; }
 .units-page .unit-card ul { margin-bottom: 0; }
+
+/* Keep the full desktop navigation on one line */
+@media (min-width: 851px) {
+    .header-inner {
+        gap: 14px;
+    }
+    .header-inner .brand-logo {
+        width: 150px;
+        flex: 0 0 150px;
+    }
+    .header-inner .menu {
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        gap: 0;
+        min-width: 0;
+    }
+    .header-inner .menu a {
+        flex: 0 0 auto;
+        padding: 9px 6px;
+        font-size: 10px;
+        letter-spacing: .15px;
+    }
+}
+
+@media (min-width: 851px) and (max-width: 1100px) {
+    .header-inner .brand-logo {
+        width: 125px;
+        flex-basis: 125px;
+    }
+    .header-inner .menu a {
+        padding-left: 4px;
+        padding-right: 4px;
+        font-size: 9px;
+        letter-spacing: 0;
+    }
+}
