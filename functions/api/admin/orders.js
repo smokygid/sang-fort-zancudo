@@ -49,7 +49,8 @@ async function loadOrders(env) {
     order_date: order.order_date,
     body: order.body,
     status: order.status,
-    audience_type: order.audience_type || "all",
+    audience_type: order.audience_faction ? "faction" : (order.audience_type || "all"),
+    audience_faction: order.audience_faction || "",
     recipients: byOrder.get(order.id) || [],
     author: order.author_service_number || "Командування",
     created_at: order.created_at,
@@ -61,7 +62,7 @@ export async function onRequestGet({ request, env }) {
   try {
     const auth = await requireAdmin(request, env);
     if (auth.error) return auth.error;
-    const [orders, roster] = await Promise.all([
+    const [orders, roster, factions] = await Promise.all([
       loadOrders(env),
       env.DB.prepare(
         `SELECT a.id AS accountId, a.service_number AS serviceNumber,
@@ -71,9 +72,14 @@ export async function onRequestGet({ request, env }) {
          LEFT JOIN personnel_profiles p ON p.account_id=a.id
          WHERE a.role='soldier' AND a.active=1
          ORDER BY p.full_name ASC, a.service_number ASC`
+      ).all(),
+      env.DB.prepare(
+        `SELECT DISTINCT faction_name AS name FROM personnel_accounts
+         WHERE role='faction_leader' AND active=1 AND faction_name IS NOT NULL AND TRIM(faction_name)<>''
+         ORDER BY faction_name ASC`
       ).all()
     ]);
-    return json({ success: true, orders, soldiers: roster.results || [] });
+    return json({ success: true, orders, soldiers: roster.results || [], factions: factions.results || [] });
   } catch (error) {
     console.error("SANG admin orders list error:", error);
     return json({ message: "Не вдалося завантажити документи командування. Перевірте застосування міграцій бази даних." }, 500);
@@ -93,6 +99,8 @@ export async function onRequestPost({ request, env }) {
     const orderDate = cleanText(body.orderDate, 10);
     const documentBody = typeof body.body === "string" ? body.body.trim() : "";
     const audienceType = body.audienceType;
+    const factionName = cleanText(body.factionName, 80);
+    const storedAudienceType = audienceType === "faction" ? "all" : audienceType;
     const status = body.status === "published" ? "published" : "draft";
     const recipientIds = Array.isArray(body.recipientAccountIds)
       ? [...new Set(body.recipientAccountIds.map(Number).filter(id => Number.isSafeInteger(id) && id > 0))]
@@ -101,10 +109,16 @@ export async function onRequestPost({ request, env }) {
     if (!orderNumber || !title || !/^\d{4}-\d{2}-\d{2}$/.test(orderDate) || !documentBody) {
       return json({ message: "Заповніть номер, назву, дату та текст документа." }, 400);
     }
-    if (!["all", "person", "group"].includes(audienceType)) return json({ message: "Оберіть адресатів документа." }, 400);
+    if (!["all", "person", "group", "faction"].includes(audienceType)) return json({ message: "Оберіть адресатів документа." }, 400);
+    if (audienceType === "faction" && (!factionName || recipientIds.length)) return json({ message: "Оберіть державну фракцію для документа." }, 400);
+    if (audienceType !== "faction" && factionName) return json({ message: "Некоректний адресат документа." }, 400);
     if (audienceType === "person" && recipientIds.length !== 1) return json({ message: "Для персонального наказу оберіть одного військовослужбовця." }, 400);
     if (audienceType === "group" && recipientIds.length < 2) return json({ message: "Для групового наказу оберіть щонайменше двох військовослужбовців." }, 400);
     if (audienceType === "all" && recipientIds.length) return json({ message: "Для загального наказу список адресатів має бути порожнім." }, 400);
+    if (audienceType === "faction") {
+      const leader = await env.DB.prepare("SELECT id FROM personnel_accounts WHERE role='faction_leader' AND active=1 AND faction_name=? LIMIT 1").bind(factionName).first();
+      if (!leader) return json({ message: "Для цієї фракції немає активного керівника з доступом." }, 400);
+    }
 
     if (recipientIds.length) {
       const placeholders = recipientIds.map(() => "?").join(",");
@@ -116,9 +130,9 @@ export async function onRequestPost({ request, env }) {
 
     const inserted = await env.DB.prepare(
       `INSERT INTO sang_orders
-       (order_number,title,category,order_date,body,status,audience_type,created_by,updated_by,published_at)
-       VALUES (?,?,?,?,?,?,?,?,?,CASE WHEN ?='published' THEN CURRENT_TIMESTAMP ELSE NULL END)`
-    ).bind(orderNumber,title,category,orderDate,documentBody,status,audienceType,auth.actor.id,auth.actor.id,status).run();
+       (order_number,title,category,order_date,body,status,audience_type,audience_faction,created_by,updated_by,published_at)
+       VALUES (?,?,?,?,?,?,?,?,?,?,CASE WHEN ?='published' THEN CURRENT_TIMESTAMP ELSE NULL END)`
+    ).bind(orderNumber,title,category,orderDate,documentBody,status,storedAudienceType,audienceType === "faction" ? factionName : null,auth.actor.id,auth.actor.id,status).run();
     const orderId = inserted.meta?.last_row_id;
     if (!orderId) throw new Error("Не вдалося отримати ID документа після збереження.");
 
@@ -156,16 +170,24 @@ export async function onRequestPatch({ request, env }) {
       const orderDate = cleanText(body.orderDate, 10);
       const documentBody = typeof body.body === "string" ? body.body.trim() : "";
       const audienceType = body.audienceType;
+      const factionName = cleanText(body.factionName, 80);
+      const storedAudienceType = audienceType === "faction" ? "all" : audienceType;
       const recipientIds = Array.isArray(body.recipientAccountIds)
         ? [...new Set(body.recipientAccountIds.map(Number).filter(value => Number.isSafeInteger(value) && value > 0))]
         : [];
       if (!orderNumber || !title || !/^\d{4}-\d{2}-\d{2}$/.test(orderDate) || !documentBody) {
         return json({ message: "Заповніть номер, назву, дату та текст документа." }, 400);
       }
-      if (!["all", "person", "group"].includes(audienceType)) return json({ message: "Оберіть адресатів документа." }, 400);
+      if (!["all", "person", "group", "faction"].includes(audienceType)) return json({ message: "Оберіть адресатів документа." }, 400);
+      if (audienceType === "faction" && (!factionName || recipientIds.length)) return json({ message: "Оберіть державну фракцію для документа." }, 400);
+      if (audienceType !== "faction" && factionName) return json({ message: "Некоректний адресат документа." }, 400);
       if (audienceType === "person" && recipientIds.length !== 1) return json({ message: "Для персонального документа оберіть одного військовослужбовця." }, 400);
       if (audienceType === "group" && recipientIds.length < 2) return json({ message: "Для групового документа оберіть щонайменше двох військовослужбовців." }, 400);
       if (audienceType === "all" && recipientIds.length) return json({ message: "Для загального документа список адресатів має бути порожнім." }, 400);
+      if (audienceType === "faction") {
+        const leader = await env.DB.prepare("SELECT id FROM personnel_accounts WHERE role='faction_leader' AND active=1 AND faction_name=? LIMIT 1").bind(factionName).first();
+        if (!leader) return json({ message: "Для цієї фракції немає активного керівника з доступом." }, 400);
+      }
       if (recipientIds.length) {
         const placeholders = recipientIds.map(() => "?").join(",");
         const found = await env.DB.prepare(
@@ -174,8 +196,8 @@ export async function onRequestPatch({ request, env }) {
         if ((found.results || []).length !== recipientIds.length) return json({ message: "Список адресатів містить неактивний або невідомий обліковий запис." }, 400);
       }
       await env.DB.prepare(
-        "UPDATE sang_orders SET order_number=?,title=?,category=?,order_date=?,body=?,audience_type=?,updated_by=?,updated_at=CURRENT_TIMESTAMP WHERE id=?"
-      ).bind(orderNumber,title,category,orderDate,documentBody,audienceType,auth.actor.id,id).run();
+        "UPDATE sang_orders SET order_number=?,title=?,category=?,order_date=?,body=?,audience_type=?,audience_faction=?,updated_by=?,updated_at=CURRENT_TIMESTAMP WHERE id=?"
+      ).bind(orderNumber,title,category,orderDate,documentBody,storedAudienceType,audienceType === "faction" ? factionName : null,auth.actor.id,id).run();
       await env.DB.prepare("DELETE FROM sang_order_recipients WHERE order_id=?").bind(id).run();
       for (const accountId of recipientIds) {
         await env.DB.prepare("INSERT INTO sang_order_recipients (order_id,account_id) VALUES (?,?)").bind(id,accountId).run();
