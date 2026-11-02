@@ -287,6 +287,8 @@ async function loadOwnProfile() {
     const sidebarName = document.getElementById("sidebar-soldier-name");
     if (displayName) displayName.textContent = p.fullName || "Не зазначено";
     if (sidebarName) sidebarName.textContent = p.fullName || "Військовослужбовець SANG";
+    const sidebarPersonalName = document.getElementById("sidebar-personal-name");
+    if (sidebarPersonalName) sidebarPersonalName.textContent = p.fullName || "Не зазначено";
     document.getElementById("profile-age").value = p.age ?? "";
     document.getElementById("profile-contact").value = p.contact || "";
     const sidebarAge = document.getElementById("sidebar-soldier-age");
