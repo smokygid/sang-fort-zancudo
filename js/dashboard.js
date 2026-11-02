@@ -12,6 +12,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const result = await response.json();
     if (!response.ok || !result.authenticated) throw new Error(result.message || "Не вдалося перевірити авторизацію.");
 
+    const registrationsLink = document.getElementById("registrations-nav-link");
+    if (registrationsLink) {
+      const isAdmin = result.soldier.role === "admin";
+      registrationsLink.hidden = !isAdmin;
+      if (isAdmin) registrationsLink.style.removeProperty("display");
+      else registrationsLink.style.setProperty("display", "none", "important");
+    }
+
     if (result.soldier.role === "faction_leader") { location.replace("/cabinet/faction/"); return; }
     document.getElementById("soldier-number").textContent = result.soldier.serviceNumber;
     document.getElementById("workspace-service-number").textContent = result.soldier.serviceNumber;
@@ -27,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (auditPanel) auditPanel.hidden = true;
       document.getElementById("command-nav-link").hidden = false;
       document.getElementById("audit-nav-link").hidden = false;
-      document.getElementById("registrations-nav-link").hidden = false;
+      if (registrationsLink) { registrationsLink.hidden = false; registrationsLink.style.removeProperty("display"); }
       loadAccounts();
       loadAdminProfiles();
       loadAuditLog();
