@@ -233,5 +233,3 @@
   .sidebar-personal-form #personal-profile-message{grid-column:1/-1}
 }
 
-/* Приховуємо дубльований блок службового профілю під заголовком «Мій профіль». */
-#profile-section.dashboard-identity{display:none!important}
