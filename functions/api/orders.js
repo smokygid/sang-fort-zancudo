@@ -6,7 +6,7 @@ async function requireSession(request, env) {
   const token = readCookie(request, COOKIE);
   if (!token || token.length > 128) return { error: json({ message: "Потрібна авторизація." }, 401) };
   const actor = await env.DB.prepare(
-    "SELECT a.id, a.role, a.service_number FROM cabinet_sessions s JOIN personnel_accounts a ON a.id=s.account_id WHERE s.id=? AND s.expires_at>? AND a.active=1 LIMIT 1"
+    "SELECT a.id, a.role, a.service_number, a.faction_name FROM cabinet_sessions s JOIN personnel_accounts a ON a.id=s.account_id WHERE s.id=? AND s.expires_at>? AND a.active=1 LIMIT 1"
   ).bind(await tokenDigest(token), new Date().toISOString()).first();
   if (!actor) return { error: json({ message: "Потрібна авторизація." }, 401) };
   return { actor };
@@ -55,13 +55,20 @@ export async function onRequestGet({ request, env }) {
              ELSE 'Груповий документ' END AS audience_label
        FROM sang_orders o
        WHERE o.status='published'
-         AND (o.audience_type='all' OR EXISTS (
-           SELECT 1 FROM sang_order_recipients r
-           WHERE r.order_id=o.id AND r.account_id=?
-         ))
+         AND (
+           (?='admin')
+           OR (?='soldier' AND (
+             (o.audience_type='all' AND (o.audience_faction IS NULL OR o.audience_faction=''))
+             OR EXISTS (
+               SELECT 1 FROM sang_order_recipients r
+               WHERE r.order_id=o.id AND r.account_id=?
+             )
+           ))
+           OR (?='faction_leader' AND o.audience_faction=?)
+         )
        ORDER BY o.order_date DESC, o.id DESC
        LIMIT 300`
-    ).bind(auth.actor.id).all();
+    ).bind(auth.actor.role,auth.actor.role,auth.actor.id,auth.actor.role,auth.actor.faction_name || "").all();
 
     const newOrders = (result.results || []).map(order => ({
       id: String(order.id),
@@ -73,12 +80,13 @@ export async function onRequestGet({ request, env }) {
       body: order.body,
       additional_text: order.body,
       status: "Опубліковано",
-      audience_label: order.audience_label
+      audience_label: order.audience_label,
+      audience_faction: order.audience_faction || ""
     }));
 
     // Старі документи з Google Sheets залишаються доступними під час переходу на нову систему.
     let legacyOrders = [];
-    if (env.SHEETS_API_URL && env.SHEETS_API_SECRET) {
+    if (auth.actor.role !== "faction_leader" && env.SHEETS_API_URL && env.SHEETS_API_SECRET) {
       try {
         const upstream = await fetch(env.SHEETS_API_URL, {
           method: "POST",
