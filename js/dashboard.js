@@ -115,29 +115,63 @@ async function loadRegistrySoldiers() {
 
 async function loadAccounts() {
   const tbody = document.getElementById("accounts-list");
-  if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="6">Завантаження…</td></tr>';
+  const factionBody = document.getElementById("faction-leaders-list");
+  if (!tbody && !factionBody) return;
+  if (tbody) tbody.innerHTML = '<tr><td colspan="6">Завантаження…</td></tr>';
+  if (factionBody) factionBody.innerHTML = '<tr><td colspan="7">Завантаження…</td></tr>';
   try {
     const response = await fetch("/api/admin/accounts", { credentials: "same-origin", cache: "no-store" });
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити список.");
-    tbody.replaceChildren();
-    for (const account of data.accounts || []) {
-      const tr = document.createElement("tr");
-      const values = [
-        account.service_number,
-        account.personnel_id,
-        account.role === "admin" ? "Адміністратор" : "Військовослужбовець",
-        account.active ? "Активний" : "Заблокований",
-        account.must_change_password ? "Очікує зміни" : "Заданий"
-      ];
-      for (const value of values) {
-        const td = document.createElement("td");
-        td.textContent = value;
-        tr.appendChild(td);
+    const accounts = data.accounts || [];
+    if (tbody) {
+      tbody.replaceChildren();
+      for (const account of accounts.filter(item => item.role !== "faction_leader")) {
+        const tr = document.createElement("tr");
+        const values = [
+          account.service_number || "—",
+          account.personnel_id || "—",
+          account.role === "admin" ? "Адміністратор" : "Військовослужбовець",
+          account.active ? "Активний" : "Заблокований",
+          account.must_change_password ? "Очікує зміни" : "Заданий"
+        ];
+        for (const value of values) {
+          const td = document.createElement("td");
+          td.textContent = value;
+          tr.appendChild(td);
+        }
+        const actionCell = document.createElement("td");
+        if (account.role !== "admin") {
+          const action = document.createElement("button");
+          action.type = "button";
+          action.className = "cabinet-logout account-status-button";
+          action.dataset.accountId = String(account.id);
+          action.dataset.nextActive = account.active ? "false" : "true";
+          action.textContent = account.active ? "ЗАБЛОКУВАТИ" : "РОЗБЛОКУВАТИ";
+          actionCell.appendChild(action);
+        } else actionCell.textContent = "—";
+        tr.appendChild(actionCell);
+        tbody.appendChild(tr);
       }
-      const actionCell = document.createElement("td");
-      if (account.role !== "admin") {
+      if (!accounts.some(item => item.role !== "faction_leader")) {
+        const tr = document.createElement("tr"), td = document.createElement("td");
+        td.colSpan = 6; td.textContent = "Облікових записів особового складу поки немає.";
+        tr.appendChild(td); tbody.appendChild(tr);
+      }
+    }
+    if (factionBody) {
+      factionBody.replaceChildren();
+      const leaders = accounts.filter(item => item.role === "faction_leader");
+      for (const account of leaders) {
+        const tr = document.createElement("tr");
+        const created = account.created_at ? new Date(String(account.created_at).replace(" ", "T") + (String(account.created_at).endsWith("Z") ? "" : "Z")).toLocaleString("uk-UA") : "—";
+        const values = [account.full_name || "—", account.faction_name || "—", account.service_number || "—", account.personnel_id || "—", created, account.active ? "Активний" : "Заблокований"];
+        for (const value of values) {
+          const td = document.createElement("td");
+          td.textContent = value;
+          tr.appendChild(td);
+        }
+        const actionCell = document.createElement("td");
         const action = document.createElement("button");
         action.type = "button";
         action.className = "cabinet-logout account-status-button";
@@ -145,29 +179,32 @@ async function loadAccounts() {
         action.dataset.nextActive = account.active ? "false" : "true";
         action.textContent = account.active ? "ЗАБЛОКУВАТИ" : "РОЗБЛОКУВАТИ";
         actionCell.appendChild(action);
-      } else {
-        actionCell.textContent = "—";
+        tr.appendChild(actionCell);
+        factionBody.appendChild(tr);
       }
-      tr.appendChild(actionCell);
-      tbody.appendChild(tr);
-    }
-    if (!data.accounts || !data.accounts.length) {
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
-      td.colSpan = 6; td.textContent = "Облікових записів поки немає."; tr.appendChild(td); tbody.appendChild(tr);
+      if (!leaders.length) {
+        const tr = document.createElement("tr"), td = document.createElement("td");
+        td.colSpan = 7; td.textContent = "Керівники фракцій ще не активували доступ.";
+        tr.appendChild(td); factionBody.appendChild(tr);
+      }
     }
   } catch (error) {
-    tbody.replaceChildren();
-    const tr = document.createElement("tr");
-    const td = document.createElement("td");
-    td.colSpan = 6; td.textContent = error.message; tr.appendChild(td); tbody.appendChild(tr);
+    for (const target of [tbody, factionBody]) {
+      if (!target) continue;
+      const tr = document.createElement("tr"), td = document.createElement("td");
+      td.colSpan = target === factionBody ? 7 : 6;
+      td.textContent = error.message || "Помилка завантаження.";
+      tr.replaceChildren(td); target.replaceChildren(tr);
+    }
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("account-create-form");
   const refresh = document.getElementById("refresh-accounts");
+  const refreshFactions = document.getElementById("refresh-accounts-factions");
   if (refresh) refresh.addEventListener("click", loadAccounts);
+  if (refreshFactions) refreshFactions.addEventListener("click", loadAccounts);
   const refreshAudit = document.getElementById("refresh-audit");
   if (refreshAudit) refreshAudit.addEventListener("click", loadAuditLog);
   if (!form) return;
