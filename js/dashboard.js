@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadOwnProfile();
     const adminPanel = document.getElementById("admin-panel");
     if (result.soldier.role === "admin" && adminPanel) {
-      adminPanel.hidden = false;
+      // Панелі командування й аудиту відкриваються лише після вибору відповідного пункту меню.
+      adminPanel.hidden = true;
       const auditPanel = document.getElementById("audit-panel");
       if (auditPanel) auditPanel.hidden = true;
       document.getElementById("command-nav-link").hidden = false;
