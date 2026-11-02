@@ -159,7 +159,7 @@ export async function onRequestPatch({ request, env }) {
       const recipientIds = Array.isArray(body.recipientAccountIds)
         ? [...new Set(body.recipientAccountIds.map(Number).filter(value => Number.isSafeInteger(value) && value > 0))]
         : [];
-      if (!orderNumber || !title || !/^\\d{4}-\\d{2}-\\d{2}$/.test(orderDate) || !documentBody) {
+      if (!orderNumber || !title || !/^\d{4}-\d{2}-\d{2}$/.test(orderDate) || !documentBody) {
         return json({ message: "Заповніть номер, назву, дату та текст документа." }, 400);
       }
       if (!["all", "person", "group"].includes(audienceType)) return json({ message: "Оберіть адресатів документа." }, 400);
