@@ -66,7 +66,7 @@ export async function onRequestGet({ request, env }) {
       return json({ success: true, soldiers });
     }
     const result = await env.DB.prepare(
-      "SELECT id, service_number, personnel_id, role, active, must_change_password, created_at FROM personnel_accounts ORDER BY role DESC, service_number ASC"
+      "SELECT a.id, a.service_number, a.personnel_id, a.role, a.active, a.must_change_password, a.created_at, a.faction_name, p.full_name FROM personnel_accounts a LEFT JOIN personnel_profiles p ON p.account_id=a.id ORDER BY a.role DESC, a.service_number ASC"
     ).all();
     return json({ success: true, accounts: result.results || [] });
   } catch (error) {
