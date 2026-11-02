@@ -289,6 +289,10 @@ async function loadOwnProfile() {
     if (sidebarName) sidebarName.textContent = p.fullName || "Військовослужбовець SANG";
     document.getElementById("profile-age").value = p.age ?? "";
     document.getElementById("profile-contact").value = p.contact || "";
+    const sidebarAge = document.getElementById("sidebar-soldier-age");
+    const sidebarContact = document.getElementById("sidebar-soldier-contact");
+    if (sidebarAge) sidebarAge.textContent = p.age ? String(p.age) : "Не зазначено";
+    if (sidebarContact) sidebarContact.textContent = p.contact || "Не зазначено";
     document.getElementById("profile-rank").textContent = p.rank || "Не зазначено";
     const insignia = document.getElementById("identity-rank-insignia");
     if (insignia) { insignia.replaceChildren(buildRankInsignia(p.rank)); insignia.setAttribute("aria-label", "Знаки розрізнення: " + (p.rank || "звання не зазначено")); insignia.title = p.rank || "Звання не зазначено"; }
