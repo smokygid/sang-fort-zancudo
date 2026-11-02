@@ -144,11 +144,91 @@
 @media(max-width:650px){.sidebar-personal{grid-column:1/-1;margin-top:8px;padding:10px 4px 0}.sidebar-personal-title{text-align:left}.sidebar-personal>div{grid-template-columns:52px minmax(0,1fr);padding:4px 0}}
 
 
-/* Editable personal details live in the sidebar; save appears only after a change. */
-.sidebar-personal-form{display:grid;gap:5px;margin-top:10px;text-align:left}
-.sidebar-personal-form label{color:#8293a3;font-size:10px;margin-top:4px}
-.sidebar-personal-form input{width:100%;min-width:0;box-sizing:border-box;background:#07111d;border:1px solid #34485b;color:#e8edf2;padding:8px 9px;font:inherit;font-size:11px;border-radius:0}
-.sidebar-personal-form input:focus{outline:1px solid #c9a44a;border-color:#c9a44a}
-.sidebar-personal-form button{width:100%;margin-top:9px;padding:9px 7px;font-size:9px;line-height:1.4}
+/* Unified SANG sidebar personal editor */
+.sidebar-personal{
+  margin-top:16px;
+  padding:15px 9px 2px;
+  border-top:1px solid rgba(201,164,74,.28);
+  text-align:left;
+}
+.sidebar-personal-title{
+  margin:0 0 12px;
+  color:#c9a44a;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.7px;
+  text-align:center;
+}
+.sidebar-personal-form{display:grid;gap:5px;margin:0;text-align:left}
+.sidebar-personal-form label{
+  display:block;
+  margin:7px 0 1px;
+  color:#91a1b0;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
+.sidebar-personal-form input{
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:34px;
+  box-sizing:border-box;
+  padding:8px 10px;
+  background:linear-gradient(110deg,#091522,#0b1927);
+  border:1px solid rgba(143,160,175,.25);
+  border-radius:2px;
+  color:#e8edf2;
+  font-family:inherit;
+  font-size:11px;
+  line-height:1.35;
+  transition:border-color .18s,background .18s,box-shadow .18s;
+}
+.sidebar-personal-form input::placeholder{color:#607284;opacity:1}
+.sidebar-personal-form input:hover{border-color:rgba(201,164,74,.45)}
+.sidebar-personal-form input:focus{
+  outline:none;
+  border-color:#c9a44a;
+  background:#0b1927;
+  box-shadow:0 0 0 2px rgba(201,164,74,.09);
+}
+.sidebar-personal-form button{
+  width:100%;
+  min-height:34px;
+  margin-top:10px;
+  padding:8px 7px;
+  border:1px solid #c9a44a;
+  border-radius:2px;
+  background:linear-gradient(110deg,rgba(201,164,74,.16),rgba(201,164,74,.07));
+  color:#e0c36a;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.8px;
+  line-height:1.4;
+  text-align:center;
+}
+.sidebar-personal-form button:hover{background:rgba(201,164,74,.22)}
+.sidebar-personal-form button:disabled{opacity:.55;cursor:wait}
 .sidebar-personal-form button[hidden]{display:none!important}
-.sidebar-personal-form #personal-profile-message{margin:4px 0 0;font-size:10px;line-height:1.4;overflow-wrap:anywhere;color:#c9a44a}
+.sidebar-personal-form #personal-profile-message{
+  min-height:0;
+  margin:5px 0 0;
+  color:#c9a44a;
+  font-size:10px;
+  line-height:1.45;
+  overflow-wrap:anywhere;
+}
+@media(max-width:650px){
+  .sidebar-personal{grid-column:1/-1;margin-top:10px;padding:12px 4px 0}
+  .sidebar-personal-title{text-align:left;margin-bottom:8px}
+  .sidebar-personal-form{grid-template-columns:1fr 1fr;column-gap:10px;row-gap:3px}
+  .sidebar-personal-form label{margin-top:5px}
+  .sidebar-personal-form input{min-height:32px}
+  .sidebar-personal-form label[for="profile-full-name"],
+  .sidebar-personal-form #profile-full-name,
+  .sidebar-personal-form label[for="profile-contact"],
+  .sidebar-personal-form #profile-contact,
+  .sidebar-personal-form button,
+  .sidebar-personal-form #personal-profile-message{grid-column:1/-1}
+}
