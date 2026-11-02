@@ -10,9 +10,44 @@
           content="Офіційний розклад San Andreas National Guard — Fort Zancudo.">
 
     <link rel="stylesheet" href="css/style.css">
+
+<style>
+  .schedule-page{background:#07111d;color:#edf1f5}
+  .schedule-hero{position:relative;isolation:isolate;overflow:hidden;min-height:420px;display:flex;align-items:center;background:linear-gradient(90deg,rgba(4,12,22,.97),rgba(4,12,22,.78) 58%,rgba(4,12,22,.35)),url('assets/training.jpg') center/cover}
+  .schedule-hero .container{padding-top:95px;padding-bottom:95px}
+  .schedule-hero .eyebrow,.schedule-page .section-kicker{color:#e0c36a;letter-spacing:.16em}
+  .schedule-hero h1{font-size:clamp(3rem,7vw,5.8rem);line-height:.98;letter-spacing:-.045em;margin:18px 0}
+  .schedule-hero p{max-width:680px;color:#d0d8e1;line-height:1.8;font-size:1.08rem}
+  .schedule-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:-28px;position:relative;z-index:2}
+  .schedule-overview article{padding:21px;background:linear-gradient(145deg,#17283b,#0d1a2a);border:1px solid rgba(201,164,74,.25);border-radius:13px}
+  .schedule-overview strong{display:block;color:#e0c36a;font-size:1.2rem;margin-bottom:5px}
+  .schedule-overview span{color:#b9c5d2;font-size:.88rem}
+  .schedule-page .schedule-list{max-width:1000px;margin:auto}
+  .schedule-page .schedule-item{display:grid;grid-template-columns:105px 42px minmax(0,1fr);gap:18px;align-items:start;padding:17px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .schedule-page .schedule-time strong{color:#e0c36a;font-size:1.25rem}
+  .schedule-page .schedule-time span,.schedule-page .tag{color:#aab8c7;font-size:.68rem;letter-spacing:.1em}
+  .schedule-page .schedule-icon{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(201,164,74,.45);border-radius:10px;color:#e0c36a}
+  .schedule-page .schedule-content h3{margin:2px 0 7px}
+  .schedule-page .schedule-content p{color:#b9c5d2;line-height:1.7;margin:0 0 8px}
+  .schedule-flex-note,.schedule-event-card{background:linear-gradient(145deg,#142438,#0b1726);border:1px solid rgba(201,164,74,.22);border-radius:14px;padding:25px}
+  .schedule-flex-note{display:flex;gap:16px;align-items:flex-start;margin-top:28px}
+  .schedule-flex-note .feature-icon{flex:0 0 40px;color:#e0c36a}
+  .schedule-page .cards-grid{gap:15px}
+  .schedule-page .card{background:linear-gradient(145deg,#142438,#0b1726);border:1px solid rgba(201,164,74,.18);border-radius:13px;padding:24px}
+  .schedule-page .card-number{color:#e0c36a}
+  .schedule-events{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .schedule-event-card .event-code{color:#e0c36a;font-size:.72rem;letter-spacing:.14em}
+  .schedule-event-card h3{margin:10px 0}
+  .schedule-event-card p{color:#b9c5d2;line-height:1.7}
+  .schedule-event-card span:last-child{display:inline-block;margin-top:8px;color:#e0c36a;font-size:.75rem;letter-spacing:.08em}
+  .schedule-page .stats-grid{gap:14px}
+  .schedule-page .stat-card{background:#101e2e;border:1px solid rgba(201,164,74,.16);border-radius:12px}
+  .schedule-page .cta-section{background:linear-gradient(90deg,rgba(5,13,23,.96),rgba(5,13,23,.72)),url('assets/infantry.jpg') center/cover}
+  @media(max-width:760px){.schedule-overview,.schedule-events{grid-template-columns:1fr}.schedule-page .schedule-item{grid-template-columns:76px 36px minmax(0,1fr);gap:10px}.schedule-page .schedule-icon{width:34px;height:34px}.schedule-hero .container{padding-top:72px;padding-bottom:72px}}
+</style>
 </head>
 
-<body>
+<body class="schedule-page">
 
 <header class="site-header">
     <div class="container header-inner">
@@ -44,7 +79,7 @@
 <main>
 
     <!-- PAGE HERO -->
-    <section class="page-hero">
+    <section class="page-hero schedule-hero">
         <div class="container">
 
             <div class="eyebrow">
@@ -63,6 +98,13 @@
     </section>
 
 
+    <!-- OVERVIEW -->
+    <section class="container schedule-overview">
+      <article><strong>Гнучкий режим</strong><span>Час визначається поточними завданнями та наказами командування</span></article>
+      <article><strong>Планові заняття</strong><span>Навчання за напрямами протягом тижня</span></article>
+      <article><strong>Оперативна готовність</strong><span>Чергування та реагування за потреби</span></article>
+    </section>
+
     <!-- INTRO -->
     <section class="section">
         <div class="container">
@@ -74,9 +116,9 @@
                 </div>
 
                 <p>
-                    Розклад може коригуватися командуванням
-                    залежно від оперативної обстановки,
-                    навчань та службових завдань.
+                    Єдиного незмінного часу початку та завершення служби немає.
+                    Командири доводять час шикувань, занять і чергувань
+                    відповідно до плану та поточних завдань.
                 </p>
             </div>
 
@@ -380,6 +422,11 @@
 
             </div>
 
+            <div class="schedule-flex-note">
+              <div class="feature-icon">!</div>
+              <div><span class="section-kicker">ГНУЧКИЙ РЕЖИМ СЛУЖБИ</span><h3>Часові орієнтири не є фіксованим графіком</h3><p>Наведені етапи показують типовий порядок організації служби. Фактичний час шикувань, тренувань, перерв і завершення основної служби визначається командуванням та повідомляється особовому складу окремо.</p></div>
+            </div>
+
         </div>
     </section>
 
@@ -481,6 +528,21 @@
 
     </section>
 
+
+    <!-- EVENTS -->
+    <section class="section">
+      <div class="container">
+        <div class="section-heading">
+          <div><span class="section-kicker">ПЛАНОВІ ТА ПОЗАПЛАНОВІ ЗАХОДИ</span><h2>Заходи SANG</h2></div>
+          <p>Окремі заходи організовуються за рішенням командування та доводяться до особового складу завчасно, якщо це дозволяє ситуація.</p>
+        </div>
+        <div class="schedule-events">
+          <article class="schedule-event-card"><span class="event-code">01 / FORMATION</span><h3>Загальні шикування</h3><p>Оголошення наказів, доведення завдань, перевірка присутності та службова інформація.</p><span>ЗА РОЗПОРЯДЖЕННЯМ КОМАНДУВАННЯ</span></article>
+          <article class="schedule-event-card"><span class="event-code">02 / TRAINING</span><h3>Навчання та тренування</h3><p>КМБ, заняття підрозділів, контрольні перевірки та спільні міжвідомчі тренування.</p><span>ЗА ОКРЕМИМ ПЛАНОМ</span></article>
+          <article class="schedule-event-card"><span class="event-code">03 / CEREMONY</span><h3>Церемонії та заходи</h3><p>Нагородження, урочисті події, спортивні заходи та офіційні зустрічі.</p><span>ЗА ОГОЛОШЕННЯМ</span></article>
+        </div>
+      </div>
+    </section>
 
     <!-- IMPORTANT -->
     <section class="section">
