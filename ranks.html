@@ -12,11 +12,69 @@
   >
 
   <link rel="stylesheet" href="css/style.css">
+
   <style>
-    .rank-item.rank-supreme{border:1px solid rgba(224,195,106,.72);background:linear-gradient(100deg,rgba(201,164,74,.16),rgba(10,25,41,.92));box-shadow:inset 3px 0 0 #e0c36a,0 8px 24px rgba(0,0,0,.16)}
-    .rank-item.rank-supreme .rank-number,.rank-item.rank-supreme .rank-code{color:#e0c36a}
-    .rank-item.rank-supreme .rank-code{font-weight:900;letter-spacing:.12em}
-    .rank-supreme-label{display:inline-block;margin-top:7px;padding:4px 8px;border:1px solid rgba(224,195,106,.4);border-radius:3px;color:#e0c36a;font-size:.62rem;font-weight:800;letter-spacing:.12em}
+    /* RANKS PAGE — compact military hierarchy */
+    .section:has(.rank-group) > .container > .section-heading{
+      display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.8fr);
+      align-items:end;gap:32px;margin-bottom:42px;padding-bottom:24px;
+      border-bottom:1px solid rgba(201,164,74,.22)
+    }
+    .section:has(.rank-group) > .container > .section-heading h2{
+      font-size:clamp(1.55rem,3vw,2.15rem);line-height:1.15;
+      letter-spacing:.045em;margin:8px 0 0
+    }
+    .section:has(.rank-group) > .container > .section-heading p{
+      max-width:470px;margin:0;color:#aebdca;line-height:1.85;font-size:.94rem
+    }
+    .rank-group{margin:0 0 34px;padding:23px 24px 25px;border:1px solid rgba(201,164,74,.16);
+      border-radius:12px;background:linear-gradient(135deg,rgba(15,34,52,.82),rgba(7,18,30,.72));
+      box-shadow:0 12px 30px rgba(0,0,0,.12)}
+    .rank-group-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:17px;
+      border-bottom:1px solid rgba(255,255,255,.075)}
+    .rank-group-number{flex:0 0 42px;width:42px;height:42px;display:grid;place-items:center;
+      border:1px solid rgba(201,164,74,.45);border-radius:8px;color:#e0c36a;
+      font-size:.82rem;font-weight:800;letter-spacing:.06em;background:rgba(201,164,74,.07)}
+    .rank-group-header .eyebrow{font-size:.62rem;letter-spacing:.19em;color:#c9a44a}
+    .rank-group-header h2{font-size:1.05rem;line-height:1.25;letter-spacing:.08em;margin:4px 0 0}
+    .rank-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+    .rank-item{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:13px;
+      min-width:0;padding:17px 18px;border:1px solid rgba(255,255,255,.075);border-radius:8px;
+      background:rgba(5,15,26,.58);transition:border-color .2s,transform .2s,background .2s}
+    .rank-item:hover{transform:translateY(-2px);border-color:rgba(201,164,74,.4);background:rgba(16,35,53,.82)}
+    .rank-number{width:30px;height:30px;display:grid;place-items:center;border-radius:6px;
+      background:rgba(255,255,255,.045);color:#8294a5;font-size:.68rem;font-weight:800}
+    .rank-info{min-width:0}
+    .rank-info h3{font-size:1rem;line-height:1.35;margin:0 0 5px;letter-spacing:.01em}
+    .rank-info p{font-size:.82rem;line-height:1.7;color:#a9b8c6;margin:0;max-width:52ch}
+    .rank-code{align-self:start;margin-top:2px;padding:6px 8px;border:1px solid rgba(201,164,74,.22);
+      border-radius:4px;color:#c9a44a;font-size:.66rem;font-weight:800;letter-spacing:.1em}
+    .rank-item.rank-command{border-color:rgba(201,164,74,.35)}
+    .rank-item.rank-supreme{grid-column:1/-1;grid-template-columns:42px minmax(0,1fr) auto;
+      padding:21px 22px;border:1px solid rgba(224,195,106,.7);
+      background:linear-gradient(100deg,rgba(201,164,74,.13),rgba(10,25,41,.95));
+      box-shadow:inset 3px 0 0 #e0c36a,0 8px 24px rgba(0,0,0,.16)}
+    .rank-item.rank-supreme .rank-number{width:36px;height:36px;color:#e0c36a;background:rgba(201,164,74,.12)}
+    .rank-item.rank-supreme .rank-info h3{font-size:1.15rem;color:#f0d889}
+    .rank-item.rank-supreme .rank-info p{max-width:70ch}
+    .rank-item.rank-supreme .rank-code{font-size:.75rem;color:#e0c36a;border-color:rgba(224,195,106,.5)}
+    .rank-supreme-label{display:inline-block;margin-top:10px;padding:5px 9px;border:1px solid rgba(224,195,106,.35);
+      border-radius:3px;color:#e0c36a;font-size:.6rem;font-weight:800;letter-spacing:.14em}
+    @media(max-width:760px){
+      .section:has(.rank-group) > .container > .section-heading{grid-template-columns:1fr;gap:12px}
+      .rank-list{grid-template-columns:1fr}
+    }
+    @media(max-width:480px){
+      .rank-group{padding:17px 13px 18px;margin-bottom:22px}
+      .rank-group-header{gap:12px}
+      .rank-group-header h2{font-size:.92rem}
+      .rank-item{grid-template-columns:28px minmax(0,1fr) auto;gap:9px;padding:14px 11px}
+      .rank-number{width:26px;height:26px;font-size:.62rem}
+      .rank-info h3{font-size:.92rem}
+      .rank-info p{font-size:.78rem;line-height:1.65}
+      .rank-code{font-size:.6rem;padding:5px 6px}
+      .rank-item.rank-supreme{grid-template-columns:30px minmax(0,1fr) auto;padding:16px 12px}
+    }
   </style>
 </head>
 
