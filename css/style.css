@@ -3171,3 +3171,89 @@ tr:last-child td {
         margin-bottom: 19px;
     }
 }
+
+
+/* SANG UNITS PAGE */
+.units-page .units-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: stretch;
+}
+.units-page .unit-card {
+    min-height: 100%;
+    padding: 26px;
+    background: linear-gradient(145deg, rgba(17,31,46,.98), rgba(9,20,32,.98));
+    border: 1px solid rgba(201,164,74,.18);
+    border-radius: 3px;
+}
+.units-page .unit-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.units-page .unit-number {
+    color: var(--accent2);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+.units-page .unit-status {
+    color: var(--accent);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-align: right;
+}
+.units-page .unit-icon {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 18px;
+    border-radius: 2px;
+    background: rgba(201,164,74,.06);
+    font-size: 20px;
+}
+.units-page .unit-card h3 {
+    min-height: 2.3em;
+    line-height: 1.2;
+}
+.units-page .unit-card ul {
+    margin-top: 16px;
+    padding-left: 18px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+.units-page .units-command-note {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    margin-top: 28px;
+    padding: 30px 32px;
+    border: 1px solid rgba(201,164,74,.25);
+    background: rgba(201,164,74,.045);
+}
+.units-page .units-command-note h3 {
+    margin: 8px 0;
+    font-size: 21px;
+}
+.units-page .units-command-note p {
+    max-width: 760px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.75;
+}
+@media (max-width: 950px) {
+    .units-page .units-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+    .units-page .units-grid { grid-template-columns: 1fr; }
+    .units-page .units-command-note {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 24px;
+    }
+}
