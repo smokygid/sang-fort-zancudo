@@ -3057,3 +3057,117 @@ tr:last-child td {
         font-size: 8px;
     }
 }
+
+
+/* =========================================================
+   HIGH COMMAND — LEADERSHIP PROFILES
+   ========================================================= */
+.command-leadership-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: stretch;
+}
+.command-leadership-grid .commander-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 100%;
+    padding: 28px;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(155deg, rgba(18, 34, 49, .98), rgba(7, 17, 29, .98));
+    border: 1px solid rgba(201, 164, 74, .22);
+    border-top: 3px solid rgba(201, 164, 74, .72);
+    border-radius: 3px;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.command-leadership-grid .commander-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(201, 164, 74, .58);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, .24);
+}
+.command-leadership-grid .commander-card::after {
+    content: "SANG";
+    position: absolute;
+    z-index: -1;
+    right: -8px;
+    bottom: -24px;
+    color: rgba(255,255,255,.025);
+    font-size: clamp(58px, 7vw, 88px);
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: -5px;
+}
+.command-leadership-grid .commander-photo {
+    width: 100%;
+    height: 92px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin: 0 0 24px;
+    padding: 12px 14px;
+    background:
+        linear-gradient(115deg, rgba(201,164,74,.12), transparent 48%),
+        repeating-linear-gradient(135deg, rgba(255,255,255,.025) 0 1px, transparent 1px 10px),
+        #0a1724;
+    border: 1px solid rgba(201,164,74,.2);
+    color: rgba(224,195,106,.78);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+.command-leadership-grid .commander-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+}
+.command-leadership-grid .commander-rank {
+    display: inline-flex;
+    padding: 7px 10px;
+    background: rgba(201,164,74,.1);
+    border-left: 2px solid var(--accent);
+    color: var(--accent2);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.35px;
+}
+.command-leadership-grid .commander-info h3 {
+    margin: 17px 0 0;
+    color: #f3f0e8;
+    font-size: clamp(20px, 2vw, 25px);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+.command-leadership-grid .commander-position {
+    margin: 9px 0 12px;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.25px;
+}
+.command-leadership-grid .commander-info > p:last-child {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+@media (max-width: 850px) {
+    .command-leadership-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 600px) {
+    .command-leadership-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    .command-leadership-grid .commander-card {
+        padding: 22px;
+    }
+    .command-leadership-grid .commander-photo {
+        height: 72px;
+        margin-bottom: 19px;
+    }
+}
