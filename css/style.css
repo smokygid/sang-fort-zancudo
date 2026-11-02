@@ -2706,3 +2706,252 @@ tr:last-child td {
 
 /* Official SANG image logo */
 .brand-logo{display:flex;align-items:center;flex:0 0 auto;width:190px;height:64px;gap:0;overflow:hidden}.brand-logo img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}@media(max-width:650px){.brand-logo{width:145px;height:54px}}
+
+
+/* =========================================================
+   HOMEPAGE — MODERN MILITARY GOVERNMENT REFRESH
+   Scoped to the public homepage only.
+   ========================================================= */
+.home-page .header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(5, 13, 22, .94);
+    border-bottom: 1px solid rgba(201,164,74,.22);
+    backdrop-filter: blur(16px);
+}
+.home-page .nav {
+    min-height: 82px;
+}
+.home-page .menu a {
+    transition: color .2s ease, background .2s ease;
+}
+.home-page .menu a:hover,
+.home-page .menu a.active {
+    color: var(--accent2);
+}
+.home-page .hero {
+    min-height: 690px;
+    background:
+        radial-gradient(ellipse at 78% 48%, rgba(201,164,74,.16), transparent 34%),
+        linear-gradient(112deg, #050d16 0%, #091827 54%, #102338 100%);
+}
+.home-page .hero::before {
+    background:
+        linear-gradient(90deg, rgba(5,13,22,.97) 0%, rgba(5,13,22,.84) 48%, rgba(5,13,22,.24) 100%),
+        repeating-linear-gradient(0deg, transparent 0 59px, rgba(255,255,255,.025) 60px),
+        repeating-linear-gradient(90deg, transparent 0 59px, rgba(255,255,255,.025) 60px);
+}
+.home-page .hero-content {
+    width: min(var(--max), calc(100% - 40px));
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(270px, .65fr);
+    align-items: center;
+    gap: clamp(36px, 7vw, 100px);
+    padding-top: 76px;
+    padding-bottom: 76px;
+}
+.home-page .hero-content > *:not(.hero-command-card) {
+    grid-column: 1;
+}
+.home-page .hero-label {
+    color: var(--accent2);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2.8px;
+}
+.home-page .hero h1 {
+    margin-top: 22px;
+    font-size: clamp(46px, 6.2vw, 82px);
+    line-height: .98;
+    letter-spacing: -3px;
+}
+.home-page .hero h1 span {
+    color: var(--accent2);
+}
+.home-page .hero p {
+    max-width: 590px;
+    margin-top: 25px;
+    color: #b8c4cf;
+    font-size: 16px;
+    line-height: 1.8;
+}
+.home-page .hero-buttons {
+    margin-top: 34px;
+}
+.home-page .btn {
+    min-height: 48px;
+    padding: 13px 22px;
+    font-size: 10px;
+    letter-spacing: 1.1px;
+}
+.home-page .hero-command-card {
+    grid-column: 2;
+    grid-row: 1 / span 5;
+    position: relative;
+    padding: 30px;
+    background: linear-gradient(155deg, rgba(20,37,55,.92), rgba(7,17,29,.94));
+    border: 1px solid rgba(201,164,74,.38);
+    box-shadow: 0 28px 80px rgba(0,0,0,.28);
+}
+.home-page .hero-command-card::before,
+.home-page .hero-command-card::after {
+    content: "";
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border-color: var(--accent);
+    opacity: .75;
+}
+.home-page .hero-command-card::before {
+    top: -1px; left: -1px;
+    border-top: 2px solid; border-left: 2px solid;
+}
+.home-page .hero-command-card::after {
+    right: -1px; bottom: -1px;
+    border-right: 2px solid; border-bottom: 2px solid;
+}
+.home-page .command-card-top {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #aab8c5;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+.home-page .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #78b98a;
+    box-shadow: 0 0 12px rgba(120,185,138,.7);
+}
+.home-page .command-card-emblem {
+    width: 132px;
+    height: 132px;
+    margin: 34px auto 22px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(201,164,74,.35);
+    background: rgba(0,0,0,.18);
+    clip-path: polygon(50% 0, 91% 15%, 91% 70%, 50% 100%, 9% 70%, 9% 15%);
+}
+.home-page .command-card-emblem img {
+    width: 86px;
+    height: 86px;
+    object-fit: contain;
+}
+.home-page .command-card-label,
+.home-page .command-card-title {
+    display: block;
+    text-align: center;
+}
+.home-page .command-card-label {
+    color: #aab8c5;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+}
+.home-page .command-card-title {
+    margin-top: 7px;
+    color: var(--accent2);
+    font-size: 23px;
+    letter-spacing: 2px;
+}
+.home-page .command-card-divider {
+    height: 1px;
+    margin: 26px 0 20px;
+    background: linear-gradient(90deg, transparent, rgba(201,164,74,.55), transparent);
+}
+.home-page .command-card-data {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.home-page .command-card-data span {
+    color: #8293a3;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+.home-page .command-card-data b {
+    color: #e1e7ec;
+    font-size: 10px;
+    letter-spacing: .6px;
+}
+.home-page .stats-section {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid rgba(201,164,74,.22);
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    background: #091522;
+}
+.home-page .stats {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+.home-page .stat {
+    padding: 23px 16px;
+}
+.home-page .stat strong {
+    color: var(--accent2);
+}
+.home-page .section {
+    padding-top: 96px;
+    padding-bottom: 96px;
+}
+.home-page .card,
+.home-page .unit-card,
+.home-page .news-card {
+    transition: transform .22s ease, border-color .22s ease, background .22s ease;
+}
+.home-page .card:hover,
+.home-page .unit-card:hover,
+.home-page .news-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(201,164,74,.42);
+}
+.home-page .cta-section {
+    border-top: 1px solid rgba(201,164,74,.2);
+    border-bottom: 1px solid rgba(201,164,74,.2);
+}
+@media (max-width: 850px) {
+    .home-page .hero-content {
+        grid-template-columns: 1fr;
+        gap: 38px;
+        padding-top: 68px;
+        padding-bottom: 68px;
+    }
+    .home-page .hero-command-card {
+        grid-column: 1;
+        grid-row: auto;
+        max-width: 460px;
+    }
+}
+@media (max-width: 650px) {
+    .home-page .hero {
+        min-height: auto;
+    }
+    .home-page .hero-content {
+        width: min(var(--max), calc(100% - 28px));
+        padding-top: 58px;
+        padding-bottom: 58px;
+    }
+    .home-page .hero h1 {
+        font-size: clamp(39px, 11vw, 56px);
+        letter-spacing: -1.8px;
+    }
+    .home-page .hero p {
+        font-size: 14px;
+    }
+    .home-page .hero-command-card {
+        padding: 24px;
+    }
+    .home-page .section {
+        padding-top: 64px;
+        padding-bottom: 64px;
+    }
+}
