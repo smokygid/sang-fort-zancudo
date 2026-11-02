@@ -228,13 +228,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Не вдалося зберегти документ.");
-      message.textContent = data.message;
+      const successMessage = data.message;
       if (editingOrder) resetEditor();
       else {
         form.reset();
         audience.value = "all";
         updateAudience();
       }
+      message.textContent = successMessage;
       await loadAdminOrders();
       if (typeof loadOrders === "function") await loadOrders();
     } catch (error) { message.textContent = error.message; }
