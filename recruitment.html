@@ -11,10 +11,47 @@
     content="Умови вступу до San Andreas National Guard, етапи відбору та проходження КМБ."
   >
 
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css">\n
+  <style>
+    .recruitment-page{background:#07111d;color:#edf1f5}
+    .recruitment-hero{position:relative;isolation:isolate;overflow:hidden;min-height:440px;display:flex;align-items:center;background:linear-gradient(90deg,rgba(4,12,22,.96) 0%,rgba(4,12,22,.82) 52%,rgba(4,12,22,.35) 100%),linear-gradient(0deg,rgba(7,17,29,.55),rgba(7,17,29,.1)),url('assets/infantry.jpg') center/cover}
+    .recruitment-hero:after{content:"SANG";position:absolute;z-index:-1;right:4%;bottom:-.18em;font-size:clamp(8rem,23vw,21rem);font-weight:900;letter-spacing:-.08em;color:rgba(255,255,255,.045);line-height:1}
+    .recruitment-hero .container{padding-top:100px;padding-bottom:100px;max-width:1180px}
+    .recruitment-hero .eyebrow{color:#e0c36a;letter-spacing:.2em}
+    .recruitment-hero h1{max-width:760px;font-size:clamp(2.8rem,7vw,6rem);line-height:.98;letter-spacing:-.045em;margin:18px 0}
+    .recruitment-hero p{max-width:620px;color:#d0d8e1;font-size:1.12rem;line-height:1.8}
+    .recruitment-hero .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px}
+    .recruitment-hero .hero-note{display:flex;gap:24px;flex-wrap:wrap;margin-top:34px;color:#c1cad5;font-size:.82rem;text-transform:uppercase;letter-spacing:.1em}
+    .recruitment-hero .hero-note span:before{content:"◆";color:#c9a44a;margin-right:9px}
+    .recruitment-page .section{padding-top:76px;padding-bottom:76px}
+    .recruitment-page .section-heading{align-items:end;margin-bottom:30px}
+    .recruitment-page .section-heading h2{letter-spacing:-.025em}
+    .recruitment-page .content-grid{gap:16px}
+    .recruitment-page .content-card{position:relative;overflow:hidden;background:linear-gradient(145deg,#142438,#0b1726);border:1px solid rgba(201,164,74,.2);border-radius:14px;padding:28px;min-height:205px;transition:transform .25s,border-color .25s}
+    .recruitment-page .content-card:hover{transform:translateY(-5px);border-color:#c9a44a}
+    .recruitment-page .card-number{color:#e0c36a;font-size:.82rem;letter-spacing:.15em}
+    .recruitment-page .content-card h3{font-size:1.35rem;margin:22px 0 10px}
+    .recruitment-page .content-card p,.recruitment-page .feature-item p,.recruitment-page .step p{color:#b9c5d2;line-height:1.7}
+    .recruitment-page .requirements-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .recruitment-page .feature-item{display:flex;gap:16px;align-items:flex-start;padding:22px;background:#101e2e;border:1px solid rgba(255,255,255,.07);border-radius:12px}
+    .recruitment-page .feature-icon{flex:0 0 38px;width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(201,164,74,.5);border-radius:9px;color:#e0c36a;font-size:.78rem}
+    .recruitment-page .feature-item h3{font-size:1rem;margin:2px 0 7px}
+    .recruitment-page .feature-item p{font-size:.9rem;margin:0}
+    .recruitment-page .steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+    .recruitment-page .step{position:relative;padding:23px 18px;background:#101e2e;border:1px solid rgba(255,255,255,.08);border-radius:12px}
+    .recruitment-page .step>span{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:rgba(201,164,74,.13);color:#e0c36a;font-weight:800;margin-bottom:20px}
+    .recruitment-page .step h3{font-size:1rem;margin-bottom:8px}
+    .recruitment-page .step p{font-size:.86rem}
+    .recruitment-page .mission-box{background:linear-gradient(145deg,#142438,#0b1726);border:1px solid rgba(201,164,74,.22);border-radius:14px;padding:12px 26px}
+    .recruitment-page .info-banner{background:linear-gradient(110deg,#142438,#0b1726);border:1px solid rgba(201,164,74,.35);border-radius:16px;padding:36px}
+    .recruitment-page .faq-item{border-bottom:1px solid rgba(255,255,255,.12)}
+    .recruitment-page .cta-section{background:linear-gradient(90deg,rgba(5,13,23,.96),rgba(5,13,23,.72)),url('assets/military-police.jpg') center/cover}
+    @media(max-width:900px){.recruitment-page .requirements-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.recruitment-page .steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:600px){.recruitment-hero{min-height:390px}.recruitment-hero .container{padding-top:76px;padding-bottom:76px}.recruitment-page .requirements-grid,.recruitment-page .steps{grid-template-columns:1fr}.recruitment-page .section{padding-top:54px;padding-bottom:54px}.recruitment-page .info-banner{padding:24px}}
+  </style>
 </head>
 
-<body>
+<body class="recruitment-page">
 
   <!-- HEADER -->
   <header class="site-header">
@@ -45,7 +82,7 @@
 
 
   <!-- PAGE HERO -->
-  <section class="page-hero">
+  <section class="page-hero recruitment-hero">
 
     <div class="container">
 
@@ -175,7 +212,7 @@
       </div>
 
 
-      <div class="feature-list">
+      <div class="feature-list requirements-grid">
 
         <div class="feature-item">
 
