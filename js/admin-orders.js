@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const audience = document.getElementById("order-audience");
   const recipientsWrap = document.getElementById("order-recipients-wrap");
   const recipients = document.getElementById("order-recipients");
+  const factionWrap = document.getElementById("order-faction-wrap");
+  const factionSelect = document.getElementById("order-faction");
   const message = document.getElementById("order-admin-message");
   const list = document.getElementById("admin-orders-list");
   const submitButtons = [...form.querySelectorAll("[data-order-status]")];
@@ -41,19 +43,32 @@ document.addEventListener("DOMContentLoaded", () => {
   actions.appendChild(cancelEdit);
 
   function updateAudience() {
-    const needsRecipients = audience.value !== "all";
+    const needsRecipients = audience.value === "person" || audience.value === "group";
     recipientsWrap.hidden = !needsRecipients;
     recipients.required = needsRecipients;
     recipients.multiple = audience.value === "group";
     recipients.size = audience.value === "group" ? 7 : 1;
+    factionWrap.hidden = audience.value !== "faction";
+    factionSelect.required = audience.value === "faction";
     if (audience.value === "person" && recipients.selectedOptions.length > 1) {
       const selected = recipients.value;
       [...recipients.options].forEach(option => { option.selected = option.value === selected; });
     }
   }
 
-  function fillRoster(soldiers) {
+  function fillRoster(soldiers, factions) {
     recipients.replaceChildren();
+    factionSelect.replaceChildren();
+    const factionPlaceholder = document.createElement("option");
+    factionPlaceholder.value = "";
+    factionPlaceholder.textContent = "Оберіть фракцію";
+    factionSelect.appendChild(factionPlaceholder);
+    for (const faction of factions || []) {
+      const option = document.createElement("option");
+      option.value = faction.name;
+      option.textContent = faction.name;
+      factionSelect.appendChild(option);
+    }
     for (const soldier of soldiers || []) {
       const option = document.createElement("option");
       option.value = String(soldier.accountId);
@@ -100,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       heading.appendChild(badge);
       card.appendChild(heading);
 
-      const audienceLabel = order.audience_type === "all" ? "Увесь особовий склад" : order.audience_type === "person" ? "Персональний документ" : "Груповий документ";
+      const audienceLabel = order.audience_type === "faction" ? "Фракція: " + (order.audience_faction || "—") : order.audience_type === "all" ? "Увесь особовий склад" : order.audience_type === "person" ? "Персональний документ" : "Груповий документ";
       const people = (order.recipients || []).map(person => [person.fullName,person.serviceNumber].filter(Boolean).join(" · ")).join(", ");
       const info = document.createElement("p");
       info.textContent = order.category + " · " + order.order_date + " · " + audienceLabel + (people ? ": " + people : "");
@@ -145,6 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("order-date").value = order.order_date || "";
     document.getElementById("order-body").value = order.body || "";
     audience.value = order.audience_type || "all";
+    factionSelect.value = order.audience_faction || "";
     const selected = new Set((order.recipients || []).map(person => String(person.accountId)));
     [...recipients.options].forEach(option => { option.selected = selected.has(option.value); });
     updateAudience();
@@ -159,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editingOrder = null;
     form.reset();
     audience.value = "all";
+    factionSelect.value = "";
     [...recipients.options].forEach(option => { option.selected = false; });
     updateAudience();
     submitButtons[0].textContent = "ЗБЕРЕГТИ ЧЕРНЕТКУ";
@@ -173,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("/api/admin/orders", {credentials:"same-origin",cache:"no-store"});
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Не вдалося завантажити документи.");
-      fillRoster(data.soldiers);
+      fillRoster(data.soldiers, data.factions);
       allOrders = data.orders || [];
       renderFiltered();
     } catch (error) { list.textContent = error.message; }
@@ -215,7 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
       category:document.getElementById("order-category").value,
       orderDate:document.getElementById("order-date").value,
       audienceType:audience.value,
-      recipientAccountIds:audience.value === "all" ? [] : [...recipients.selectedOptions].map(option => Number(option.value)),
+      factionName:audience.value === "faction" ? factionSelect.value : "",
+      recipientAccountIds:audience.value === "person" || audience.value === "group" ? [...recipients.selectedOptions].map(option => Number(option.value)) : [],
       body:document.getElementById("order-body").value,
       status
     };
