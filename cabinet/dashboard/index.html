@@ -171,7 +171,11 @@
           <label for="order-category">Тип документа</label><select id="order-category"><option>Наказ</option><option>Розпорядження</option><option>Директива</option><option>Інше</option></select>
           <label for="order-date">Дата документа</label><input id="order-date" type="date" required>
           <label for="order-audience">Кому адресовано</label>
-          <select id="order-audience"><option value="all">Усьому особовому складу</option><option value="person">Одному військовослужбовцю</option><option value="group">Групі військовослужбовців</option></select>
+          <select id="order-audience"><option value="all">Усьому особовому складу</option><option value="person">Одному військовослужбовцю</option><option value="group">Групі військовослужбовців</option><option value="faction">Керівнику державної фракції</option></select>
+          <div id="order-faction-wrap" hidden>
+            <label for="order-faction">Оберіть державну фракцію</label>
+            <select id="order-faction"><option value="">Завантаження переліку фракцій…</option></select>
+          </div>
           <div id="order-recipients-wrap" hidden>
             <label for="order-recipients">Оберіть адресатів</label>
             <select id="order-recipients" multiple size="7" aria-describedby="order-recipients-hint"></select>
