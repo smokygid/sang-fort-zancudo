@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (auditPanel) auditPanel.hidden = true;
       document.getElementById("command-nav-link").hidden = false;
       document.getElementById("audit-nav-link").hidden = false;
+      document.getElementById("registrations-nav-link").hidden = false;
       loadAccounts();
       loadAdminProfiles();
       loadAuditLog();
@@ -591,7 +592,7 @@ function setupCabinetTabs() {
     workspace?.querySelector(".cabinet-tab-panels")?.removeAttribute("hidden");
     if (command) command.hidden = true;
     if (audit) audit.hidden = true;
-    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link), .dashboard-nav a").forEach(link => {
+    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link):not(#registrations-nav-link), .dashboard-nav a").forEach(link => {
       const key = link.dataset.cabinetTab;
       link.classList.toggle("topnav-active", key === name);
       link.classList.toggle("active", key === name);
@@ -602,7 +603,7 @@ function setupCabinetTabs() {
     if (heading) heading.textContent = labels[name];
     history.replaceState(null,"", "#" + name);
   }
-  document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link), .dashboard-nav a").forEach((link,index) => {
+  document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link):not(#registrations-nav-link), .dashboard-nav a").forEach((link,index) => {
     const href = link.getAttribute("href") || "";
     const key = href.includes("orders") ? "orders" : href.includes("awards") ? "awards" : href.includes("service") ? "service" : "profile";
     link.dataset.cabinetTab = key;
@@ -633,7 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
     audit.hidden = !showAudit;
     commandLink.classList.toggle("topnav-active", !showAudit);
     auditLink.classList.toggle("topnav-active", showAudit);
-    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link), .dashboard-nav a").forEach(link => {
+    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link):not(#registrations-nav-link), .dashboard-nav a").forEach(link => {
       link.classList.remove("topnav-active", "active");
       link.removeAttribute("aria-current");
     });
