@@ -8,10 +8,16 @@
 
   <meta
     name="description"
-    content="Ієрархія військових звань San Andreas National Guard — від рекрута до генерала."
+    content="Ієрархія військових звань San Andreas National Guard — від рекрута до генерала армії."
   >
 
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .rank-item.rank-supreme{border:1px solid rgba(224,195,106,.72);background:linear-gradient(100deg,rgba(201,164,74,.16),rgba(10,25,41,.92));box-shadow:inset 3px 0 0 #e0c36a,0 8px 24px rgba(0,0,0,.16)}
+    .rank-item.rank-supreme .rank-number,.rank-item.rank-supreme .rank-code{color:#e0c36a}
+    .rank-item.rank-supreme .rank-code{font-weight:900;letter-spacing:.12em}
+    .rank-supreme-label{display:inline-block;margin-top:7px;padding:4px 8px;border:1px solid rgba(224,195,106,.4);border-radius:3px;color:#e0c36a;font-size:.62rem;font-weight:800;letter-spacing:.12em}
+  </style>
 </head>
 
 <body>
@@ -612,13 +618,35 @@
             <div class="rank-info">
               <h3>Генерал</h3>
               <p>
-                Найвище військове звання
-                в системі SANG.
+                Найвище генеральське звання у стандартній
+                ієрархії військового командування SANG.
               </p>
             </div>
 
             <span class="rank-code">
               GEN
+            </span>
+
+          </div>
+
+          <div class="rank-item rank-command rank-supreme">
+
+            <span class="rank-number">
+              20
+            </span>
+
+            <div class="rank-info">
+              <h3>Генерал армії</h3>
+              <p>
+                Найвище військове звання SANG. Присвоюється
+                за окремим рішенням керівництва штату та
+                відповідає найвищому рівню стратегічного командування.
+              </p>
+              <span class="rank-supreme-label">ВИЩЕ ЗВАННЯ • SUPREME COMMAND</span>
+            </div>
+
+            <span class="rank-code">
+              GA
             </span>
 
           </div>
@@ -721,6 +749,12 @@
           <p>
             Стратегічне управління SANG.
           </p>
+        </div>
+
+        <div class="step">
+          <span>06</span>
+          <h3>Генерал армії</h3>
+          <p>Найвищий рівень військового командування.</p>
         </div>
 
       </div>
