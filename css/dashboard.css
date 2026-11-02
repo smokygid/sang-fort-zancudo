@@ -118,7 +118,7 @@
 #admin-panel .admin-table th,#admin-panel .admin-table td{padding:9px 10px;font-size:11px}
 #admin-panel .admin-list-heading{margin:18px 0 9px}
 #audit-panel{padding:18px}
-#command-nav-link[hidden],#audit-nav-link[hidden]{display:none!important},#registrations-nav-link[hidden]{display:none!important}
+#command-nav-link[hidden],#audit-nav-link[hidden],#registrations-nav-link[hidden]{display:none!important}
 @media(max-width:650px){.command-heading{padding:12px}.command-heading h2{font-size:16px}.command-section-heading span{display:none}#admin-panel,#audit-panel{padding:12px}}
 
 /* Graphic SANG logo in cabinet navigation */
