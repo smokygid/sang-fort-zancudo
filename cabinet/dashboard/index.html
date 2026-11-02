@@ -61,6 +61,19 @@
           <strong id="sidebar-soldier-name">Військовослужбовець SANG</strong>
           <span id="sidebar-soldier-rank">Особовий склад</span>
           <small id="soldier-number">—</small>
+          <div class="sidebar-personal" aria-label="Особисті дані">
+            <p class="sidebar-personal-title">ОСОБИСТІ ДАНІ</p>
+            <form id="personal-profile-form" class="sidebar-personal-form">
+              <label for="profile-full-name">ПІБ</label>
+              <input id="profile-full-name" maxlength="120" required placeholder="Ваше ПІБ">
+              <label for="profile-age">Вік</label>
+              <input id="profile-age" type="number" min="16" max="100" placeholder="Ваш вік">
+              <label for="profile-contact">Контакт</label>
+              <input id="profile-contact" maxlength="160" placeholder="Телефон, Discord тощо">
+              <button class="cabinet-logout" type="submit" hidden>ЗБЕРЕГТИ ОСОБИСТІ ДАНІ</button>
+              <p id="personal-profile-message" role="status"></p>
+            </form>
+          </div>
         </div>
         <nav class="dashboard-nav" aria-label="Навігація кабінету">
           <a class="active" href="#profile-section">Мій профіль</a>
