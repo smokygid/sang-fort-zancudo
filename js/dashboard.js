@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const result = await response.json();
     if (!response.ok || !result.authenticated) throw new Error(result.message || "Не вдалося перевірити авторизацію.");
 
+    if (result.soldier.role === "faction_leader") { location.replace("/cabinet/faction/"); return; }
     document.getElementById("soldier-number").textContent = result.soldier.serviceNumber;
     document.getElementById("workspace-service-number").textContent = result.soldier.serviceNumber;
     document.getElementById("personnel-id").textContent = result.soldier.personnelId;
@@ -511,6 +512,28 @@ async function loadAuditLog() {
   }
 }
 
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("faction-invite-form");
+  if (!form) return;
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    const message = document.getElementById("faction-invite-message");
+    const result = document.getElementById("faction-invite-result");
+    const button = form.querySelector('button[type="submit"]');
+    message.textContent = ""; result.hidden = true; button.disabled = true;
+    try {
+      const response = await fetch("/api/admin/faction-invites", { method:"POST", credentials:"same-origin", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ factionName:document.getElementById("invite-faction-name").value, contactName:document.getElementById("invite-contact-name").value }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося створити запрошення.");
+      result.hidden = false; result.replaceChildren();
+      const link = document.createElement("a"); link.href = data.inviteUrl; link.textContent = data.inviteUrl; link.target = "_blank"; link.rel = "noopener";
+      result.append("Посилання дійсне до " + new Date(data.expiresAt).toLocaleString("uk-UA") + ": ", link);
+      message.textContent = data.message;
+    } catch (error) { message.textContent = error.message; }
+    finally { button.disabled = false; }
+  });
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const selector = document.getElementById("registry-soldier-select");
