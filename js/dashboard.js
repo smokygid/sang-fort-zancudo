@@ -282,10 +282,19 @@ async function loadOwnProfile() {
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити профіль.");
     const p = data.profile || {};
+    document.getElementById("profile-full-name").value = p.fullName || "";
     const displayName = document.getElementById("profile-display-name");
     const sidebarName = document.getElementById("sidebar-soldier-name");
     if (displayName) displayName.textContent = p.fullName || "Не зазначено";
     if (sidebarName) sidebarName.textContent = p.fullName || "Військовослужбовець SANG";
+    document.getElementById("profile-age").value = p.age ?? "";
+    document.getElementById("profile-contact").value = p.contact || "";
+    const personalForm = document.getElementById("personal-profile-form");
+    if (personalForm) {
+      personalForm.dataset.saved = JSON.stringify({fullName:p.fullName || "",age:String(p.age ?? ""),contact:p.contact || ""});
+      const saveButton = personalForm.querySelector('button[type="submit"]');
+      if (saveButton) saveButton.hidden = true;
+    }
     document.getElementById("profile-rank").textContent = p.rank || "Не зазначено";
     const insignia = document.getElementById("identity-rank-insignia");
     if (insignia) { insignia.replaceChildren(buildRankInsignia(p.rank)); insignia.setAttribute("aria-label", "Знаки розрізнення: " + (p.rank || "звання не зазначено")); insignia.title = p.rank || "Звання не зазначено"; }
@@ -302,11 +311,53 @@ async function loadOwnProfile() {
     document.getElementById("profile-service-status").textContent = p.serviceStatus || "Не зазначено";
     document.getElementById("profile-service-note").textContent = p.serviceNote || "Службові примітки відсутні.";
   } catch (error) {
-    console.error("Помилка завантаження профілю:", error);
+    document.getElementById("personal-profile-message").textContent = error.message;
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const personalForm = document.getElementById("personal-profile-form");
+  if (personalForm) {
+    const saveButton = personalForm.querySelector('button[type="submit"]');
+    const readValues = () => ({
+      fullName: document.getElementById("profile-full-name").value.trim(),
+      age: document.getElementById("profile-age").value,
+      contact: document.getElementById("profile-contact").value.trim()
+    });
+    const updateSaveButton = () => {
+      const saved = JSON.parse(personalForm.dataset.saved || "{}");
+      const current = readValues();
+      const changed = current.fullName !== (saved.fullName || "") ||
+        current.age !== String(saved.age ?? "") ||
+        current.contact !== (saved.contact || "");
+      saveButton.hidden = !changed;
+    };
+    personalForm.querySelectorAll("input").forEach(input => input.addEventListener("input", updateSaveButton));
+    personalForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const message = document.getElementById("personal-profile-message");
+    const button = saveButton;
+    button.disabled = true; message.textContent = "";
+    try {
+      const response = await fetch("/api/profile", {
+        method: "PATCH", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(readValues())
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося зберегти дані.");
+      message.textContent = data.message;
+      personalForm.dataset.saved = JSON.stringify(readValues());
+      updateSaveButton();
+      const displayName = document.getElementById("profile-display-name");
+      const sidebarName = document.getElementById("sidebar-soldier-name");
+      if (displayName) displayName.textContent = readValues().fullName || "Не зазначено";
+      if (sidebarName) sidebarName.textContent = readValues().fullName || "Військовослужбовець SANG";
+    } catch (error) { message.textContent = error.message; }
+    finally { button.disabled = false; }
+    });
+  }
+
   const serviceForm = document.getElementById("service-profile-form");
   if (serviceForm) serviceForm.addEventListener("submit", async event => {
     event.preventDefault();
