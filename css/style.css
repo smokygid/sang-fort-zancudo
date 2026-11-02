@@ -2983,3 +2983,77 @@ tr:last-child td {
         justify-self: start;
     }
 }
+
+
+/* SANG homepage promotional video */
+.home-page .sang-promo-section {
+    padding-top: 76px;
+    padding-bottom: 76px;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(201,164,74,.09), transparent 55%),
+        #07111d;
+    border-bottom: 1px solid rgba(201,164,74,.16);
+}
+.home-page .sang-promo-heading {
+    max-width: 760px;
+    margin: 0 auto 30px;
+    text-align: center;
+}
+.home-page .sang-promo-heading h2 {
+    margin: 12px 0 10px;
+    color: #f0f3f5;
+    font-size: clamp(28px, 4vw, 42px);
+}
+.home-page .sang-promo-heading h2 span {
+    color: var(--accent2);
+}
+.home-page .sang-promo-heading p {
+    margin: 0;
+    color: #9eacb9;
+    font-size: 14px;
+    line-height: 1.7;
+}
+.home-page .sang-promo-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #02070c;
+    border: 1px solid rgba(201,164,74,.48);
+    box-shadow: 0 24px 70px rgba(0,0,0,.38);
+}
+.home-page .sang-promo-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border: 1px solid rgba(255,255,255,.04);
+}
+.home-page .sang-promo-frame iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+.home-page .sang-promo-caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 13px;
+    color: #8293a3;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+@media (max-width: 650px) {
+    .home-page .sang-promo-section {
+        padding-top: 54px;
+        padding-bottom: 54px;
+    }
+    .home-page .sang-promo-caption {
+        flex-direction: column;
+        gap: 6px;
+        font-size: 8px;
+    }
+}
