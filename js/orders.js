@@ -46,10 +46,10 @@ function createOrderCard(order, isAdmin) {
   }
   main.appendChild(line);
 
-  orderText(main, "h3", "order-title", order.category || "Наказ");
+  orderText(main, "h3", "order-title", order.title || order.category || "Наказ");
   const person = [order.full_name, order.service_number].filter(Boolean).join(" · ");
   if (person) orderText(main, "p", "order-person", person);
-  const preview = order.additional_text || order.new_value || order.basis || "";
+  const preview = order.additional_text || order.body || order.new_value || order.basis || "";
   if (preview) orderText(main, "p", "order-preview", preview);
 
   const arrow = orderText(summary, "span", "order-expand", "Деталі  ＋");
@@ -143,7 +143,7 @@ function renderOrders(target, orders, isAdmin) {
 }
 
 async function loadOrders() {
-  const targets = ["orders-list","admin-orders-list","public-orders-list"]
+  const targets = ["orders-list","public-orders-list"]
     .map(id => document.getElementById(id)).filter(Boolean);
   if (!targets.length) return;
   try {
@@ -152,7 +152,7 @@ async function loadOrders() {
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити накази.");
     renderOrders(document.getElementById("orders-list"), data.orders || [], false);
     renderOrders(document.getElementById("public-orders-list"), data.orders || [], false);
-    renderOrders(document.getElementById("admin-orders-list"), data.orders || [], true);
+
   } catch (error) {
     targets.forEach(t => { t.textContent = error.message; });
   }
