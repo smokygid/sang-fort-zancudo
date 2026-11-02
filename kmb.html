@@ -11,10 +11,50 @@
     content="Програма КМБ та базової загальновійськової підготовки San Andreas National Guard."
   >
 
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css">\n
+  <style>
+    .kmb-page{background:#07111d;color:#edf1f5}
+    .kmb-hero{position:relative;isolation:isolate;overflow:hidden;min-height:450px;display:flex;align-items:center;background:linear-gradient(90deg,rgba(4,12,22,.97),rgba(4,12,22,.78) 54%,rgba(4,12,22,.3)),linear-gradient(0deg,rgba(7,17,29,.5),transparent),url('assets/training.jpg') center/cover}
+    .kmb-hero:after{content:"BASIC TRAINING";position:absolute;z-index:-1;right:2%;bottom:-.12em;font-size:clamp(4rem,13vw,12rem);font-weight:900;letter-spacing:-.07em;color:rgba(255,255,255,.045);white-space:nowrap}
+    .kmb-hero .container{padding-top:100px;padding-bottom:100px}
+    .kmb-hero .eyebrow{color:#e0c36a;letter-spacing:.2em}
+    .kmb-hero h1{font-size:clamp(3rem,7vw,6rem);line-height:.98;letter-spacing:-.045em;margin:18px 0}
+    .kmb-hero p{max-width:650px;color:#d0d8e1;font-size:1.1rem;line-height:1.8}
+    .kmb-hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+    .kmb-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:-34px;position:relative;z-index:2}
+    .kmb-fact{padding:20px 22px;background:linear-gradient(145deg,#17283b,#0d1a2a);border:1px solid rgba(201,164,74,.24);border-radius:12px}
+    .kmb-fact strong{display:block;color:#e0c36a;font-size:1.2rem;margin-bottom:5px}
+    .kmb-fact span{color:#b9c5d2;font-size:.86rem}
+    .kmb-page .section{padding-top:76px;padding-bottom:76px}
+    .kmb-page .content-card,.kmb-page .unit-card,.kmb-page .step{background:linear-gradient(145deg,#142438,#0b1726);border:1px solid rgba(201,164,74,.18);border-radius:14px}
+    .kmb-page .content-card{padding:26px;min-height:190px}
+    .kmb-page .card-number,.kmb-page .timeline-number,.kmb-page .feature-icon{color:#e0c36a}
+    .kmb-page .timeline{position:relative;max-width:920px;margin:0 auto}
+    .kmb-page .timeline:before{content:"";position:absolute;left:25px;top:18px;bottom:18px;width:1px;background:linear-gradient(#c9a44a,rgba(201,164,74,.08))}
+    .kmb-page .timeline-item{position:relative;display:grid;grid-template-columns:52px 1fr;gap:22px;margin-bottom:18px}
+    .kmb-page .timeline-number{z-index:1;width:52px;height:52px;display:grid;place-items:center;background:#142438;border:1px solid rgba(201,164,74,.55);border-radius:50%;font-weight:800}
+    .kmb-page .timeline-content{padding:25px 28px;background:#101e2e;border:1px solid rgba(255,255,255,.07);border-radius:13px}
+    .kmb-page .timeline-label,.kmb-page .unit-status{color:#e0c36a;letter-spacing:.13em;font-size:.72rem}
+    .kmb-page .timeline-content h3{margin:7px 0 10px}
+    .kmb-page .timeline-content p,.kmb-page .timeline-content li,.kmb-page .feature-item p,.kmb-page .unit-card p,.kmb-page .unit-card li,.kmb-page .step p{color:#b9c5d2;line-height:1.7}
+    .kmb-page .timeline-content ul,.kmb-page .unit-card ul{padding-left:19px;margin-bottom:0}
+    .kmb-page .feature-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .kmb-page .feature-item{display:flex;gap:16px;padding:22px;background:#101e2e;border:1px solid rgba(255,255,255,.07);border-radius:12px}
+    .kmb-page .feature-icon{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border:1px solid rgba(201,164,74,.5);border-radius:9px}
+    .kmb-page .units-grid{gap:16px}
+    .kmb-page .unit-card{padding:26px}
+    .kmb-page .unit-icon{color:#e0c36a}
+    .kmb-page .steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+    .kmb-page .step{padding:22px 18px}
+    .kmb-page .step>span{display:grid;place-items:center;width:40px;height:40px;background:rgba(201,164,74,.13);border-radius:50%;color:#e0c36a;font-weight:800;margin-bottom:18px}
+    .kmb-page .mission-box,.kmb-page .info-banner{background:linear-gradient(145deg,#142438,#0b1726);border:1px solid rgba(201,164,74,.25);border-radius:14px}
+    .kmb-page .cta-section{background:linear-gradient(90deg,rgba(5,13,23,.96),rgba(5,13,23,.7)),url('assets/infantry.jpg') center/cover}
+    @media(max-width:900px){.kmb-page .steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:650px){.kmb-hero{min-height:390px}.kmb-hero .container{padding-top:75px;padding-bottom:75px}.kmb-facts{grid-template-columns:1fr;margin-top:18px}.kmb-page .feature-list,.kmb-page .steps{grid-template-columns:1fr}.kmb-page .timeline-item{grid-template-columns:42px 1fr;gap:12px}.kmb-page .timeline-number{width:42px;height:42px}.kmb-page .timeline:before{left:20px}.kmb-page .timeline-content{padding:20px}.kmb-page .section{padding-top:54px;padding-bottom:54px}}
+  </style>
 </head>
 
-<body>
+<body class="kmb-page">
 
   <!-- HEADER -->
   <header class="site-header">
@@ -45,7 +85,7 @@
 
 
   <!-- PAGE HERO -->
-  <section class="page-hero">
+  <section class="page-hero kmb-hero">
 
     <div class="container">
 
@@ -67,7 +107,7 @@
   </section>
 
 
-  <!-- INTRO -->
+  <!-- TRAINING FACTS -->\n  <section class="container kmb-facts">\n    <div class="kmb-fact"><strong>2 дні</strong><span>Основна програма підготовки</span></div>\n    <div class="kmb-fact"><strong>Fort Zancudo</strong><span>Місце проходження КМБ</span></div>\n    <div class="kmb-fact"><strong>Фінальне шикування</strong><span>Результати та зарахування</span></div>\n  </section>\n\n  <!-- INTRO -->
   <section class="section">
 
     <div class="container">
