@@ -143,7 +143,7 @@ function renderOrders(target, orders, isAdmin) {
 }
 
 async function loadOrders() {
-  const targets = ["orders-list","public-orders-list"]
+  const targets = ["orders-list","public-orders-list","faction-orders-list"]
     .map(id => document.getElementById(id)).filter(Boolean);
   if (!targets.length) return;
   try {
@@ -152,6 +152,7 @@ async function loadOrders() {
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити накази.");
     renderOrders(document.getElementById("orders-list"), data.orders || [], false);
     renderOrders(document.getElementById("public-orders-list"), data.orders || [], false);
+    renderOrders(document.getElementById("faction-orders-list"), data.orders || [], false);
 
   } catch (error) {
     targets.forEach(t => { t.textContent = error.message; });
