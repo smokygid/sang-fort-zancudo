@@ -182,7 +182,7 @@ export async function onRequestPatch({ request, env }) {
       }
       await env.DB.prepare(
         "INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?, ?, NULL)"
-      ).bind(auth.actor.id, "order_updated", null).run();
+      ).bind(auth.actor.id, "order_updated").run();
       return json({ success: true, message: "Зміни документа збережено." });
     }
 
@@ -199,7 +199,7 @@ export async function onRequestPatch({ request, env }) {
     const action = status === "published" ? "order_published" : status === "archived" ? "order_archived" : "order_restored_to_draft";
     await env.DB.prepare(
       "INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?, ?, NULL)"
-    ).bind(auth.actor.id,action,null).run();
+    ).bind(auth.actor.id,action).run();
     const message = status === "published" ? "Документ опубліковано." : status === "archived" ? "Публікацію документа скасовано. Документ переміщено до архіву." : "Документ відновлено до чернеток.";
     return json({ success: true, message });
   } catch (error) {
