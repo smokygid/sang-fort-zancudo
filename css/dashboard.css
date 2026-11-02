@@ -142,3 +142,13 @@
 .sidebar-personal span{color:#8293a3}
 .sidebar-personal strong{color:#dce4eb;font-weight:600;overflow-wrap:anywhere;text-align:right}
 @media(max-width:650px){.sidebar-personal{grid-column:1/-1;margin-top:8px;padding:10px 4px 0}.sidebar-personal-title{text-align:left}.sidebar-personal>div{grid-template-columns:52px minmax(0,1fr);padding:4px 0}}
+
+
+/* Editable personal details live in the sidebar; save appears only after a change. */
+.sidebar-personal-form{display:grid;gap:5px;margin-top:10px;text-align:left}
+.sidebar-personal-form label{color:#8293a3;font-size:10px;margin-top:4px}
+.sidebar-personal-form input{width:100%;min-width:0;box-sizing:border-box;background:#07111d;border:1px solid #34485b;color:#e8edf2;padding:8px 9px;font:inherit;font-size:11px;border-radius:0}
+.sidebar-personal-form input:focus{outline:1px solid #c9a44a;border-color:#c9a44a}
+.sidebar-personal-form button{width:100%;margin-top:9px;padding:9px 7px;font-size:9px;line-height:1.4}
+.sidebar-personal-form button[hidden]{display:none!important}
+.sidebar-personal-form #personal-profile-message{margin:4px 0 0;font-size:10px;line-height:1.4;overflow-wrap:anywhere;color:#c9a44a}
