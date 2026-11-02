@@ -3,693 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Контакти — SANG | Fort Zancudo</title>
-
-    <meta name="description"
-          content="Контактна інформація San Andreas National Guard — Fort Zancudo.">
-
+    <title>Приймальня та контакти — SANG | Fort Zancudo</title>
+    <meta name="description" content="Офіційна приймальня San Andreas National Guard. Звернення до командування, рекрутинг та службові питання.">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .contact-hero{position:relative;overflow:hidden;background:linear-gradient(110deg,rgba(5,15,27,.98),rgba(5,15,27,.82)),url('assets/training.jpg') center/cover;padding:100px 0 86px;border-bottom:1px solid rgba(201,164,74,.28)}
+        .contact-hero:after{content:"SANG";position:absolute;right:3%;bottom:-48px;font-size:clamp(100px,22vw,270px);font-weight:900;letter-spacing:.08em;color:rgba(255,255,255,.025);pointer-events:none}
+        .contact-hero .container{position:relative;z-index:1}
+        .contact-hero h1{font-size:clamp(42px,7vw,76px);line-height:.98;margin:18px 0}.contact-hero h1 span{color:#d4b15d}
+        .contact-hero p{max-width:650px;color:#c2cbd5;font-size:17px;line-height:1.75}
+        .contact-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr);gap:28px;align-items:start}
+        .contact-panel{background:linear-gradient(145deg,#101e2d,#0a1522);border:1px solid rgba(201,164,74,.25);border-radius:16px;padding:clamp(22px,4vw,36px);box-shadow:0 18px 50px rgba(0,0,0,.18)}
+        .contact-panel h2{margin:8px 0 12px}.contact-panel>p{color:#aebbc8;line-height:1.7}
+        .contact-form{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+        .contact-field{display:flex;flex-direction:column;gap:8px}.contact-field.full{grid-column:1/-1}
+        .contact-field label{font-size:12px;font-weight:800;letter-spacing:.08em;color:#d6bd7b}
+        .contact-field input,.contact-field select,.contact-field textarea{width:100%;background:#07111d;border:1px solid rgba(201,164,74,.25);border-radius:8px;padding:13px 14px;color:#eef2f5;font:inherit;outline:none}
+        .contact-field input:focus,.contact-field select:focus,.contact-field textarea:focus{border-color:#c9a44a;box-shadow:0 0 0 3px rgba(201,164,74,.12)}
+        .contact-field textarea{min-height:150px;resize:vertical}.contact-field select option{background:#07111d}
+        .contact-consent{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;color:#9eacba;font-size:12px;line-height:1.5}.contact-consent input{margin-top:3px;accent-color:#c9a44a}
+        .contact-submit{grid-column:1/-1;display:flex;gap:14px;align-items:center;flex-wrap:wrap}.contact-submit button{border:0;cursor:pointer}
+        .contact-status{font-size:13px;color:#d6bd7b;min-height:20px}.contact-status.error{color:#ff9b8f}.contact-status.success{color:#9cddb0}
+        .contact-side{display:grid;gap:16px}.contact-info-card{background:#0b1724;border:1px solid rgba(201,164,74,.2);border-radius:13px;padding:22px}
+        .contact-info-card .mini{font-size:11px;color:#d6b65e;letter-spacing:.12em;font-weight:800}.contact-info-card h3{margin:9px 0}.contact-info-card p{color:#aebbc8;line-height:1.65;margin:0}
+        .contact-info-card a{display:inline-block;margin-top:14px;color:#e0c36a;font-weight:800;text-decoration:none}.contact-info-card a:hover{text-decoration:underline}
+        .contact-number{font-size:28px;font-weight:900;color:#e0c36a;letter-spacing:.04em}
+        .contact-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.contact-step{padding:22px;border:1px solid rgba(201,164,74,.18);background:#0b1724;border-radius:12px}.contact-step b{color:#d6b65e;font-size:12px}.contact-step h3{margin:10px 0 6px}.contact-step p{color:#aebbc8;line-height:1.6;margin:0;font-size:14px}
+        .contact-directory{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.contact-directory a{display:block;text-decoration:none;padding:20px;background:#0b1724;border:1px solid rgba(201,164,74,.2);border-radius:12px;transition:.2s}.contact-directory a:hover{border-color:#c9a44a;transform:translateY(-3px)}.contact-directory small{color:#d6b65e;font-weight:800;letter-spacing:.1em}.contact-directory strong{display:block;color:#f2f4f6;margin:9px 0}.contact-directory span{color:#aebbc8;font-size:13px;line-height:1.5}
+        .contact-location{display:grid;grid-template-columns:180px 1fr;gap:24px;align-items:center;background:linear-gradient(120deg,#0b1724,#101e2d);border:1px solid rgba(201,164,74,.22);border-radius:15px;padding:24px}.contact-location img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px}.contact-location p{color:#aebbc8;line-height:1.7}
+        .contact-note{font-size:12px;color:#8998a7;line-height:1.6;margin-top:14px}
+        .hp-field{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+        @media(max-width:900px){.contact-layout{grid-template-columns:1fr}.contact-directory{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:620px){.contact-hero{padding:72px 0 60px}.contact-form{grid-template-columns:1fr}.contact-field.full,.contact-consent,.contact-submit{grid-column:1}.contact-steps{grid-template-columns:1fr}.contact-location{grid-template-columns:1fr}.contact-location img{max-width:220px}.contact-directory{grid-template-columns:1fr 1fr}}
+    </style>
 </head>
-
 <body>
-
 <header class="site-header">
     <div class="container header-inner">
-
         <a href="index.html" class="brand brand-logo" aria-label="SANG — головна"><img src="assets/sang-logo.png" alt="SANG"></a>
-
-        <button class="menu-toggle" aria-label="Відкрити меню">
-            ☰
-        </button>
-
+        <button class="menu-toggle" aria-label="Відкрити меню">☰</button>
         <nav class="menu">
-            <a href="index.html">Головна</a>
-            <a href="about.html">Про SANG</a>
-            <a href="command.html">Керівництво</a>
-            <a href="units.html">Підрозділи</a>
-            <a href="ranks.html">Звання</a>
-            <a href="recruitment.html">Вступ</a>
-            <a href="kmb.html">КМБ / БЗВП</a>
-            <a href="schedule.html">Розклад</a>
-            <a href="documents.html">Документи</a>
-            <a href="news.html">Новини</a>
-            <a href="contacts.html" class="active">Контакти</a>
+            <a href="index.html">Головна</a><a href="about.html">Про SANG</a><a href="command.html">Керівництво</a><a href="units.html">Підрозділи</a><a href="ranks.html">Звання</a><a href="recruitment.html">Вступ</a><a href="kmb.html">КМБ / БЗВП</a><a href="schedule.html">Розклад</a><a href="documents.html">Документи</a><a href="news.html">Новини</a><a href="contacts.html" class="active">Контакти</a>
         </nav>
-
     </div>
 </header>
-
-
 <main>
-
-    <!-- PAGE HERO -->
-    <section class="page-hero">
-
+    <section class="contact-hero">
         <div class="container">
-
-            <div class="eyebrow">
-                FORT ZANCUDO • SANG
-            </div>
-
-            <h1>
-                КОНТАКТИ<br>
-                <span>SANG</span>
-            </h1>
-
-            <p>
-                Офіційні канали зв'язку San Andreas National Guard
-                та інформація для кандидатів і військовослужбовців.
-            </p>
-
+            <div class="eyebrow">FORT ZANCUDO • OFFICIAL RECEPTION</div>
+            <h1>ПРИЙМАЛЬНЯ<br><span>SANG</span></h1>
+            <p>Офіційний канал звернень до San Andreas National Guard. Надішліть запит до відповідного напрямку — штаб опрацює його та передасть уповноваженим представникам.</p>
+            <a href="#request-form" class="btn btn-primary">ПОДАТИ ЗВЕРНЕННЯ</a>
         </div>
-
     </section>
 
-
-    <!-- CONTACT CARDS -->
     <section class="section">
-
         <div class="container">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-kicker">
-                        ЗВ'ЯЗОК
-                    </span>
-
-                    <h2>
-                        Як зв'язатися з SANG
-                    </h2>
-                </div>
-
-                <p>
-                    Оберіть відповідний канал залежно
-                    від характеру вашого звернення.
-                </p>
-
+            <div class="section-heading"><div><span class="section-kicker">OFFICIAL CHANNEL</span><h2>Зв'язок із SANG</h2></div><p>Оберіть потрібний напрямок або скористайтеся офіційною формою звернення.</p></div>
+            <div class="contact-layout">
+                <section class="contact-panel" id="request-form">
+                    <span class="section-kicker">ЕЛЕКТРОННА ПРИЙМАЛЬНЯ • FORM 01</span>
+                    <h2>Надіслати звернення</h2>
+                    <p>Заповніть усі поля. Звернення буде передано до службового каналу SANG для подальшого розгляду.</p>
+                    <form class="contact-form" id="sangContactForm">
+                        <div class="contact-field"><label for="contact-name">ІМ'Я / ІГРОВИЙ ПОЗИВНИЙ</label><input id="contact-name" name="name" maxlength="80" required placeholder="Ваше ім'я або позивний"></div>
+                        <div class="contact-field"><label for="contact-reply">КОНТАКТ ДЛЯ ВІДПОВІДІ</label><input id="contact-reply" name="reply" maxlength="120" required placeholder="Discord або інший зв'язок"></div>
+                        <div class="contact-field"><label for="contact-audience">АДРЕСАТ</label><select id="contact-audience" name="audience" required><option value="">Оберіть адресата</option><option>Командування SANG</option><option>Штаб SANG</option><option>Відділ рекрутингу</option><option>Навчальний центр</option><option>Кадрові питання</option><option>Інше</option></select></div>
+                        <div class="contact-field"><label for="contact-topic">ТЕМА ЗВЕРНЕННЯ</label><select id="contact-topic" name="topic" required><option value="">Оберіть тему</option><option>Вступ на службу</option><option>Контракт / продовження служби</option><option>КМБ / БЗВП</option><option>Службове питання</option><option>Пропозиція / співпраця</option><option>Скарга</option><option>Інше</option></select></div>
+                        <div class="contact-field full"><label for="contact-message">ТЕКСТ ЗВЕРНЕННЯ</label><textarea id="contact-message" name="message" minlength="10" maxlength="3000" required placeholder="Опишіть суть звернення, обставини та важливі деталі..."></textarea></div>
+                        <div class="hp-field" aria-hidden="true"><label for="contact-website">Не заповнюйте це поле</label><input id="contact-website" name="website" tabindex="-1" autocomplete="off"></div>
+                        <label class="contact-consent"><input type="checkbox" name="consent" required><span>Підтверджую, що надана інформація є достовірною та погоджуюся на її використання для розгляду цього звернення в межах RP-проєкту SANG.</span></label>
+                        <div class="contact-submit"><button class="btn btn-primary" type="submit" id="contact-submit">НАДІСЛАТИ ЗВЕРНЕННЯ</button><span class="contact-status" id="contact-status" role="status" aria-live="polite"></span></div>
+                    </form>
+                    <p class="contact-note">Не надсилайте паролі, платіжні дані або реальну конфіденційну інформацію. Форма призначена виключно для ігрових та організаційних звернень SANG.</p>
+                </section>
+                <aside class="contact-side">
+                    <div class="contact-info-card"><span class="mini">01 / COMMAND</span><h3>Приймальня командування</h3><p>Офіційні звернення, пропозиції та питання, що потребують уваги керівництва.</p></div>
+                    <div class="contact-info-card"><span class="mini">02 / PERSONNEL</span><h3>Кадрові питання</h3><p>Контракти, продовження служби, переведення, звання та службовий статус.</p></div>
+                    <div class="contact-info-card"><span class="mini">03 / RECRUITMENT</span><h3>Вступ до SANG</h3><p>Інформація про відбір, вимоги до кандидатів та проходження КМБ.</p><a href="recruitment.html">УМОВИ ВСТУПУ →</a></div>
+                    <div class="contact-info-card"><span class="mini">04 / DISCORD</span><h3>Внутрішній зв'язок</h3><p>Оперативна комунікація військовослужбовців здійснюється через офіційний Discord SANG.</p><span class="tag">ПОСИЛАННЯ БУДЕ ДОДАНО</span></div>
+                </aside>
             </div>
-
-
-            <div class="cards-grid">
-
-                <article class="card">
-
-                    <div class="card-number">
-                        01
-                    </div>
-
-                    <h3>
-                        Приймальня командування
-                    </h3>
-
-                    <p>
-                        Офіційні звернення до командування
-                        San Andreas National Guard.
-                    </p>
-
-                    <div class="contact-detail">
-                        <span>Канал</span>
-                        <strong>COMMAND</strong>
-                    </div>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        02
-                    </div>
-
-                    <h3>
-                        Відділ рекрутингу
-                    </h3>
-
-                    <p>
-                        Питання щодо вступу, відбору,
-                        КМБ та проходження військової служби.
-                    </p>
-
-                    <div class="contact-detail">
-                        <span>Напрямок</span>
-                        <strong>RECRUITMENT</strong>
-                    </div>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        03
-                    </div>
-
-                    <h3>
-                        Штаб SANG
-                    </h3>
-
-                    <p>
-                        Службові питання, документи,
-                        організація та координація підрозділів.
-                    </p>
-
-                    <div class="contact-detail">
-                        <span>Напрямок</span>
-                        <strong>HEADQUARTERS</strong>
-                    </div>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        04
-                    </div>
-
-                    <h3>
-                        Навчальний центр
-                    </h3>
-
-                    <p>
-                        Питання щодо КМБ, БЗВП,
-                        нормативів та навчальних заходів.
-                    </p>
-
-                    <div class="contact-detail">
-                        <span>Напрямок</span>
-                        <strong>TRAINING</strong>
-                    </div>
-
-                </article>
-
-            </div>
-
         </div>
-
     </section>
 
-
-    <!-- FORT ZANCUDO -->
     <section class="section section-dark">
-
         <div class="container">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-kicker">
-                        ВІЙСЬКОВА БАЗА
-                    </span>
-
-                    <h2>
-                        Fort Zancudo
-                    </h2>
-                </div>
-
-                <p>
-                    Основний військовий об'єкт та місце дислокації
-                    San Andreas National Guard.
-                </p>
-
+            <div class="section-heading"><div><span class="section-kicker">PROCEDURE</span><h2>Порядок розгляду звернень</h2></div><p>Кожне повідомлення має пройти реєстрацію та бути передане відповідальному напрямку.</p></div>
+            <div class="contact-steps">
+                <article class="contact-step"><b>ЕТАП 01</b><h3>Подання</h3><p>Заявник заповнює форму та вказує контакт для зворотного зв'язку.</p></article>
+                <article class="contact-step"><b>ЕТАП 02</b><h3>Реєстрація</h3><p>Звернення надходить до службового каналу та сортується за адресатом.</p></article>
+                <article class="contact-step"><b>ЕТАП 03</b><h3>Розгляд</h3><p>Відповідальний представник опрацьовує запит і зв'язується із заявником.</p></article>
             </div>
+        </div>
+    </section>
 
+    <section class="section">
+        <div class="container">
+            <div class="section-heading"><div><span class="section-kicker">QUICK ACCESS</span><h2>Швидкий доступ</h2></div><p>Корисні розділи офіційного порталу для кандидатів та особового складу.</p></div>
+            <div class="contact-directory">
+                <a href="recruitment.html"><small>SANG-01 / RECRUIT</small><strong>Вступ до SANG</strong><span>Вимоги, відбір та подання заявки.</span></a>
+                <a href="kmb.html"><small>SANG-02 / TRAINING</small><strong>КМБ / БЗВП</strong><span>Програма та порядок підготовки.</span></a>
+                <a href="documents.html"><small>SANG-03 / DOCS</small><strong>Документи</strong><span>Публічні положення та матеріали.</span></a>
+                <a href="schedule.html"><small>SANG-04 / DUTY</small><strong>Організація служби</strong><span>Службовий цикл і навчальні заходи.</span></a>
+            </div>
+        </div>
+    </section>
 
+    <section class="section section-dark">
+        <div class="container">
             <div class="contact-location">
-
-                <div class="location-mark">
-                    FZ
-                </div>
-
-                <div class="location-info">
-
-                    <span class="section-kicker">
-                        ГОЛОВНА БАЗА SANG
-                    </span>
-
-                    <h3>
-                        FORT ZANCUDO
-                    </h3>
-
-                    <p>
-                        Військова база San Andreas National Guard.
-                        На території бази розташовані командування,
-                        навчальні об'єкти, службові підрозділи,
-                        техніка та інфраструктура SANG.
-                    </p>
-
-                    <div class="location-data">
-
-                        <div>
-                            <span>ОБ'ЄКТ</span>
-                            <strong>FORT ZANCUDO</strong>
-                        </div>
-
-                        <div>
-                            <span>СТАТУС</span>
-                            <strong>ВІЙСЬКОВИЙ</strong>
-                        </div>
-
-                        <div>
-                            <span>ПРИЗНАЧЕННЯ</span>
-                            <strong>SANG HQ</strong>
-                        </div>
-
-                    </div>
-
-                </div>
-
+                <img src="assets/training.jpg" alt="Fort Zancudo — військова база SANG">
+                <div><span class="section-kicker">MAIN INSTALLATION</span><h2>FORT ZANCUDO</h2><p>Головна база та місце дислокації San Andreas National Guard. На території розміщені командування, навчальні об'єкти, службові підрозділи й інфраструктура SANG.</p><span class="tag">SANG HEADQUARTERS • SAN ANDREAS</span></div>
             </div>
-
         </div>
-
     </section>
-
-
-    <!-- CONTACT DIRECTORY -->
-    <section class="section">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-kicker">
-                        ДОВІДНИК
-                    </span>
-
-                    <h2>
-                        Напрямки звернень
-                    </h2>
-                </div>
-
-                <p>
-                    Перед зверненням визначте відповідний
-                    службовий напрямок.
-                </p>
-
-            </div>
-
-
-            <div class="document-list">
-
-                <div class="document-item">
-
-                    <div class="document-code">
-                        SANG-01
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            РЕКРУТИНГ
-                        </span>
-
-                        <h3>
-                            Вступ до SANG
-                        </h3>
-
-                        <p>
-                            Вимоги, реєстрація кандидата,
-                            відбір та КМБ / БЗВП.
-                        </p>
-
-                    </div>
-
-                    <a href="recruitment.html"
-                       class="btn btn-secondary">
-                        ДЕТАЛЬНІШЕ
-                    </a>
-
-                </div>
-
-
-                <div class="document-item">
-
-                    <div class="document-code">
-                        SANG-02
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            НАВЧАННЯ
-                        </span>
-
-                        <h3>
-                            КМБ / БЗВП
-                        </h3>
-
-                        <p>
-                            Програма базової військової підготовки
-                            та порядок проходження.
-                        </p>
-
-                    </div>
-
-                    <a href="kmb.html"
-                       class="btn btn-secondary">
-                        ДЕТАЛЬНІШЕ
-                    </a>
-
-                </div>
-
-
-                <div class="document-item">
-
-                    <div class="document-code">
-                        SANG-03
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            ДОКУМЕНТИ
-                        </span>
-
-                        <h3>
-                            Офіційна документація
-                        </h3>
-
-                        <p>
-                            Статути, накази, положення
-                            та службові форми.
-                        </p>
-
-                    </div>
-
-                    <a href="documents.html"
-                       class="btn btn-secondary">
-                        ДОКУМЕНТИ
-                    </a>
-
-                </div>
-
-
-                <div class="document-item">
-
-                    <div class="document-code">
-                        SANG-04
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            СЛУЖБА
-                        </span>
-
-                        <h3>
-                            Розклад служби
-                        </h3>
-
-                        <p>
-                            Щоденний режим та основні
-                            напрямки підготовки.
-                        </p>
-
-                    </div>
-
-                    <a href="schedule.html"
-                       class="btn btn-secondary">
-                        РОЗКЛАД
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- SOCIAL / RP CHANNELS -->
-    <section class="section section-dark">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-kicker">
-                        ОНЛАЙН-КАНАЛИ
-                    </span>
-
-                    <h2>
-                        Офіційні інформаційні канали
-                    </h2>
-                </div>
-
-                <p>
-                    Онлайн-канали можуть використовуватися
-                    для отримання актуальної інформації SANG.
-                </p>
-
-            </div>
-
-
-            <div class="cards-grid">
-
-                <article class="card">
-
-                    <div class="card-number">
-                        DC
-                    </div>
-
-                    <h3>
-                        Discord SANG
-                    </h3>
-
-                    <p>
-                        Основний канал внутрішньої комунікації,
-                        координації та організації служби.
-                    </p>
-
-                    <a href="#"
-                       class="text-link">
-                        ВІДКРИТИ DISCORD →
-                    </a>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        RP
-                    </div>
-
-                    <h3>
-                        Ігровий зв'язок
-                    </h3>
-
-                    <p>
-                        Для оперативної взаємодії військовослужбовців
-                        використовуйте встановлені сервером засоби зв'язку.
-                    </p>
-
-                    <span class="tag">
-                        RP-СЕРЕДОВИЩЕ
-                    </span>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        WEB
-                    </div>
-
-                    <h3>
-                        Офіційний портал
-                    </h3>
-
-                    <p>
-                        Новини, документи, розклад та інформація
-                        про службу доступні на цьому порталі.
-                    </p>
-
-                    <span class="tag">
-                        SANG.GOV
-                    </span>
-
-                </article>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- RECRUITMENT CTA -->
-    <section class="section">
-
-        <div class="container">
-
-            <div class="feature-banner">
-
-                <div class="feature-icon">
-                    +
-                </div>
-
-                <div>
-
-                    <span class="section-kicker">
-                        ХОЧЕШ ПРИЄДНАТИСЯ?
-                    </span>
-
-                    <h2>
-                        Відкритий набір до SANG
-                    </h2>
-
-                    <p>
-                        Якщо ви бажаєте розпочати військову службу,
-                        ознайомтеся з вимогами та пройдіть процедуру
-                        вступу до San Andreas National Guard.
-                    </p>
-
-                    <br>
-
-                    <a href="recruitment.html"
-                       class="btn btn-primary">
-                        ПЕРЕЙТИ ДО ВСТУПУ
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- EMERGENCY -->
-    <section class="section section-dark">
-
-        <div class="container">
-
-            <div class="warning-box">
-
-                <div class="warning-icon">
-                    !
-                </div>
-
-                <div>
-
-                    <span class="section-kicker">
-                        ВАЖЛИВО
-                    </span>
-
-                    <h2>
-                        Для екстрених ситуацій
-                    </h2>
-
-                    <p>
-                        У випадку безпосередньої загрози життю,
-                        здоров'ю або безпеці громадян використовуйте
-                        відповідні екстрені служби штату.
-                    </p>
-
-                    <div class="emergency-numbers">
-
-                        <div>
-                            <strong>911</strong>
-                            <span>Єдиний екстрений номер</span>
-                        </div>
-
-                        <div>
-                            <strong>SANG</strong>
-                            <span>Військова служба</span>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- FINAL CTA -->
-    <section class="cta-section">
-
-        <div class="container">
-
-            <div class="cta-box">
-
-                <div>
-
-                    <span class="section-kicker">
-                        FORT ZANCUDO
-                    </span>
-
-                    <h2>
-                        СИЛА.<br>
-                        ДИСЦИПЛІНА.<br>
-                        СЛУЖБА.
-                    </h2>
-
-                    <p>
-                        San Andreas National Guard —
-                        захист штату починається з тебе.
-                    </p>
-
-                </div>
-
-                <div class="cta-actions">
-
-                    <a href="recruitment.html"
-                       class="btn btn-primary">
-                        ВСТУП ДО SANG
-                    </a>
-
-                    <a href="news.html"
-                       class="btn btn-secondary">
-                        НОВИНИ SANG
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
+    <section class="cta-section"><div class="container"><div class="cta-box"><div><span class="section-kicker">FORT ZANCUDO</span><h2>СИЛА.<br>ДИСЦИПЛІНА.<br>СЛУЖБА.</h2><p>San Andreas National Guard — захист штату починається з тебе.</p></div><div class="cta-actions"><a href="recruitment.html" class="btn btn-primary">ВСТУП ДО SANG</a><a href="news.html" class="btn btn-secondary">НОВИНИ SANG</a></div></div></div></section>
 </main>
-
-
-<footer class="site-footer">
-
-    <div class="container footer-inner">
-
-        <div>
-            <strong>SAN ANDREAS NATIONAL GUARD</strong>
-            <span>FORT ZANCUDO</span>
-        </div>
-
-        <div class="footer-center">
-            СИЛА • ДИСЦИПЛІНА • СЛУЖБА
-        </div>
-
-        <div class="footer-copy">
-            © <span data-year></span> SANG
-        </div>
-
-    </div>
-
-</footer>
-
-
+<footer class="site-footer"><div class="container footer-inner"><div><strong>SAN ANDREAS NATIONAL GUARD</strong><span>FORT ZANCUDO</span></div><div class="footer-center">СИЛА • ДИСЦИПЛІНА • СЛУЖБА</div><div class="footer-copy">© <span data-year></span> SANG</div></div></footer>
 <script src="js/main.js"></script>
-
+<script>
+(() => {
+    const form = document.getElementById('sangContactForm');
+    if (!form) return;
+    const status = document.getElementById('contact-status');
+    const button = document.getElementById('contact-submit');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        button.disabled = true;
+        button.textContent = 'НАДСИЛАННЯ...';
+        status.className = 'contact-status';
+        status.textContent = 'Передаємо звернення до приймальні SANG...';
+        const payload = Object.fromEntries(new FormData(form).entries());
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(result.error || 'Не вдалося надіслати звернення.');
+            form.reset();
+            status.className = 'contact-status success';
+            status.textContent = 'Звернення успішно надіслано. Дякуємо!';
+        } catch (error) {
+            status.className = 'contact-status error';
+            status.textContent = error.message || 'Помилка надсилання. Спробуйте пізніше.';
+        } finally {
+            button.disabled = false;
+            button.textContent = 'НАДІСЛАТИ ЗВЕРНЕННЯ';
+        }
+    });
+})();
+</script>
 </body>
 </html>
