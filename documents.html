@@ -1,686 +1,128 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Документи — SANG | Fort Zancudo</title>
-
-    <meta name="description"
-          content="Офіційні документи San Andreas National Guard — Fort Zancudo.">
-
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/orders.css?v=2">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Документальний архів — SANG | Fort Zancudo</title>
+  <meta name="description" content="Публічна документальна база San Andreas National Guard — нормативні, навчальні та кадрові матеріали.">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .archive-hero{position:relative;overflow:hidden;background:linear-gradient(105deg,rgba(5,15,27,.97),rgba(8,24,40,.86)),url('assets/training.jpg') center/cover;padding:88px 0 78px;border-bottom:1px solid rgba(201,164,74,.28)}
+    .archive-hero:after{content:"ARCHIVE / SANG";position:absolute;right:-12px;bottom:-30px;font-size:clamp(3.5rem,10vw,9rem);font-weight:900;letter-spacing:.08em;color:rgba(255,255,255,.035);white-space:nowrap;pointer-events:none}
+    .archive-hero .eyebrow{color:#e0c36a;letter-spacing:.2em;font-size:.72rem;font-weight:800}
+    .archive-hero h1{font-size:clamp(2.5rem,6vw,4.8rem);line-height:.98;margin:18px 0}
+    .archive-hero h1 span{color:#e0c36a}
+    .archive-hero p{max-width:680px;color:#c0ccd7;line-height:1.75;font-size:1.02rem}
+    .archive-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}
+    .archive-meta span{border:1px solid rgba(224,195,106,.25);background:rgba(10,25,41,.7);border-radius:5px;padding:8px 11px;color:#d4dce4;font-size:.68rem;letter-spacing:.1em}
+    .archive-intro{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:30px}
+    .archive-intro>p{max-width:520px;color:#aebdca;line-height:1.7;margin:0}
+    .archive-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .archive-card{position:relative;display:flex;flex-direction:column;min-height:230px;padding:23px;background:linear-gradient(145deg,#14283d,#0b1929);border:1px solid rgba(201,164,74,.2);border-radius:12px;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s,box-shadow .2s}
+    .archive-card:hover{transform:translateY(-4px);border-color:rgba(224,195,106,.65);box-shadow:0 14px 35px rgba(0,0,0,.2)}
+    .archive-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px}
+    .archive-code{font-size:.68rem;letter-spacing:.15em;color:#e0c36a;font-weight:800}
+    .archive-icon{width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(224,195,106,.35);border-radius:9px;color:#e0c36a;font-size:1.15rem}
+    .archive-card h3{font-size:1.12rem;margin:0 0 9px}
+    .archive-card p{color:#aebdca;font-size:.9rem;line-height:1.65;margin:0 0 22px}
+    .archive-open{margin-top:auto;color:#e0c36a;font-size:.72rem;font-weight:800;letter-spacing:.1em}
+    .archive-register{background:linear-gradient(145deg,#0c1b2b,#081421);border:1px solid rgba(201,164,74,.22);border-radius:13px;overflow:hidden}
+    .archive-register-head{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:21px 24px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .archive-register-head h3{margin:5px 0 0;font-size:1.2rem}
+    .archive-register-head p{margin:0;color:#aebdca;font-size:.82rem}
+    .register-row{display:grid;grid-template-columns:105px minmax(0,1fr) 120px 115px;gap:16px;align-items:center;padding:17px 24px;border-bottom:1px solid rgba(255,255,255,.065)}
+    .register-row:last-child{border-bottom:0}
+    .register-code{color:#e0c36a;font-size:.72rem;font-weight:800;letter-spacing:.08em}
+    .register-title strong{display:block;font-size:.92rem;margin-bottom:4px}
+    .register-title span{display:block;color:#9eafbd;font-size:.78rem;line-height:1.5}
+    .register-type{color:#b8c5d0;font-size:.67rem;letter-spacing:.08em}
+    .register-link{justify-self:end;color:#e0c36a;text-decoration:none;font-size:.7rem;font-weight:800;letter-spacing:.08em}
+    .register-link:hover{color:#fff}
+    .archive-note{display:flex;gap:16px;align-items:flex-start;padding:23px;border:1px solid rgba(201,164,74,.28);border-radius:12px;background:linear-gradient(110deg,rgba(201,164,74,.1),rgba(12,27,43,.9))}
+    .archive-note-mark{flex:0 0 36px;width:36px;height:36px;display:grid;place-items:center;border:1px solid #c9a44a;border-radius:9px;color:#e0c36a;font-weight:900}
+    .archive-note h3{margin:2px 0 7px;font-size:1rem}
+    .archive-note p{margin:0;color:#b5c2ce;line-height:1.7;font-size:.88rem}
+    @media(max-width:850px){.archive-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.archive-intro{display:block}.archive-intro>p{margin-top:14px}}
+    @media(max-width:600px){.archive-hero{padding:65px 0 58px}.archive-grid{grid-template-columns:1fr}.archive-card{min-height:195px}.archive-register-head{display:block}.archive-register-head p{margin-top:9px}.register-row{grid-template-columns:72px minmax(0,1fr);gap:7px 12px;padding:15px}.register-type{grid-column:2}.register-link{grid-column:2;justify-self:start}.archive-note{padding:17px}}
+  </style>
 </head>
-
 <body>
-
 <header class="site-header">
-    <div class="container header-inner">
-
-        <a href="index.html" class="brand brand-logo" aria-label="SANG — головна"><img src="assets/sang-logo.png" alt="SANG"></a>
-
-        <button class="menu-toggle" aria-label="Відкрити меню">
-            ☰
-        </button>
-
-        <nav class="menu">
-            <a href="index.html">Головна</a>
-            <a href="about.html">Про SANG</a>
-            <a href="command.html">Керівництво</a>
-            <a href="units.html">Підрозділи</a>
-            <a href="ranks.html">Звання</a>
-            <a href="recruitment.html">Вступ</a>
-            <a href="kmb.html">КМБ / БЗВП</a>
-            <a href="schedule.html">Розклад</a>
-            <a href="documents.html" class="active">Документи</a>
-            <a href="news.html">Новини</a>
-            <a href="contacts.html">Контакти</a>
-        </nav>
-
-    </div>
+  <div class="container header-inner">
+    <a href="index.html" class="brand brand-logo" aria-label="SANG — головна"><img src="assets/sang-logo.png" alt="SANG"></a>
+    <button class="menu-toggle" aria-label="Відкрити меню">☰</button>
+    <nav class="menu">
+      <a href="index.html">Головна</a><a href="about.html">Про SANG</a><a href="command.html">Керівництво</a><a href="units.html">Підрозділи</a><a href="ranks.html">Звання</a><a href="recruitment.html">Вступ</a><a href="kmb.html">КМБ / БЗВП</a><a href="schedule.html">Розклад</a><a href="documents.html" class="active">Документи</a><a href="news.html">Новини</a><a href="contacts.html">Контакти</a>
+    </nav>
+  </div>
 </header>
-
-
 <main>
-
-    <!-- PAGE HERO -->
-    <section class="page-hero">
-        <div class="container">
-
-            <div class="eyebrow">
-                FORT ZANCUDO • SANG
-            </div>
-
-            <h1>ОФІЦІЙНІ<br><span>ДОКУМЕНТИ</span></h1>
-
-            <p>
-                Нормативні, службові та інформаційні матеріали
-                San Andreas National Guard.
-            </p>
-
-        </div>
-    </section>
-
-
-    <!-- INTRO -->
-    <section class="section">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-kicker">ДОКУМЕНТООБІГ</span>
-                    <h2>Документальна база SANG</h2>
-                </div>
-
-                <p>
-                    У цьому розділі розміщуються основні документи,
-                    необхідні для організації військової служби,
-                    підготовки та внутрішнього порядку.
-                </p>
-
-            </div>
-
-
-            <section class="orders-registry" aria-labelledby="orders-registry-title">
-                <div class="section-heading">
-                    <div>
-                        <span class="section-kicker">РЕЄСТР НАКАЗІВ</span>
-                        <h2 id="orders-registry-title">Накази та розпорядження командування</h2>
-                    </div>
-                    <p>Актуальні записи з офіційного реєстру SANG.</p>
-                </div>
-                <div id="public-orders-list" class="orders-list">
-                    <p>Завантаження документів…</p>
-                </div>
-            </section>
-
-            <!-- DOCUMENT CATEGORIES -->
-            <div class="cards-grid">
-
-                <article class="card">
-
-                    <div class="card-number">
-                        01
-                    </div>
-
-                    <h3>Статут SANG</h3>
-
-                    <p>
-                        Основні правила проходження військової служби,
-                        права та обов'язки військовослужбовців,
-                        порядок підпорядкування та дисципліна.
-                    </p>
-
-                    <a href="#" class="text-link">
-                        Відкрити документ →
-                    </a>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        02
-                    </div>
-
-                    <h3>Накази командування</h3>
-
-                    <p>
-                        Чинні накази та розпорядження командування
-                        San Andreas National Guard.
-                    </p>
-
-                    <a href="#" class="text-link">
-                        Переглянути →
-                    </a>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        03
-                    </div>
-
-                    <h3>Положення підрозділів</h3>
-
-                    <p>
-                        Документи, що визначають завдання,
-                        повноваження та порядок роботи
-                        окремих підрозділів.
-                    </p>
-
-                    <a href="#" class="text-link">
-                        Переглянути →
-                    </a>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        04
-                    </div>
-
-                    <h3>КМБ / БЗВП</h3>
-
-                    <p>
-                        Програма базової підготовки, нормативи,
-                        етапи відбору та порядок проходження КМБ.
-                    </p>
-
-                    <a href="kmb.html" class="text-link">
-                        Відкрити програму →
-                    </a>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        05
-                    </div>
-
-                    <h3>Порядок вступу</h3>
-
-                    <p>
-                        Вимоги до кандидатів, необхідні документи,
-                        етапи відбору та порядок зарахування
-                        до складу SANG.
-                    </p>
-
-                    <a href="recruitment.html" class="text-link">
-                        Відкрити →
-                    </a>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        06
-                    </div>
-
-                    <h3>Службові форми</h3>
-
-                    <p>
-                        Зразки рапортів, заяв, доповідей та інших
-                        документів, що використовуються
-                        під час проходження служби.
-                    </p>
-
-                    <a href="#" class="text-link">
-                        Переглянути →
-                    </a>
-
-                </article>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- OFFICIAL DOCUMENTS -->
-    <section class="section section-dark">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-kicker">РЕЄСТР</span>
-                    <h2>Офіційні документи</h2>
-                </div>
-
-                <p>
-                    Перелік документів, які можуть використовуватися
-                    особовим складом та кандидатами.
-                </p>
-
-            </div>
-
-
-            <div class="document-list">
-
-                <!-- DOCUMENT 1 -->
-                <div class="document-item">
-
-                    <div class="document-code">
-                        DOC-001
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            СТАТУТ
-                        </span>
-
-                        <h3>
-                            Статут San Andreas National Guard
-                        </h3>
-
-                        <p>
-                            Основний нормативний документ SANG.
-                        </p>
-
-                    </div>
-
-                    <div class="document-status">
-                        ЧИННИЙ
-                    </div>
-
-                    <a href="#" class="btn btn-secondary">
-                        ВІДКРИТИ
-                    </a>
-
-                </div>
-
-
-                <!-- DOCUMENT 2 -->
-                <div class="document-item">
-
-                    <div class="document-code">
-                        DOC-002
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            ПОЛОЖЕННЯ
-                        </span>
-
-                        <h3>
-                            Положення про проходження служби
-                        </h3>
-
-                        <p>
-                            Основні правила військової служби
-                            та внутрішнього порядку.
-                        </p>
-
-                    </div>
-
-                    <div class="document-status">
-                        ЧИННИЙ
-                    </div>
-
-                    <a href="#" class="btn btn-secondary">
-                        ВІДКРИТИ
-                    </a>
-
-                </div>
-
-
-                <!-- DOCUMENT 3 -->
-                <div class="document-item">
-
-                    <div class="document-code">
-                        DOC-003
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            НАКАЗ
-                        </span>
-
-                        <h3>
-                            Про організацію службового дня
-                        </h3>
-
-                        <p>
-                            Порядок організації щоденної служби
-                            особового складу.
-                        </p>
-
-                    </div>
-
-                    <div class="document-status">
-                        ЧИННИЙ
-                    </div>
-
-                    <a href="#" class="btn btn-secondary">
-                        ВІДКРИТИ
-                    </a>
-
-                </div>
-
-
-                <!-- DOCUMENT 4 -->
-                <div class="document-item">
-
-                    <div class="document-code">
-                        DOC-004
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            ПІДГОТОВКА
-                        </span>
-
-                        <h3>
-                            Програма КМБ / БЗВП
-                        </h3>
-
-                        <p>
-                            Повний порядок проходження базової
-                            військової підготовки.
-                        </p>
-
-                    </div>
-
-                    <div class="document-status">
-                        ЧИННИЙ
-                    </div>
-
-                    <a href="kmb.html" class="btn btn-secondary">
-                        ВІДКРИТИ
-                    </a>
-
-                </div>
-
-
-                <!-- DOCUMENT 5 -->
-                <div class="document-item">
-
-                    <div class="document-code">
-                        DOC-005
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            КАДРИ
-                        </span>
-
-                        <h3>
-                            Порядок присвоєння військових звань
-                        </h3>
-
-                        <p>
-                            Порядок проходження служби та
-                            кар'єрного зростання.
-                        </p>
-
-                    </div>
-
-                    <div class="document-status">
-                        ЧИННИЙ
-                    </div>
-
-                    <a href="ranks.html" class="btn btn-secondary">
-                        ВІДКРИТИ
-                    </a>
-
-                </div>
-
-
-                <!-- DOCUMENT 6 -->
-                <div class="document-item">
-
-                    <div class="document-code">
-                        DOC-006
-                    </div>
-
-                    <div class="document-info">
-
-                        <span class="document-type">
-                            ВСТУП
-                        </span>
-
-                        <h3>
-                            Порядок вступу до SANG
-                        </h3>
-
-                        <p>
-                            Вимоги та етапи проходження
-                            процедури набору.
-                        </p>
-
-                    </div>
-
-                    <div class="document-status">
-                        ЧИННИЙ
-                    </div>
-
-                    <a href="recruitment.html" class="btn btn-secondary">
-                        ВІДКРИТИ
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- FORMS -->
-    <section class="section">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-kicker">ДЛЯ ВІЙСЬКОВОСЛУЖБОВЦІВ</span>
-                    <h2>Службові документи</h2>
-                </div>
-
-                <p>
-                    Шаблони документів для внутрішнього використання
-                    особовим складом SANG.
-                </p>
-
-            </div>
-
-
-            <div class="cards-grid">
-
-                <article class="card">
-
-                    <div class="card-number">
-                        A-01
-                    </div>
-
-                    <h3>Рапорт</h3>
-
-                    <p>
-                        Універсальна форма рапорту військовослужбовця
-                        для звернення до безпосереднього керівника.
-                    </p>
-
-                    <a href="#" class="text-link">
-                        Завантажити →
-                    </a>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        A-02
-                    </div>
-
-                    <h3>Доповідь</h3>
-
-                    <p>
-                        Форма службової доповіді про виконання
-                        поставленого завдання.
-                    </p>
-
-                    <a href="#" class="text-link">
-                        Завантажити →
-                    </a>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        A-03
-                    </div>
-
-                    <h3>Заява</h3>
-
-                    <p>
-                        Шаблон заяви для внутрішніх кадрових
-                        та адміністративних питань.
-                    </p>
-
-                    <a href="#" class="text-link">
-                        Завантажити →
-                    </a>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-number">
-                        A-04
-                    </div>
-
-                    <h3>Пояснення</h3>
-
-                    <p>
-                        Форма письмового пояснення
-                        військовослужбовця.
-                    </p>
-
-                    <a href="#" class="text-link">
-                        Завантажити →
-                    </a>
-
-                </article>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- DOCUMENT SECURITY -->
-    <section class="section section-dark">
-
-        <div class="container">
-
-            <div class="feature-banner">
-
-                <div class="feature-icon">
-                    ✓
-                </div>
-
-                <div>
-
-                    <span class="section-kicker">
-                        ОФІЦІЙНА ІНФОРМАЦІЯ
-                    </span>
-
-                    <h2>
-                        Використовуйте актуальні редакції
-                    </h2>
-
-                    <p>
-                        Перед використанням документа перевіряйте
-                        його статус та дату останнього оновлення.
-                        Документи, позначені як архівні, не
-                        використовуються як чинна редакція.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- CTA -->
-    <section class="cta-section">
-
-        <div class="container">
-
-            <div class="cta-box">
-
-                <div>
-
-                    <span class="section-kicker">
-                        ХОЧЕШ СТАТИ ЧАСТИНОЮ SANG?
-                    </span>
-
-                    <h2>
-                        Почни свій шлях<br>
-                        із Fort Zancudo
-                    </h2>
-
-                    <p>
-                        Ознайомся з вимогами та пройди
-                        всі етапи вступу до National Guard.
-                    </p>
-
-                </div>
-
-                <div class="cta-actions">
-
-                    <a href="recruitment.html" class="btn btn-primary">
-                        ВСТУП ДО SANG
-                    </a>
-
-                    <a href="kmb.html" class="btn btn-secondary">
-                        КМБ / БЗВП
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<footer class="site-footer">
-
-    <div class="container footer-inner">
-
-        <div>
-            <strong>SAN ANDREAS NATIONAL GUARD</strong>
-            <span>FORT ZANCUDO</span>
-        </div>
-
-        <div class="footer-center">
-            СИЛА • ДИСЦИПЛІНА • СЛУЖБА
-        </div>
-
-        <div class="footer-copy">
-            © <span data-year></span> SANG
-        </div>
-
+  <section class="archive-hero">
+    <div class="container">
+      <div class="eyebrow">FORT ZANCUDO • DOCUMENT CONTROL</div>
+      <h1>ДОКУМЕНТАЛЬНИЙ<br><span>АРХІВ SANG</span></h1>
+      <p>Єдина публічна база нормативних, кадрових та навчальних матеріалів San Andreas National Guard. Ознайомлення з документами допомагає підтримувати єдиний порядок проходження служби.</p>
+      <div class="archive-meta"><span>PUBLIC DOCUMENTATION</span><span>FORT ZANCUDO</span><span>SANG / PERSONNEL</span></div>
     </div>
+  </section>
 
+  <section class="section">
+    <div class="container">
+      <div class="archive-intro">
+        <div><span class="section-kicker">РОЗДІЛИ АРХІВУ</span><h2>Категорії документів</h2></div>
+        <p>Оберіть потрібний напрям. Тут зібрані матеріали, які вже мають відповідні сторінки на офіційному ресурсі SANG.</p>
+      </div>
+      <div class="archive-grid">
+        <a class="archive-card" href="about.html"><div class="archive-card-top"><span class="archive-code">CAT-001 / GENERAL</span><span class="archive-icon">§</span></div><h3>Загальні положення SANG</h3><p>Призначення Національної гвардії, основні принципи служби, структура та загальна інформація про підрозділ.</p><span class="archive-open">ПЕРЕГЛЯНУТИ РОЗДІЛ ↗</span></a>
+        <a class="archive-card" href="units.html"><div class="archive-card-top"><span class="archive-code">CAT-002 / UNITS</span><span class="archive-icon">▤</span></div><h3>Положення підрозділів</h3><p>Напрями діяльності, спеціалізація та призначення підрозділів Fort Zancudo.</p><span class="archive-open">ПЕРЕГЛЯНУТИ РОЗДІЛ ↗</span></a>
+        <a class="archive-card" href="ranks.html"><div class="archive-card-top"><span class="archive-code">CAT-003 / PERSONNEL</span><span class="archive-icon">★</span></div><h3>Кадрова система та звання</h3><p>Ієрархія військових звань, порядок підпорядкування та інформація щодо кар’єрного зростання.</p><span class="archive-open">ПЕРЕГЛЯНУТИ РОЗДІЛ ↗</span></a>
+        <a class="archive-card" href="kmb.html"><div class="archive-card-top"><span class="archive-code">CAT-004 / TRAINING</span><span class="archive-icon">✚</span></div><h3>КМБ / БЗВП</h3><p>Етапи базової військової підготовки, навчальна програма та вимоги до кандидатів.</p><span class="archive-open">ВІДКРИТИ ПРОГРАМУ ↗</span></a>
+        <a class="archive-card" href="recruitment.html"><div class="archive-card-top"><span class="archive-code">CAT-005 / RECRUITMENT</span><span class="archive-icon">＋</span></div><h3>Порядок вступу до SANG</h3><p>Вимоги до кандидатів, необхідні умови та послідовність проходження відбору.</p><span class="archive-open">ВІДКРИТИ ПОРЯДОК ↗</span></a>
+        <a class="archive-card" href="schedule.html"><div class="archive-card-top"><span class="archive-code">CAT-006 / SERVICE</span><span class="archive-icon">◷</span></div><h3>Організація служби</h3><p>Службовий цикл, тижнева підготовка, заходи та порядок інформування особового складу.</p><span class="archive-open">ПЕРЕГЛЯНУТИ РОЗДІЛ ↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark">
+    <div class="container">
+      <div class="archive-intro">
+        <div><span class="section-kicker">DOCUMENT REGISTER</span><h2>Реєстр матеріалів</h2></div>
+        <p>Навігаційний перелік доступних публічних матеріалів. Статус чинності окремих нормативних актів зазначатиметься після їх офіційного затвердження та публікації.</p>
+      </div>
+      <div class="archive-register">
+        <div class="archive-register-head"><div><span class="section-kicker">FORT ZANCUDO / PUBLIC LIBRARY</span><h3>Каталог документів та розділів</h3></div><p>6 розділів • Публічний доступ</p></div>
+        <div class="register-row"><span class="register-code">REF-001</span><div class="register-title"><strong>Загальні положення SANG</strong><span>Призначення, структура та принципи служби</span></div><span class="register-type">ЗАГАЛЬНЕ</span><a class="register-link" href="about.html">ВІДКРИТИ ↗</a></div>
+        <div class="register-row"><span class="register-code">REF-002</span><div class="register-title"><strong>Положення підрозділів</strong><span>Напрями роботи та спеціалізація</span></div><span class="register-type">СТРУКТУРА</span><a class="register-link" href="units.html">ВІДКРИТИ ↗</a></div>
+        <div class="register-row"><span class="register-code">REF-003</span><div class="register-title"><strong>Військові звання</strong><span>Ієрархія та кадрова система</span></div><span class="register-type">КАДРИ</span><a class="register-link" href="ranks.html">ВІДКРИТИ ↗</a></div>
+        <div class="register-row"><span class="register-code">REF-004</span><div class="register-title"><strong>Програма КМБ / БЗВП</strong><span>Базова військова підготовка</span></div><span class="register-type">НАВЧАННЯ</span><a class="register-link" href="kmb.html">ВІДКРИТИ ↗</a></div>
+        <div class="register-row"><span class="register-code">REF-005</span><div class="register-title"><strong>Порядок вступу</strong><span>Вимоги та процедура відбору</span></div><span class="register-type">НАБІР</span><a class="register-link" href="recruitment.html">ВІДКРИТИ ↗</a></div>
+        <div class="register-row"><span class="register-code">REF-006</span><div class="register-title"><strong>Організація служби</strong><span>Службовий цикл та навчальні заходи</span></div><span class="register-type">СЛУЖБА</span><a class="register-link" href="schedule.html">ВІДКРИТИ ↗</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="archive-note"><span class="archive-note-mark">i</span><div><h3>Порядок користування документальною базою</h3><p>Публічний архів містить інформаційні та навчальні матеріали. Внутрішні накази, персональні дані, службова переписка й документи обмеженого доступу до цього розділу не включаються. Якщо документ буде затверджено окремо, його редакція та дата оновлення мають бути зазначені під час публікації.</p></div></div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <div><span class="section-kicker">ХОЧЕШ СТАТИ ЧАСТИНОЮ SANG?</span><h2>Почни свій шлях<br>із Fort Zancudo</h2><p>Ознайомся з вимогами та пройди всі етапи вступу до National Guard.</p></div>
+        <div class="cta-actions"><a href="recruitment.html" class="btn btn-primary">ВСТУП ДО SANG</a><a href="kmb.html" class="btn btn-secondary">КМБ / БЗВП</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div><strong>SAN ANDREAS NATIONAL GUARD</strong><span>FORT ZANCUDO</span></div>
+    <div class="footer-center">СИЛА • ДИСЦИПЛІНА • СЛУЖБА</div>
+    <div class="footer-copy">© <span data-year></span> SANG</div>
+  </div>
 </footer>
-
-
-<script src="js/main.js"></script>\n<script src="js/orders.js" defer></script>
-
+<script src="js/main.js"></script>
 </body>
 </html>
