@@ -122,3 +122,31 @@
  .dashboard-content-grid .orders-card .order-preview { white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
  .dashboard-content-grid .orders-card .order-detail-row { grid-template-columns:1fr; gap:3px; }
 }
+
+
+/* Personal read tracking for published orders */
+.orders-notification-summary {
+  margin: 12px 0 16px;
+  padding: 11px 14px;
+  border: 1px solid var(--sang-line, rgba(173,192,208,.14));
+  border-radius: 8px;
+  background: rgba(12,26,41,.72);
+  color: var(--sang-muted, #a6b4c1);
+  font-size: .82rem;
+}
+.orders-notification-summary[data-state="unread"] {
+  border-color: rgba(201,164,74,.55);
+  color: var(--sang-gold-bright, #e0c36a);
+}
+.order-read-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 7px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+.order-read-status.is-unread { color: var(--sang-gold-bright, #e0c36a); }
+.order-read-status.is-read { color: #8fa6a0; opacity: .78; }
