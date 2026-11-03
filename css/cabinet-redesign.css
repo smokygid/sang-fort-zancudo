@@ -211,3 +211,25 @@
 .cabinet-page #contracts-admin-list tr[data-contract-status="missing"] td:last-child{color:#9aabba}
 .cabinet-page #contract-date-hint{color:var(--cb-muted);font-size:10px;line-height:1.5}
 @media(max-width:650px){.cabinet-page .contract-personal-grid{grid-template-columns:1fr 1fr}.cabinet-page .contract-list-heading{align-items:flex-start;flex-direction:column}}
+
+
+/* Unified personnel notification center */
+.cabinet-page .notifications-center{margin:0 0 18px;padding:19px 21px;border-color:rgba(201,164,74,.32);scroll-margin-top:82px}
+.cabinet-page .notifications-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px}
+.cabinet-page .notifications-heading h2{display:flex;align-items:center;gap:10px;margin:4px 0 0;font-size:21px}
+.cabinet-page .notifications-count{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;border-radius:20px;background:rgba(201,164,74,.16);border:1px solid rgba(201,164,74,.45);color:var(--cb-gold-hi);font-size:11px}
+.cabinet-page .notifications-status{margin:8px 0 13px;color:var(--cb-muted);font-size:11px}
+.cabinet-page .notifications-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cabinet-page .notification-item{min-width:0;padding:13px 14px;background:rgba(5,15,25,.55);border:1px solid var(--cb-line);border-left:3px solid rgba(201,164,74,.8)}
+.cabinet-page .notification-item.is-read{border-left-color:#607c76;opacity:.78}
+.cabinet-page .notification-item-top{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--cb-muted);font-size:9px}
+.cabinet-page .notification-type{color:var(--cb-gold-hi);font-weight:900;letter-spacing:1px}
+.cabinet-page .notification-item time{white-space:nowrap}
+.cabinet-page .notification-item h3{margin:9px 0 5px;color:var(--cb-text);font-size:14px}
+.cabinet-page .notification-item p{margin:0;color:#b5c1cb;font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+.cabinet-page .notification-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:12px}
+.cabinet-page .notification-actions a,.cabinet-page .notification-read-label{color:var(--cb-gold-hi);font-size:9px;font-weight:900;letter-spacing:.65px;text-decoration:none}
+.cabinet-page .notification-actions a:hover{text-decoration:underline}
+.cabinet-page .notification-actions .cabinet-logout{min-height:28px;padding:6px 9px;font-size:8px}
+.cabinet-page .notifications-empty{grid-column:1/-1;margin:0;padding:18px;text-align:center;color:var(--cb-muted);border:1px dashed var(--cb-line);font-size:12px}
+@media(max-width:760px){.cabinet-page .notifications-list{grid-template-columns:1fr}.cabinet-page .notifications-heading{align-items:flex-start;flex-direction:column}.cabinet-page .notifications-heading .cabinet-logout{width:100%}}
