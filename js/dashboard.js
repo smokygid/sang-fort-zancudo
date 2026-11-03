@@ -202,6 +202,22 @@ async function loadAccounts() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  ["personnel-search","personnel-filter-rank","personnel-filter-unit","personnel-filter-status"].forEach(id => {
+    const control = document.getElementById(id);
+    if (control) control.addEventListener("input", renderCommandPersonnel);
+    if (control && control.tagName === "SELECT") control.addEventListener("change", renderCommandPersonnel);
+  });
+  const resetPersonnelFilters = document.getElementById("personnel-reset-filters");
+  if (resetPersonnelFilters) resetPersonnelFilters.addEventListener("click", () => {
+    ["personnel-search","personnel-filter-rank","personnel-filter-unit","personnel-filter-status"].forEach(id => {
+      const control = document.getElementById(id);
+      if (control) control.value = "";
+    });
+    const quick = document.getElementById("personnel-quick-profile");
+    if (quick) quick.hidden = true;
+    renderCommandPersonnel();
+  });
+
   const form = document.getElementById("account-create-form");
   const refresh = document.getElementById("refresh-accounts");
   const refreshFactions = document.getElementById("refresh-accounts-factions");
@@ -438,48 +454,117 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+let commandPersonnelProfiles = [];
+
+function populatePersonnelFilter(id, values, placeholder) {
+  const select = document.getElementById(id);
+  if (!select) return;
+  const previous = select.value;
+  select.replaceChildren(new Option(placeholder, ""));
+  [...new Set(values.map(value => String(value || "").trim()).filter(Boolean))]
+    .sort((a,b) => a.localeCompare(b, "uk"))
+    .forEach(value => select.add(new Option(value, value)));
+  if ([...select.options].some(option => option.value === previous)) select.value = previous;
+}
+
+function renderCommandPersonnel() {
+  const tbody = document.getElementById("service-profiles-list");
+  if (!tbody) return;
+  const query = (document.getElementById("personnel-search")?.value || "").trim().toLocaleLowerCase("uk");
+  const rank = document.getElementById("personnel-filter-rank")?.value || "";
+  const unit = document.getElementById("personnel-filter-unit")?.value || "";
+  const status = document.getElementById("personnel-filter-status")?.value || "";
+  const filtered = commandPersonnelProfiles.filter(p => {
+    const haystack = [p.full_name, p.service_number].filter(Boolean).join(" ").toLocaleLowerCase("uk");
+    return (!query || haystack.includes(query)) &&
+      (!rank || (p.rank || "") === rank) &&
+      (!unit || (p.unit || "") === unit) &&
+      (!status || (p.service_status || "") === status);
+  });
+  tbody.replaceChildren();
+  for (const p of filtered) {
+    const row = document.createElement("tr");
+    const values = [p.service_number || "—", p.full_name || "—", p.rank || "—", p.unit || "—", p.mos || "—", p.service_status || "—", p.lookup_error ? "Помилка API" : (p.found_in_registry ? "Знайдено" : "Немає запису")];
+    for (const value of values) {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      row.appendChild(cell);
+    }
+    const actionCell = document.createElement("td");
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "personnel-open-profile";
+    button.textContent = "ПРОФІЛЬ";
+    button.addEventListener("click", () => showCommandPersonnelProfile(p));
+    actionCell.appendChild(button);
+    row.appendChild(actionCell);
+    tbody.appendChild(row);
+  }
+  const count = document.getElementById("personnel-results-count");
+  if (count) count.textContent = "Знайдено: " + filtered.length + " із " + commandPersonnelProfiles.length;
+  if (!filtered.length) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 8;
+    cell.textContent = commandPersonnelProfiles.length ? "За заданими параметрами військовослужбовців не знайдено." : "Облікових записів військовослужбовців поки немає.";
+    row.appendChild(cell);
+    tbody.appendChild(row);
+  }
+}
+
+function showCommandPersonnelProfile(p) {
+  const panel = document.getElementById("personnel-quick-profile");
+  if (!panel) return;
+  panel.replaceChildren();
+  const heading = document.createElement("div");
+  heading.className = "personnel-quick-heading";
+  const title = document.createElement("strong");
+  title.textContent = p.full_name || "Військовослужбовець";
+  const number = document.createElement("span");
+  number.textContent = p.service_number || "Номер не зазначено";
+  heading.append(title, number);
+  const grid = document.createElement("div");
+  grid.className = "personnel-quick-grid";
+  const fields = [["Звання",p.rank],["Підрозділ",p.unit],["MOS",p.mos],["Статус служби",p.service_status],["Запис у реєстрі",p.lookup_error ? "Помилка API" : (p.found_in_registry ? "Знайдено" : "Не знайдено")]];
+  for (const [label,value] of fields) {
+    const item = document.createElement("div");
+    const caption = document.createElement("small");
+    caption.textContent = label;
+    const content = document.createElement("b");
+    content.textContent = value || "Не зазначено";
+    item.append(caption,content);
+    grid.appendChild(item);
+  }
+  const close = document.createElement("button");
+  close.type = "button";
+  close.className = "cabinet-logout";
+  close.textContent = "ЗАКРИТИ";
+  close.addEventListener("click", () => { panel.hidden = true; });
+  panel.append(heading,grid,close);
+  panel.hidden = false;
+  panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
 async function loadAdminProfiles() {
   const tbody = document.getElementById("service-profiles-list");
   const message = document.getElementById("service-profile-message");
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="7">Завантаження реєстру…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="8">Завантаження реєстру…</td></tr>';
   if (message) message.textContent = "";
   try {
     const response = await fetch("/api/admin/profiles", { credentials: "same-origin", cache: "no-store" });
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити реєстр.");
-    tbody.replaceChildren();
-    for (const p of data.profiles || []) {
-      const row = document.createElement("tr");
-      const values = [
-        p.service_number || "—",
-        p.full_name || "—",
-        p.rank || "—",
-        p.unit || "—",
-        p.mos || "—",
-        p.service_status || "—",
-        p.lookup_error ? "Помилка API" : (p.found_in_registry ? "Знайдено" : "Немає запису")
-      ];
-      for (const value of values) {
-        const cell = document.createElement("td");
-        cell.textContent = value;
-        row.appendChild(cell);
-      }
-      tbody.appendChild(row);
-    }
-    if (!data.profiles || !data.profiles.length) {
-      const row = document.createElement("tr");
-      const cell = document.createElement("td");
-      cell.colSpan = 7;
-      cell.textContent = "Облікових записів військовослужбовців поки немає.";
-      row.appendChild(cell);
-      tbody.appendChild(row);
-    }
+    commandPersonnelProfiles = data.profiles || [];
+    populatePersonnelFilter("personnel-filter-rank", commandPersonnelProfiles.map(p => p.rank), "Усі звання");
+    populatePersonnelFilter("personnel-filter-unit", commandPersonnelProfiles.map(p => p.unit), "Усі підрозділи");
+    populatePersonnelFilter("personnel-filter-status", commandPersonnelProfiles.map(p => p.service_status), "Усі статуси");
+    renderCommandPersonnel();
   } catch (error) {
     tbody.replaceChildren();
     const row = document.createElement("tr");
     const cell = document.createElement("td");
-    cell.colSpan = 7;
+    cell.colSpan = 8;
     cell.textContent = error.message || "Помилка завантаження реєстру.";
     row.appendChild(cell);
     tbody.appendChild(row);
