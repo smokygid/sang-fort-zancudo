@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const auditPanel = document.getElementById("audit-panel");
       if (auditPanel) auditPanel.hidden = true;
       document.getElementById("command-nav-link").hidden = false;
+      const contractsNavLink = document.getElementById("contracts-nav-link");
+      if (contractsNavLink) contractsNavLink.hidden = false;
       document.getElementById("audit-nav-link").hidden = false;
       if (registrationsLink) { registrationsLink.hidden = false; registrationsLink.style.removeProperty("display"); }
       loadAccounts();
@@ -845,6 +847,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const audit = document.getElementById("audit-panel");
   const commandLink = document.getElementById("command-nav-link");
   const auditLink = document.getElementById("audit-nav-link");
+  const contractsLink = document.getElementById("contracts-nav-link");
   if (!command || !audit || !commandLink || !auditLink) return;
   function showAdminSection(section) {
     const showAudit = section === "audit";
@@ -870,6 +873,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   commandLink.addEventListener("click", e => { e.preventDefault(); showAdminSection("command"); });
   auditLink.addEventListener("click", e => { e.preventDefault(); showAdminSection("audit"); });
+  contractsLink?.addEventListener("click", e => {
+    e.preventDefault();
+    showAdminSection("command");
+    history.replaceState(null, "", "#command-contracts");
+    document.getElementById("command-contracts")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 });
 
 const SERVICE_RECORD_LABELS = { award:"НАГОРОДА / ЗАОХОЧЕННЯ", reprimand:"ДИСЦИПЛІНАРНЕ СТЯГНЕННЯ", history:"ПОДІЯ ПРОХОДЖЕННЯ СЛУЖБИ" };
