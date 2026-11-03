@@ -3550,49 +3550,47 @@ body.home-page[data-season="autumn"] .hero::before {
     }
 }
 
-/* Subtle autumn leaves drifting over the navigation */
+/* Animated autumn leaves drifting across the navigation */
 body[data-season="autumn"] .header .menu {
     position: relative;
+    isolation: isolate;
 }
 
 body[data-season="autumn"] .header .menu::before,
 body[data-season="autumn"] .header .menu::after {
+    content: "";
     position: absolute;
-    z-index: 3;
-    top: -7px;
+    z-index: 5;
+    top: -13px;
+    left: 12%;
+    width: 13px;
+    height: 17px;
+    border-radius: 2px 10px 2px 10px;
+    background: linear-gradient(145deg, #f6c36c 0%, #c8792e 58%, #8f451f 100%);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .35);
     pointer-events: none;
-    font-size: 15px;
-    line-height: 1;
     opacity: 0;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .35));
-    animation: sang-menu-leaf-drift 9s ease-in-out infinite;
-}
-
-body[data-season="autumn"] .header .menu::before {
-    content: "🍂";
-    left: 8%;
-    animation-delay: -1.5s;
+    transform-origin: center;
+    animation: sang-menu-leaf-fall 6s ease-in-out infinite;
 }
 
 body[data-season="autumn"] .header .menu::after {
-    content: "🍁";
-    left: 68%;
-    font-size: 13px;
-    animation-delay: -6s;
+    left: 66%;
+    top: -18px;
+    width: 10px;
+    height: 14px;
+    background: linear-gradient(145deg, #e8a34d 0%, #a94e25 100%);
+    animation-duration: 8s;
+    animation-delay: -3.5s;
 }
 
-@keyframes sang-menu-leaf-drift {
-    0%   { transform: translate3d(0, -5px, 0) rotate(-25deg); opacity: 0; }
-    12%  { opacity: .82; }
-    50%  { transform: translate3d(28px, 12px, 0) rotate(95deg); opacity: .72; }
-    88%  { opacity: .55; }
-    100% { transform: translate3d(58px, 23px, 0) rotate(190deg); opacity: 0; }
+@keyframes sang-menu-leaf-fall {
+    0% { transform: translate3d(0, -8px, 0) rotate(-35deg); opacity: 0; }
+    12% { opacity: .95; }
+    35% { transform: translate3d(18px, 12px, 0) rotate(75deg); opacity: .9; }
+    65% { transform: translate3d(38px, 28px, 0) rotate(175deg); opacity: .8; }
+    88% { opacity: .65; }
+    100% { transform: translate3d(58px, 43px, 0) rotate(285deg); opacity: 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    body[data-season="autumn"] .header .menu::before,
-    body[data-season="autumn"] .header .menu::after {
-        animation: none;
-        opacity: .65;
-    }
-}
+/* Animation intentionally stays active even with prefers-reduced-motion enabled. */
