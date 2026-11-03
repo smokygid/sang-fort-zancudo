@@ -130,9 +130,29 @@ export async function onRequestPatch({ request, env }) {
   }
 }
 
+export async function onRequestDelete({ request, env }) {
+  try {
+    const auth = await requireAdmin(request, env);
+    if (auth.error) return auth.error;
+    let input;
+    try { input = await request.json(); } catch { return json({ message: "Некоректний запит." }, 400); }
+    const id = Number(input.id);
+    if (!Number.isSafeInteger(id) || id < 1) return json({ message: "Некоректний ID публікації." }, 400);
+    const current = await env.DB.prepare("SELECT id,title FROM sang_news WHERE id=? LIMIT 1").bind(id).first();
+    if (!current) return json({ message: "Публікацію не знайдено." }, 404);
+    await env.DB.prepare("DELETE FROM sang_news WHERE id=?").bind(id).run();
+    await audit(env, auth.actor.id, "news_deleted");
+    return json({ success: true, message: "Публікацію остаточно видалено." });
+  } catch (error) {
+    console.error("SANG news delete error:", error);
+    return json({ message: "Не вдалося видалити публікацію." }, 500);
+  }
+}
+
 export async function onRequest(context) {
   if (context.request.method === "GET") return onRequestGet(context);
   if (context.request.method === "POST") return onRequestPost(context);
   if (context.request.method === "PATCH") return onRequestPatch(context);
-  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, POST, PATCH" });
+  if (context.request.method === "DELETE") return onRequestDelete(context);
+  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, POST, PATCH, DELETE" });
 }
