@@ -366,6 +366,7 @@ async function loadOwnProfile() {
     document.getElementById("profile-service-status").textContent = p.serviceStatus || "Не зазначено";
     document.getElementById("profile-service-note").textContent = p.serviceNote || "Службові примітки відсутні.";
     loadOwnServiceRecords();
+    loadOwnContract();
   } catch (error) {
     document.getElementById("personal-profile-message").textContent = error.message;
   }
@@ -558,6 +559,8 @@ async function loadAdminProfiles() {
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити реєстр.");
     commandPersonnelProfiles = data.profiles || [];
     populateServiceRecordSoldiers(commandPersonnelProfiles);
+    populateContractSoldiers(commandPersonnelProfiles);
+    loadAdminContracts();
     populatePersonnelFilter("personnel-filter-rank", commandPersonnelProfiles.map(p => p.rank), "Усі звання");
     populatePersonnelFilter("personnel-filter-unit", commandPersonnelProfiles.map(p => p.unit), "Усі підрозділи");
     populatePersonnelFilter("personnel-filter-status", commandPersonnelProfiles.map(p => p.service_status), "Усі статуси");
@@ -581,7 +584,8 @@ const AUDIT_ACTION_LABELS = {
   account_deactivated: "Обліковий запис заблоковано",
   personal_profile_updated: "Оновлено особисті дані",
   service_profile_updated: "Оновлено службовий профіль",
-  service_record_created: "Додано запис до особової справи"
+  service_record_created: "Додано запис до особової справи",
+  contract_created: "Оформлено / продовжено контракт"
 };
 
 let auditEntries = [];
@@ -907,4 +911,114 @@ document.addEventListener("DOMContentLoaded", () => {
       const data=await response.json(); if(!response.ok)throw new Error(data.message||"Не вдалося додати запис."); message.textContent=data.message||"Запис додано."; form.reset(); if(dateInput)dateInput.value=new Date().toISOString().slice(0,10);
     } catch(error){message.textContent=error.message;} finally{button.disabled=false;}
   });
+});
+
+
+// Personnel contracts: current term and retained contract history.
+let adminContractRows = [];
+
+function formatContractDate(value) {
+  if (!value) return "—";
+  const parts=String(value).split("-");
+  return parts.length===3 ? parts[2]+"."+parts[1]+"."+parts[0] : value;
+}
+
+function localDateInputValue(date=new Date()) {
+  const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,"0"),d=String(date.getDate()).padStart(2,"0");
+  return y+"-"+m+"-"+d;
+}
+
+function renderPersonalContract(data) {
+  const current=document.getElementById("personal-contract-current");
+  const history=document.getElementById("personal-contract-history");
+  if(!current)return;
+  const c=data.current;
+  current.replaceChildren();
+  if(!c){
+    const empty=document.createElement("p");empty.className="contract-empty";empty.textContent="Чинний контракт у системі ще не оформлено.";current.appendChild(empty);
+  }else{
+    const grid=document.createElement("div");grid.className="contract-personal-grid";
+    const fields=[["ПОЧАТОК",formatContractDate(c.start_date)],["ТЕРМІН",c.duration_days+" днів"],["ЗАВЕРШЕННЯ",formatContractDate(c.end_date)],["ЗАЛИШИЛОСЯ",c.status==="expired"?"0 днів":c.days_left+" днів"]];
+    for(const [label,value] of fields){const cell=document.createElement("div");const small=document.createElement("small");small.textContent=label;const strong=document.createElement("strong");strong.textContent=value;cell.append(small,strong);grid.appendChild(cell);}
+    const status=document.createElement("p");status.className="contract-status "+(c.status==="expired"?"is-expired":Number(c.days_left)<=3?"is-warning":"is-active");status.textContent=c.status==="expired"?"ТЕРМІН КОНТРАКТУ ЗАВЕРШИВСЯ":Number(c.days_left)<=3?"УВАГА: КОНТРАКТ ЗАВЕРШУЄТЬСЯ":"КОНТРАКТ ДІЄ";
+    current.append(grid,status);
+  }
+  if(history){
+    history.replaceChildren();
+    const old=(data.history||[]).slice(1);
+    if(old.length){
+      const heading=document.createElement("h4");heading.textContent="ПОПЕРЕДНІ КОНТРАКТИ";history.appendChild(heading);
+      for(const item of old){const line=document.createElement("p");line.textContent=formatContractDate(item.start_date)+" — "+formatContractDate(item.end_date)+" · "+item.duration_days+" днів";history.appendChild(line);}
+    }
+  }
+}
+
+async function loadOwnContract() {
+  const target=document.getElementById("personal-contract-current");if(!target)return;
+  try{const response=await fetch("/api/contracts",{credentials:"same-origin",cache:"no-store"});const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося завантажити контракт.");renderPersonalContract(data);}
+  catch(error){target.textContent=error.message||"Помилка завантаження контракту.";}
+}
+
+function populateContractSoldiers(profiles) {
+  const select=document.getElementById("contract-soldier");if(!select)return;
+  select.replaceChildren(new Option("Оберіть військовослужбовця",""));
+  for(const p of profiles){const label=[p.full_name,p.service_number].filter(Boolean).join(" · ");select.appendChild(new Option(label||p.service_number,String(p.id)));}
+}
+
+function renderAdminContracts(rows) {
+  const tbody=document.getElementById("contracts-admin-list");if(!tbody)return;
+  tbody.replaceChildren();
+  if(!rows.length){const row=document.createElement("tr"),cell=document.createElement("td");cell.colSpan=7;cell.textContent="Контракти ще не оформлені.";row.appendChild(cell);tbody.appendChild(row);return;}
+  for(const c of rows){
+    const row=document.createElement("tr");
+    const days=c.id===null||c.id===undefined?"—":c.status==="expired"?"0":String(c.days_left);
+    let status=c.status==="missing"?"Не оформлено":c.status==="expired"?"Завершено":Number(c.days_left)<=3?"Завершується":"Діє";
+    const values=[c.service_number||"—",c.full_name||"Не зазначено",formatContractDate(c.start_date),c.duration_days?c.duration_days+" днів":"—",formatContractDate(c.end_date),days,status];
+    for(const value of values){const cell=document.createElement("td");cell.textContent=value;row.appendChild(cell);}
+    if(c.status==="expired")row.dataset.contractStatus="expired";else if(c.status==="missing")row.dataset.contractStatus="missing";else if(Number(c.days_left)<=3)row.dataset.contractStatus="warning";
+    tbody.appendChild(row);
+  }
+}
+
+async function loadAdminContracts() {
+  const tbody=document.getElementById("contracts-admin-list");if(!tbody)return;
+  try{const response=await fetch("/api/contracts",{credentials:"same-origin",cache:"no-store"});const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося завантажити контракти.");adminContractRows=data.contracts||[];renderAdminContracts(adminContractRows);}
+  catch(error){tbody.replaceChildren();const row=document.createElement("tr"),cell=document.createElement("td");cell.colSpan=7;cell.textContent=error.message||"Помилка завантаження контрактів.";row.appendChild(cell);tbody.appendChild(row);}
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const form=document.getElementById("contract-form");if(!form)return;
+  const soldier=document.getElementById("contract-soldier");
+  const start=document.getElementById("contract-start-date");
+  const duration=document.getElementById("contract-duration");
+  const hint=document.getElementById("contract-date-hint");
+  const message=document.getElementById("contract-admin-message");
+  const today=localDateInputValue();if(start)start.value=today;
+  const updatePreview=()=>{
+    const begin=start.value;
+    if(!begin){hint.textContent="Оберіть дату початку контракту.";return;}
+    const end=new Date(Date.parse(begin+"T00:00:00Z")+Number(duration.value)*86400000).toISOString().slice(0,10);
+    hint.textContent="Орієнтовна дата завершення: "+formatContractDate(end)+".";
+  };
+  soldier.addEventListener("change",()=>{
+    const existing=adminContractRows.find(row=>String(row.account_id)===soldier.value);
+    if(existing&&existing.end_date&&existing.end_date>=today){
+      const next=new Date(Date.parse(existing.end_date+"T00:00:00Z")+86400000).toISOString().slice(0,10);
+      start.value=next;
+      hint.textContent="Продовження: новий контракт почнеться наступного дня після завершення чинного — "+formatContractDate(next)+".";
+    }else{start.value=today;updatePreview();}
+  });
+  start.addEventListener("change",updatePreview);duration.addEventListener("change",updatePreview);updatePreview();
+  form.addEventListener("submit",async event=>{
+    event.preventDefault();const button=form.querySelector('button[type="submit"]');button.disabled=true;message.textContent="";
+    try{
+      const response=await fetch("/api/contracts",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({accountId:soldier.value,startDate:start.value,durationDays:Number(duration.value)})});
+      const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося оформити контракт.");
+      message.textContent=data.message+" Дата завершення: "+formatContractDate(data.endDate)+".";
+      await loadAdminContracts();
+      start.value=today;updatePreview();
+    }catch(error){message.textContent=error.message||"Помилка збереження контракту.";}
+    finally{button.disabled=false;}
+  });
+  document.getElementById("refresh-contracts")?.addEventListener("click",loadAdminContracts);
 });
