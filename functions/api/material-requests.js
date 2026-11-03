@@ -20,7 +20,7 @@ async function getActor(request, env) {
     "SELECT a.id,a.role,a.faction_name,a.service_number FROM cabinet_sessions s JOIN personnel_accounts a ON a.id=s.account_id WHERE s.id=? AND s.expires_at>? AND a.active=1 LIMIT 1"
   ).bind(await tokenDigest(token), new Date().toISOString()).first();
   if (!account) return { error: json({ message: "Сесію не знайдено." }, 401) };
-  if (account.role !== "faction_leader") return { error: json({ message: "Замовлення доступні керівникам фракцій." }, 403) };
+  if (account.role !== "faction_leader" && account.role !== "admin") return { error: json({ message: "Замовлення доступні командуванню та керівникам фракцій." }, 403) };
   return { account };
 }
 
@@ -54,8 +54,8 @@ async function notify(env, accountId, title, message, sourceKey) {
 export async function onRequestGet({ request, env }) {
   try {
     const auth = await getActor(request, env); if (auth.error) return auth.error;
-    const faction = auth.account.faction_name || "";
-    const reviewerSang = isSang(faction), reviewerCity = isCity(faction);
+    const faction = auth.account.role === "admin" ? "SANG" : (auth.account.faction_name || "");
+    const reviewerSang = auth.account.role !== "admin" && isSang(faction), reviewerCity = auth.account.role !== "admin" && isCity(faction);
     let sql = `SELECT r.*, a.service_number AS requester_service_number
       FROM material_requests r JOIN personnel_accounts a ON a.id=r.requester_account_id`;
     let rows;
@@ -77,6 +77,8 @@ export async function onRequestPost({ request, env }) {
     let body; try { body = await request.json(); } catch { return json({message:"Некоректний запит."},400); }
     const action = String(body?.action || "create");
     if (action === "create") {
+      const requesterFaction = auth.account.role === "admin" ? "SANG" : (auth.account.faction_name || "Невідома фракція");
+      const requesterIsSang = isSang(requesterFaction);
       const items = parseItems(body.items);
       const requestedDate = body.requestedDate, requestedTime = body.requestedTime;
       const comment = typeof body.comment === "string" ? body.comment.trim().slice(0,1000) : "";
@@ -86,13 +88,13 @@ export async function onRequestPost({ request, env }) {
       const count = await env.DB.prepare("SELECT COUNT(*) AS total FROM material_requests").first();
       const number = "MR-" + new Date().getFullYear() + "-" + String(Number(count?.total || 0) + 1).padStart(4,"0");
       const inserted = await env.DB.prepare(
-        "INSERT INTO material_requests (request_number,requester_account_id,requester_faction,items_json,comment,requested_date,requested_time) VALUES (?,?,?,?,?,?,?)"
-      ).bind(number,auth.account.id,auth.account.faction_name,JSON.stringify(items),comment,requestedDate,requestedTime).run();
+        "INSERT INTO material_requests (request_number,requester_account_id,requester_faction,items_json,comment,requested_date,requested_time,sang_status,sang_date,sang_time) VALUES (?,?,?,?,?,?,?,?,?,?)"
+      ).bind(number,auth.account.id,requesterFaction,JSON.stringify(items),comment,requestedDate,requestedTime,requesterIsSang ? "approved" : "pending",requesterIsSang ? requestedDate : null,requesterIsSang ? requestedTime : null).run();
       const id = inserted.meta?.last_row_id;
       const leaders = await env.DB.prepare("SELECT id,faction_name FROM personnel_accounts WHERE role='faction_leader' AND active=1").all();
       for (const leader of leaders.results || []) {
-        if (isSang(leader.faction_name) || isCity(leader.faction_name))
-          await notify(env,leader.id,"Нове замовлення матеріалів",number+" · "+auth.account.faction_name+" · "+requestedDate+" "+requestedTime,"material-request:"+id+":new");
+        if ((requesterIsSang && isCity(leader.faction_name)) || (!requesterIsSang && (isSang(leader.faction_name) || isCity(leader.faction_name))))
+          await notify(env,leader.id,"Нове замовлення матеріалів",number+" · "+requesterFaction+" · "+requestedDate+" "+requestedTime,"material-request:"+id+":new");
       }
       await env.DB.prepare("INSERT INTO cabinet_audit_log(actor_account_id,action) VALUES (?,'material_request_created')").bind(auth.account.id).run();
       return json({success:true,id,requestNumber:number,message:"Замовлення надіслано керівникам SANG та мерії."},201);
@@ -102,7 +104,7 @@ export async function onRequestPost({ request, env }) {
     if (!Number.isSafeInteger(id) || id < 1) return json({message:"Некоректний номер заявки."},400);
     const current = await env.DB.prepare("SELECT * FROM material_requests WHERE id=? LIMIT 1").bind(id).first();
     if (!current) return json({message:"Заявку не знайдено."},404);
-    const sang = isSang(auth.account.faction_name), city = isCity(auth.account.faction_name);
+    const sang = auth.account.role !== "admin" && isSang(auth.account.faction_name), city = auth.account.role !== "admin" && isCity(auth.account.faction_name);
     if (!sang && !city) return json({message:"Рішення доступне лише керівникам SANG та мерії."},403);
     const side = sang ? "sang" : "city";
     const decision = String(body.decision || "");
@@ -120,8 +122,8 @@ export async function onRequestPost({ request, env }) {
     const updated = await env.DB.prepare("SELECT sang_status,sang_date,sang_time,city_status,city_date,city_time FROM material_requests WHERE id=?").bind(id).first();
     let status = "coordination";
     if (updated.sang_status === "rejected" || updated.city_status === "rejected") status = "rejected";
-    else if (updated.sang_status === "approved" && updated.city_status === "approved" &&
-      updated.sang_date === updated.city_date && updated.sang_time === updated.city_time) status = "approved";
+    else if (current.requester_faction && isSang(current.requester_faction) && updated.city_status === "approved" && updated.city_date === updated.sang_date && updated.city_time === updated.sang_time) status = "approved";
+    else if (updated.sang_status === "approved" && updated.city_status === "approved" && updated.sang_date === updated.city_date && updated.sang_time === updated.city_time) status = "approved";
     else if (updated.sang_status !== "pending" && updated.city_status !== "pending") status = "coordination";
     else status = "pending";
     await env.DB.prepare("UPDATE material_requests SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(status,id).run();
