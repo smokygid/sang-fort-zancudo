@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       loadAccounts();
       loadAdminProfiles();
       loadAuditLog();
+      loadCommandOrderOverview();
     }
 
     if (result.soldier.mustChangePassword) {
@@ -124,6 +125,7 @@ async function loadAccounts() {
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити список.");
     const accounts = data.accounts || [];
+    updateCommandAccountStats(accounts);
     if (tbody) {
       tbody.replaceChildren();
       for (const account of accounts.filter(item => item.role !== "faction_leader")) {
@@ -554,6 +556,67 @@ function setupAuditFilters() {
   });
 }
 
+function updateCommandAccountStats(accounts) {
+  const total = accounts.length;
+  const active = accounts.filter(account => account.active).length;
+  const set = (id, value) => { const node = document.getElementById(id); if (node) node.textContent = String(value); };
+  set("overview-total-accounts", total);
+  set("overview-active-accounts", active);
+  set("overview-blocked-accounts", total - active);
+  const stamp = document.getElementById("command-overview-updated");
+  if (stamp) stamp.textContent = "Оновлено: " + new Date().toLocaleTimeString("uk-UA", {hour:"2-digit",minute:"2-digit"});
+}
+
+function renderOverviewFeed(targetId, entries, emptyText, renderEntry) {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+  target.replaceChildren();
+  if (!entries.length) {
+    const empty = document.createElement("p");
+    empty.className = "overview-empty";
+    empty.textContent = emptyText;
+    target.appendChild(empty);
+    return;
+  }
+  for (const entry of entries) {
+    const item = document.createElement("div");
+    item.className = "overview-feed-item";
+    renderEntry(item, entry);
+    target.appendChild(item);
+  }
+}
+
+async function loadCommandOrderOverview() {
+  const target = document.getElementById("overview-latest-orders");
+  if (!target) return;
+  try {
+    const response = await fetch("/api/orders", {credentials:"same-origin",cache:"no-store"});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Не вдалося завантажити накази.");
+    const orders = (data.orders || []).slice(0, 4);
+    renderOverviewFeed("overview-latest-orders", orders, "Опублікованих наказів поки немає.", (item, order) => {
+      const title = document.createElement("strong");
+      title.textContent = [order.order_number, order.title].filter(Boolean).join(" · ") || "Службовий документ";
+      const meta = document.createElement("small");
+      meta.textContent = [order.order_date || order.issued_at || "", order.status || "Опубліковано"].filter(Boolean).join(" · ");
+      item.append(title, meta);
+    });
+  } catch (error) {
+    target.textContent = error.message || "Помилка завантаження наказів.";
+  }
+}
+
+function renderCommandAuditOverview() {
+  const entries = (auditEntries || []).slice(0, 4);
+  renderOverviewFeed("overview-latest-audit", entries, "Нових записів у журналі немає.", (item, entry) => {
+    const title = document.createElement("strong");
+    title.textContent = entry.action_label || entry.action || "Службова дія";
+    const meta = document.createElement("small");
+    meta.textContent = [entry.created_at || entry.timestamp || "", entry.actor_name || entry.actor_service_number || "", entry.target_service_number || ""].filter(Boolean).join(" · ");
+    item.append(title, meta);
+  });
+}
+
 async function loadAuditLog() {
   const tbody = document.getElementById("audit-list");
   if (!tbody) return;
@@ -563,6 +626,7 @@ async function loadAuditLog() {
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити журнал.");
     auditEntries = data.entries || [];
+    renderCommandAuditOverview();
     const soldier = document.getElementById("audit-filter-soldier");
     if (soldier) {
       const selected = soldier.value;
