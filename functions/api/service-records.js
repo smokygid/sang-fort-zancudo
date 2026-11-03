@@ -24,7 +24,7 @@ export async function onRequestGet({ request, env }) {
       if (!Number.isSafeInteger(accountId) || accountId < 1) return json({ message: "Некоректний ID військовослужбовця." }, 400);
     }
     const records = await env.DB.prepare(
-      `SELECT id,record_type,title,description,document_number,record_date,created_at
+      `SELECT id,record_type,title,description,document_number,record_date,created_at,created_by
        FROM personnel_service_records WHERE account_id=?
        ORDER BY record_date DESC,id DESC LIMIT 200`
     ).bind(accountId).all();
@@ -82,8 +82,32 @@ export async function onRequestPost({ request, env }) {
   }
 }
 
+export async function onRequestDelete({ request, env }) {
+  try {
+    const auth = await getActor(request, env);
+    if (auth.error) return auth.error;
+    if (auth.actor.role !== "admin") return json({ message:"Видаляти записи особової справи може лише командування." },403);
+    let body;
+    try { body = await request.json(); } catch { return json({ message:"Некоректний запит." },400); }
+    const id = Number(body?.id);
+    if (!Number.isSafeInteger(id) || id < 1) return json({ message:"Некоректний ID запису." },400);
+    const current = await env.DB.prepare("SELECT id,account_id,record_type,title FROM personnel_service_records WHERE id=? LIMIT 1").bind(id).first();
+    if (!current) return json({ message:"Запис не знайдено." },404);
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM personnel_notifications WHERE account_id=? AND source_key=?").bind(current.account_id,"service-record:"+String(id)),
+      env.DB.prepare("DELETE FROM personnel_service_records WHERE id=?").bind(id),
+      env.DB.prepare("INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,'service_record_deleted',?)").bind(auth.actor.id,current.account_id)
+    ]);
+    return json({ success:true,message:"Запис видалено з особової справи.",deletedId:id });
+  } catch(error) {
+    console.error("SANG service record delete error:",error);
+    return json({message:"Не вдалося видалити запис з особової справи."},500);
+  }
+}
+
 export async function onRequest(context) {
   if (context.request.method === "GET") return onRequestGet(context);
   if (context.request.method === "POST") return onRequestPost(context);
-  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, POST" });
+  if (context.request.method === "DELETE") return onRequestDelete(context);
+  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, POST, DELETE" });
 }
