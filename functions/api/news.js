@@ -9,7 +9,7 @@ export async function onRequestGet({ env }) {
        ORDER BY is_featured DESC, news_date DESC, id DESC LIMIT 100`
     ).all();
     return json({ success: true, news: result.results || [] }, 200, {
-      "Cache-Control": "public, max-age=60, s-maxage=60"
+      "Cache-Control": "no-store"
     });
   } catch (error) {
     console.error("SANG public news error:", error);
