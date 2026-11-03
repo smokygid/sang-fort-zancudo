@@ -1,4 +1,4 @@
-import { json, readCookie, tokenDigest, COOKIE } from "../auth/_session.js";
+import { json, readCookie, tokenDigest, COOKIE } from "./auth/_session.js";
 
 const CATALOG = {
   armor: { name: "Броня", unit: "од.", category: "materials" },
