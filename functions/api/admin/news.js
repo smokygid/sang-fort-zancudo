@@ -34,8 +34,15 @@ function normalize(body) {
   const excerpt = text(body.excerpt, 320);
   const content = typeof body.body === "string" ? body.body.trim().slice(0, 30000) : "";
   const image = imageUrl(body.imageUrl);
-  if (!title || !CATEGORIES.includes(category) || !/^\d{4}-\d{2}-\d{2}$/.test(newsDate) || !content) {
-    return { error: "Заповніть заголовок, категорію, дату та текст публікації." };
+  const validDate = /^\d{4}-\d{2}-\d{2}$/.test(newsDate) &&
+    !Number.isNaN(Date.parse(newsDate + "T00:00:00Z"));
+  const missing = [];
+  if (!title) missing.push("заголовок");
+  if (!CATEGORIES.includes(category)) missing.push("категорію");
+  if (!validDate) missing.push("дату");
+  if (!content) missing.push("повний текст");
+  if (missing.length) {
+    return { error: "Перевірте поля: " + missing.join(", ") + "." };
   }
   if (image === null) return { error: "Для зображення вкажіть коректне HTTPS-посилання." };
   return {
