@@ -838,7 +838,7 @@ function setupCabinetTabs() {
     if (heading) heading.textContent = labels[name];
     history.replaceState(null,"", "#" + name);
   }
-  document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link):not(#registrations-nav-link), .dashboard-nav a").forEach((link,index) => {
+  document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link):not(#registrations-nav-link):not(#materials-nav-link), .dashboard-nav a:not(#sidebar-materials-link)").forEach((link,index) => {
     const href = link.getAttribute("href") || "";
     const key = href.includes("orders") ? "orders" : href.includes("awards") ? "awards" : href.includes("service") ? "service" : "profile";
     link.dataset.cabinetTab = key;
@@ -846,11 +846,11 @@ function setupCabinetTabs() {
     link.addEventListener("click", event => { event.preventDefault(); activate(key); });
   });
   const materialsSection = document.getElementById("material-requests");
-  const profilePanel = panels.querySelector('[data-panel="profile"]');
-  if (materialsSection && profilePanel) {
-    profilePanel.appendChild(materialsSection);
+  if (materialsSection) {
+    identity.after(materialsSection);
     materialsSection.hidden = false;
-    materialsSection.style.display = "block";
+    materialsSection.style.setProperty("display", "block", "important");
+    materialsSection.style.setProperty("visibility", "visible", "important");
   }
   activate("profile");
 }
