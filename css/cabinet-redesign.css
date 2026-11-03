@@ -129,3 +129,24 @@
   .cabinet-page #admin-panel>.command-section-heading{align-items:flex-start;flex-direction:column;gap:5px}
   .cabinet-page #admin-panel .admin-table-wrap{max-height:420px}
 }
+
+/* Command overview */
+.cabinet-page .command-overview{margin:0 0 22px;padding:20px;background:linear-gradient(145deg,rgba(17,37,55,.98),rgba(9,22,35,.98));border:1px solid rgba(201,164,74,.34);box-shadow:0 12px 28px rgba(0,0,0,.14)}
+.cabinet-page .command-overview-head,.cabinet-page .command-overview-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cabinet-page .command-overview-head{margin-bottom:16px}
+.cabinet-page .command-overview-head h3{margin:3px 0 0;font-size:19px}
+.cabinet-page .command-overview-updated{color:#8295a7;font-size:10px}
+.cabinet-page .command-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cabinet-page .command-stat{min-width:0;padding:15px;background:rgba(4,14,24,.55);border:1px solid var(--cb-line)}
+.cabinet-page .command-stat span,.cabinet-page .command-stat small{display:block;color:var(--cb-muted);font-size:10px}
+.cabinet-page .command-stat strong{display:block;margin:6px 0;color:var(--cb-gold-hi);font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.cabinet-page .command-overview-lists{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.cabinet-page .command-overview-list{min-width:0;padding:15px;background:rgba(4,14,24,.38);border:1px solid var(--cb-line)}
+.cabinet-page .command-overview-list-head{margin-bottom:10px}
+.cabinet-page .command-overview-list-head h4{margin:0;font-size:12px}
+.cabinet-page .command-overview-list-head a{color:var(--cb-gold-hi);font-size:10px}
+.cabinet-page .overview-feed{display:grid;gap:7px}
+.cabinet-page .overview-feed-item{display:grid;gap:4px;padding:9px 10px;background:rgba(255,255,255,.025);border-left:2px solid rgba(201,164,74,.6)}
+.cabinet-page .overview-feed-item strong{font-size:11px;line-height:1.45;overflow-wrap:anywhere}
+.cabinet-page .overview-feed-item small,.cabinet-page .overview-empty{color:var(--cb-muted);font-size:10px;line-height:1.5}
+@media(max-width:650px){.cabinet-page .command-stat-grid{grid-template-columns:1fr}.cabinet-page .command-stat{display:grid;grid-template-columns:1fr auto;align-items:center;gap:3px 10px}.cabinet-page .command-stat strong{grid-column:2;grid-row:1/3;margin:0;font-size:25px}.cabinet-page .command-overview-lists{grid-template-columns:1fr}.cabinet-page .command-overview{padding:14px}.cabinet-page .command-overview-head{align-items:flex-start;flex-direction:column;gap:5px}}
