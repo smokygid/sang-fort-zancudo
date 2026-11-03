@@ -122,7 +122,7 @@
           <article class="dashboard-card awards-card" id="awards-section">
             <p class="card-kicker">СЛУЖБОВА ІСТОРІЯ</p>
             <h2>Нагороди та стягнення</h2>
-            <p>Розділ готується до підключення.</p>
+            <p>Офіційні відомості про відзнаки, дисциплінарні рішення та важливі етапи проходження служби.</p><div class="service-record-summary"><span>ЗАПИСИ В ОСОБОВІЙ СПРАВІ</span><b id="service-record-count">0</b></div><div id="own-service-records" class="service-record-list" aria-live="polite"><p>Завантаження службової історії…</p></div>
           </article>
         </div>
     <section id="admin-panel" class="dashboard-card admin-panel" hidden>
@@ -193,6 +193,19 @@
             <thead><tr><th>Військовий №</th><th>ПІБ</th><th>Звання</th><th>Підрозділ</th><th>MOS</th><th>Статус служби</th><th>Реєстр</th><th>Картка</th></tr></thead>
             <tbody id="service-profiles-list"><tr><td colspan="7">Завантаження…</td></tr></tbody>
           </table>
+        </div>
+        <div class="service-record-admin">
+          <div class="command-section-heading"><h3>Новий запис до особової справи</h3><span>OFFICIAL RECORD</span></div>
+          <p>Записи є офіційною частиною службової історії. Внесені відомості відображаються у кабінеті відповідного військовослужбовця.</p>
+          <form id="service-record-form" class="profile-form">
+            <label for="service-record-soldier">Військовослужбовець</label><select id="service-record-soldier" required><option value="">Завантаження особового складу…</option></select>
+            <label for="service-record-type">Тип запису</label><select id="service-record-type" required><option value="award">Нагорода / заохочення</option><option value="reprimand">Дисциплінарне стягнення</option><option value="history">Подія проходження служби</option></select>
+            <label for="service-record-title">Назва запису</label><input id="service-record-title" maxlength="160" required placeholder="Наприклад: Нагороджений медаллю «За службу»">
+            <label for="service-record-date">Дата події</label><input id="service-record-date" type="date" required>
+            <label for="service-record-document">Підстава / номер документа</label><input id="service-record-document" maxlength="80" placeholder="Наказ № 012 від 03.11.2026">
+            <label for="service-record-description">Примітка</label><textarea id="service-record-description" rows="3" maxlength="1500" placeholder="Короткий опис підстави або обставин"></textarea>
+            <button class="cabinet-logout" type="submit">ДОДАТИ ДО ОСОБОВОЇ СПРАВИ</button><p id="service-record-admin-message" role="status"></p>
+          </form>
         </div>
       </section>
       <section id="command-orders" class="admin-orders-editor">
