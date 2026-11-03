@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
       head.append(make("strong","",request.request_number),make("span","material-status status-"+request.status,({pending:"НОВА",coordination:"УЗГОДЖЕННЯ",approved:"ПОГОДЖЕНО",rejected:"ВІДХИЛЕНО",completed:"ВИКОНАНО"}[request.status]||request.status)));
       card.append(head,make("p","material-request-meta",request.requester_faction+" · "+request.requester_service_number+" · "+fmtDate(request.created_at?.slice(0,10))));
       const items=make("ul","material-items");
-      try{for(const item of JSON.parse(request.items_json))items.append(make("li","",item.unit==="category"?item.name:item.name+": "+item.quantity+" "+item.unit));}catch{}
+      try{for(const item of JSON.parse(request.items_json))items.append(make("li","",item.name+": "+item.quantity+" "+item.unit));}catch{}
       card.append(items,make("p","", "Бажаний час: "+fmtDate(request.requested_date)+" · "+request.requested_time));
       if(request.comment)card.append(make("p","material-request-comment","Коментар: "+request.comment));
       if(data.reviewerSang)renderDecision(card,request,"sang","SANG");
@@ -84,8 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit",async event=>{
     event.preventDefault();message.textContent="";
-    const payload={category:document.getElementById("material-request-category").value,requestedDate:document.getElementById("material-request-date").value,requestedTime:document.getElementById("material-request-time").value,comment:document.getElementById("material-request-comment").value};
-    if(!["materials","medical"].includes(payload.category)){message.textContent="Оберіть категорію замовлення.";return;}
+    const payload={category:document.getElementById("material-request-category").value,quantity:Number(document.getElementById("material-request-quantity").value),requestedDate:document.getElementById("material-request-date").value,requestedTime:document.getElementById("material-request-time").value,comment:document.getElementById("material-request-comment").value};
+    if(!["materials","medical"].includes(payload.category)){message.textContent="Оберіть категорію замовлення.";return;}\n    if(!Number.isSafeInteger(payload.quantity)||payload.quantity<1||payload.quantity>100000){message.textContent="Вкажіть кількість від 1 до 100000.";return;}
     const button=form.querySelector('button[type="submit"]');button.disabled=true;
     try{const result=await api("POST",payload);message.textContent=result.message+" Номер: "+result.requestNumber;form.reset();await load();}
     catch(error){message.textContent=error.message;}
