@@ -2,16 +2,12 @@
 <html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Міжвідомчий пошук | SANG</title><link rel="stylesheet" href="../../css/style.css"><link rel="stylesheet" href="../../css/cabinet.css"><link rel="stylesheet" href="../../css/dashboard.css"><link rel="stylesheet" href="../../css/orders.css?v=3"><link rel="stylesheet" href="../../css/material-requests.css?v=1"></head>
 <body class="cabinet-page"><header class="site-header"><div class="container"><a class="logo" href="../../">SANG <span>FORT ZANCUDO</span></a><nav><button id="logout-button" class="cabinet-logout" type="button">ВИЙТИ</button></nav></div></header><main class="dashboard-main"><section class="dashboard-heading"><p class="eyebrow">SECURE INTERAGENCY ACCESS</p><h1>МІЖВІДОМЧИЙ <span>ПОШУК</span></h1><p id="faction-status" role="status">Перевірка доступу…</p></section><section class="dashboard-card"><p class="card-kicker">ДОКУМЕНТИ ДЛЯ ВАШОЇ ФРАКЦІЇ</p><h2>Накази та розпорядження</h2><p>Тут відображаються лише опубліковані документи, адресовані фракції, керівником якої ви є. Чернетки та документи інших фракцій недоступні.</p><div id="faction-orders-list" class="orders-list"><p class="orders-empty">Завантаження документів…</p></div></section><section class="dashboard-card material-requests-card" id="material-requests"><p class="card-kicker">INTERAGENCY SUPPLY · SANG</p><h2>Замовлення матеріалів</h2><p>Створення та погодження міжвідомчих заявок на постачання.</p>
 <form id="material-request-form" class="profile-form">
-<label>Оберіть категорію та матеріали</label><div class="material-catalog-group"><h3>Матеріали</h3><div class="material-catalog">
-<label class="material-option"><span><input type="checkbox" value="armor"> Броня</span><input type="number" min="1" max="100000" data-quantity="armor" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="ammo"> Боєприпаси</span><input type="number" min="1" max="100000" data-quantity="ammo" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="radio"> Радіостанції</span><input type="number" min="1" max="100000" data-quantity="radio" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="bodycam"> Бодікамери</span><input type="number" min="1" max="100000" data-quantity="bodycam" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="sim"> SIM-картки</span><input type="number" min="1" max="100000" data-quantity="sim" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="fuel"> Паливо (л)</span><input type="number" min="1" max="100000" data-quantity="fuel" placeholder="Кількість" disabled></label>
-</div></div><div class="material-catalog-group"><h3>Медичні матеріали</h3><div class="material-catalog">
-<label class="material-option"><span><input type="checkbox" value="medkit"> Аптечки</span><input type="number" min="1" max="100000" data-quantity="medkit" placeholder="Кількість" disabled></label>
-</div></div>
+<label for="material-request-category">Категорія замовлення</label>
+<select id="material-request-category" required>
+<option value="">Оберіть категорію</option>
+<option value="materials">Матеріали</option>
+<option value="medical">Медичні матеріали</option>
+</select>
 <div class="material-request-fields"><label>Бажана дата<input id="material-request-date" type="date" required></label><label>Бажаний час<input id="material-request-time" type="time" required></label></div>
 <label for="material-request-comment">Коментар до замовлення</label><textarea id="material-request-comment" maxlength="1000" rows="3" placeholder="За потреби вкажіть додаткові відомості"></textarea>
 <button class="cabinet-logout" type="submit">НАДІСЛАТИ ЗАМОВЛЕННЯ</button><p id="material-request-message" role="status"></p></form>
