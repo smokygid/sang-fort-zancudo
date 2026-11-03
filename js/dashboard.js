@@ -827,7 +827,7 @@ function setupCabinetTabs() {
     workspace?.querySelector(".cabinet-tab-panels")?.removeAttribute("hidden");
     if (command) command.hidden = true;
     if (audit) audit.hidden = true;
-    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link):not(#registrations-nav-link), .dashboard-nav a").forEach(link => {
+    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link):not(#registrations-nav-link):not(#materials-nav-link), .dashboard-nav a:not(#sidebar-materials-link)").forEach(link => {
       const key = link.dataset.cabinetTab;
       link.classList.toggle("topnav-active", key === name);
       link.classList.toggle("active", key === name);
@@ -850,6 +850,32 @@ function setupCabinetTabs() {
 document.addEventListener("DOMContentLoaded", setupCabinetTabs);
 
 document.addEventListener("DOMContentLoaded", () => {
+  const links = [
+    document.getElementById("materials-nav-link"),
+    document.getElementById("sidebar-materials-link")
+  ].filter(Boolean);
+  const section = document.getElementById("material-requests");
+  if (!section || !links.length) return;
+
+  function showMaterials(event) {
+    event.preventDefault();
+    const dashboardContent = document.getElementById("dashboard-content");
+    dashboardContent?.removeAttribute("hidden");
+    document.getElementById("admin-panel")?.setAttribute("hidden", "");
+    document.getElementById("audit-panel")?.setAttribute("hidden", "");
+    const workspace = dashboardContent?.querySelector(".dashboard-workspace");
+    workspace?.querySelector(".workspace-heading")?.setAttribute("hidden", "");
+    workspace?.querySelector("#profile-section")?.setAttribute("hidden", "");
+    workspace?.querySelector(".cabinet-tab-panels")?.setAttribute("hidden", "");
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    links.forEach(link => link.classList.add("active"));
+    history.replaceState(null, "", "#material-requests");
+  }
+
+  links.forEach(link => link.addEventListener("click", showMaterials));
+});
+
+document.addEventListener("DOMContentLoaded", () => {
   const command = document.getElementById("admin-panel");
   const audit = document.getElementById("audit-panel");
   const commandLink = document.getElementById("command-nav-link");
@@ -870,7 +896,7 @@ document.addEventListener("DOMContentLoaded", () => {
     audit.hidden = !showAudit;
     commandLink.classList.toggle("topnav-active", !showAudit);
     auditLink.classList.toggle("topnav-active", showAudit);
-    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link):not(#registrations-nav-link), .dashboard-nav a").forEach(link => {
+    document.querySelectorAll(".cabinet-topnav a:not(#command-nav-link):not(#audit-nav-link):not(#registrations-nav-link):not(#materials-nav-link), .dashboard-nav a:not(#sidebar-materials-link)").forEach(link => {
       link.classList.remove("topnav-active", "active");
       link.removeAttribute("aria-current");
     });
