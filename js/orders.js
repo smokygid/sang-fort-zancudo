@@ -44,6 +44,8 @@ function createOrderCard(order, isAdmin) {
     const badge = orderText(line, "span", "order-status " + statusClass(order.status), order.status);
     badge.title = "Статус наказу";
   }
+  const readBadge = orderText(line, "span", "order-read-status " + (order._isRead ? "is-read" : "is-unread"), order._isRead ? "ПЕРЕГЛЯНУТО" : "НОВИЙ НАКАЗ");
+  readBadge.setAttribute("aria-label", order._isRead ? "Наказ переглянуто" : "Новий непрочитаний наказ");
   main.appendChild(line);
 
   orderText(main, "h3", "order-title", order.title || order.category || "Наказ");
@@ -85,11 +87,40 @@ function createOrderCard(order, isAdmin) {
   if (!details.childNodes.length) orderText(details, "p", "order-empty-details", "Додаткові відомості відсутні.");
   card.appendChild(details);
 
-  card.addEventListener("toggle", () => {
+  card.addEventListener("toggle", async () => {
     const label = card.querySelector(".order-expand");
     if (label) label.textContent = card.open ? "Згорнути  −" : "Деталі  ＋";
+    if (card.open && !order._isRead) await markOrderRead(order, card);
   });
   return card;
+}
+
+async function markOrderRead(order, card) {
+  if (!order.id || order._markingRead) return;
+  order._markingRead = true;
+  try {
+    const response = await fetch("/api/order-reads", {
+      method: "POST", credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId: String(order.id) })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Не вдалося зберегти перегляд наказу.");
+    order._isRead = true;
+    const badge = card.querySelector(".order-read-status");
+    if (badge) { badge.className = "order-read-status is-read"; badge.textContent = "ПЕРЕГЛЯНУТО"; badge.setAttribute("aria-label", "Наказ переглянуто"); }
+    updateOrderUnreadSummary(window.sangOrderList || []);
+  } catch (error) {
+    console.error("SANG order read tracking:", error);
+  } finally { order._markingRead = false; }
+}
+
+function updateOrderUnreadSummary(orders) {
+  const target = document.getElementById("orders-notification-summary");
+  if (!target) return;
+  const unread = orders.filter(order => !order._isRead).length;
+  target.textContent = unread ? "Непрочитаних наказів: " + unread : "Усі доступні накази переглянуто.";
+  target.dataset.state = unread ? "unread" : "read";
 }
 
 function renderOrders(target, orders, isAdmin) {
@@ -150,7 +181,17 @@ async function loadOrders() {
     const response = await fetch("/api/orders", {credentials:"same-origin",cache:"no-store"});
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити накази.");
-    renderOrders(document.getElementById("orders-list"), data.orders || [], false);
+    let readIds = [];
+    try {
+      const readResponse = await fetch("/api/order-reads", {credentials:"same-origin",cache:"no-store"});
+      const readData = await readResponse.json();
+      if (readResponse.ok) readIds = readData.readOrderIds || [];
+    } catch (readError) { console.warn("SANG order read statuses unavailable:", readError); }
+    const orders = data.orders || [];
+    orders.forEach(order => { order._isRead = readIds.includes(String(order.id)); });
+    window.sangOrderList = orders;
+    updateOrderUnreadSummary(orders);
+    renderOrders(document.getElementById("orders-list"), orders, false);
     renderOrders(document.getElementById("public-orders-list"), data.orders || [], false);
     renderOrders(document.getElementById("faction-orders-list"), data.orders || [], false);
 
