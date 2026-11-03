@@ -404,3 +404,19 @@
   #admin-panel .order-form-actions{display:grid}
   #admin-panel .order-form-actions button{width:100%}
 }
+
+/* SANG command news manager */
+#admin-panel .admin-news-editor{border-color:rgba(201,164,74,.34)}
+#admin-panel .admin-news-editor .news-form-hint{grid-column:1/-1;color:#91a1b0;font-size:10px;line-height:1.5}
+#admin-panel .admin-news-editor .news-checkbox-label{display:flex;grid-column:1/-1;align-items:center;gap:9px;color:#cbd5de;font-size:11px}
+#admin-panel .admin-news-editor .news-checkbox-label input{width:16px;min-height:16px;accent-color:#c9a44a}
+#admin-panel .news-image-preview{grid-column:1/-1;max-width:360px;max-height:190px;overflow:hidden;border:1px solid rgba(201,164,74,.3)}
+#admin-panel .news-image-preview img{display:block;width:100%;max-height:190px;object-fit:cover}
+#admin-panel .admin-news-toolbar{margin:14px 0}
+#admin-panel .admin-news-list{display:grid;gap:10px}
+#admin-panel .admin-news-item{padding:15px}
+#admin-panel .admin-news-item>p{margin:8px 0;color:#aebbc7;font-size:11px;line-height:1.6;white-space:pre-line}
+#admin-panel .admin-news-item .order-card-line strong{color:#edf2f6;font-size:13px}
+#admin-panel .admin-news-item .admin-order-actions{margin-top:12px}
+#admin-panel .admin-news-item .order-status{margin-left:auto}
+@media(max-width:560px){#admin-panel .admin-news-item .admin-order-actions{display:grid;grid-template-columns:1fr}#admin-panel .admin-news-item .admin-order-actions button{width:100%}}
