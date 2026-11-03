@@ -167,3 +167,24 @@
 .cabinet-page .personnel-quick-grid>div{display:grid;gap:4px;padding:9px;background:rgba(0,0,0,.15)}
 .cabinet-page .personnel-quick-grid small{color:var(--cb-muted);font-size:9px}.cabinet-page .personnel-quick-grid b{font-size:11px;overflow-wrap:anywhere}
 @media(max-width:650px){.cabinet-page .personnel-filter-grid{grid-template-columns:1fr}.cabinet-page .personnel-results-line{align-items:flex-start;flex-direction:column}.cabinet-page .personnel-quick-heading{align-items:flex-start;flex-direction:column}.cabinet-page .personnel-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Personnel service history */
+.cabinet-page .service-record-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0;padding:12px 14px;background:rgba(201,164,74,.07);border:1px solid rgba(201,164,74,.25)}
+.cabinet-page .service-record-summary span{font-size:9px;letter-spacing:1px;color:var(--cb-muted);font-weight:800}
+.cabinet-page .service-record-summary b{font-size:23px;color:var(--cb-gold-hi)}
+.cabinet-page .service-record-list{display:grid;gap:9px}
+.cabinet-page .service-record-item{padding:13px 14px 13px 17px;background:rgba(4,14,24,.48);border:1px solid var(--cb-line);border-left:3px solid var(--cb-gold)}
+.cabinet-page .service-record-item[data-type="reprimand"]{border-left-color:#b96b62}
+.cabinet-page .service-record-item[data-type="history"]{border-left-color:#7296b3}
+.cabinet-page .service-record-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px}
+.cabinet-page .service-record-type{font-size:9px;font-weight:900;letter-spacing:.8px;color:var(--cb-gold-hi)}
+.cabinet-page .service-record-item[data-type="reprimand"] .service-record-type{color:#df958b}
+.cabinet-page .service-record-item[data-type="history"] .service-record-type{color:#9fc2df}
+.cabinet-page .service-record-date{font-size:10px;color:var(--cb-muted)}
+.cabinet-page .service-record-item h3{margin:0 0 6px;font-size:14px;color:var(--cb-text)}
+.cabinet-page .service-record-item p{margin:5px 0;color:var(--cb-muted);font-size:11px;line-height:1.55}
+.cabinet-page .service-record-document{font-size:10px;color:#c5b27e}
+.cabinet-page .service-record-empty{padding:14px;border:1px dashed var(--cb-line);color:var(--cb-muted);font-size:11px}
+.cabinet-page .service-record-admin{margin-top:22px;padding:18px;background:rgba(4,14,24,.35);border:1px solid var(--cb-line)}
+.cabinet-page .service-record-admin>p{font-size:11px;color:var(--cb-muted)}
+@media(max-width:650px){.cabinet-page .service-record-top{align-items:flex-start;flex-direction:column;gap:4px}.cabinet-page .service-record-admin{padding:12px}}
