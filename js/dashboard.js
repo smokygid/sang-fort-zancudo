@@ -557,6 +557,7 @@ async function loadAdminProfiles() {
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити реєстр.");
     commandPersonnelProfiles = data.profiles || [];
+    populateServiceRecordSoldiers(commandPersonnelProfiles);
     populatePersonnelFilter("personnel-filter-rank", commandPersonnelProfiles.map(p => p.rank), "Усі звання");
     populatePersonnelFilter("personnel-filter-unit", commandPersonnelProfiles.map(p => p.unit), "Усі підрозділи");
     populatePersonnelFilter("personnel-filter-status", commandPersonnelProfiles.map(p => p.service_status), "Усі статуси");
