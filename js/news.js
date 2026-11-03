@@ -40,6 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
     copy.appendChild(element("h2","",item.title));
     copy.appendChild(element("p","",excerpt(item)));
     copy.appendChild(element("time","news-date-live",formatDate(item.news_date)));
+    const details = element("details","news-feature-details");
+    details.appendChild(element("summary","news-read-more","ЧИТАТИ ПОВНІСТЮ"));
+    details.appendChild(element("p","news-feature-full-body",item.body || ""));
+    copy.appendChild(details);
     card.appendChild(copy);
     addImage(card,item.image_url,"news-feature-image");
     featuredTarget.appendChild(card);
