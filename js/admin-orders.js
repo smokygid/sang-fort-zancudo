@@ -147,6 +147,12 @@ document.addEventListener("DOMContentLoaded", () => {
         state.addEventListener("click", () => changeStatus(order.id,"draft"));
       }
       buttons.appendChild(state);
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "cabinet-logout admin-delete-button";
+      remove.textContent = "ВИДАЛИТИ";
+      remove.addEventListener("click", () => deleteOrder(order));
+      buttons.appendChild(remove);
       card.appendChild(buttons);
       target.appendChild(card);
     }
@@ -194,6 +200,25 @@ document.addEventListener("DOMContentLoaded", () => {
       allOrders = data.orders || [];
       renderFiltered();
     } catch (error) { list.textContent = error.message; }
+  }
+
+  async function deleteOrder(order) {
+    const label = [order.order_number, order.title].filter(Boolean).join(" · ");
+    if (!confirm("Остаточно видалити документ «" + label + "»? Цю дію неможливо скасувати.")) return;
+    message.textContent = "";
+    try {
+      const response = await fetch("/api/admin/orders", {
+        method:"DELETE",credentials:"same-origin",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({id:order.id})
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося видалити документ.");
+      message.textContent = data.message;
+      if (editingOrder && String(editingOrder.id) === String(order.id)) resetEditor();
+      await loadAdminOrders();
+      if (typeof loadOrders === "function") await loadOrders();
+    } catch (error) { message.textContent = error.message; }
   }
 
   async function changeStatus(id,status) {
