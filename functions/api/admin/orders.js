@@ -231,9 +231,32 @@ export async function onRequestPatch({ request, env }) {
   }
 }
 
+export async function onRequestDelete({ request, env }) {
+  try {
+    const auth = await requireAdmin(request, env);
+    if (auth.error) return auth.error;
+    let body;
+    try { body = await request.json(); } catch { return json({ message: "Некоректний запит." }, 400); }
+    const id = Number(body?.id);
+    if (!Number.isSafeInteger(id) || id < 1) return json({ message: "Некоректний ID документа." }, 400);
+    const current = await env.DB.prepare("SELECT id,order_number,title FROM sang_orders WHERE id=? LIMIT 1").bind(id).first();
+    if (!current) return json({ message: "Документ не знайдено." }, 404);
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM sang_order_recipients WHERE order_id=?").bind(id),
+      env.DB.prepare("DELETE FROM sang_orders WHERE id=?").bind(id),
+      env.DB.prepare("INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,'order_deleted',NULL)").bind(auth.actor.id)
+    ]);
+    return json({ success:true, message:"Документ видалено.", deletedId:id });
+  } catch (error) {
+    console.error("SANG order delete error:", error);
+    return json({ message:"Не вдалося видалити документ." },500);
+  }
+}
+
 export async function onRequest(context) {
   if (context.request.method === "GET") return onRequestGet(context);
   if (context.request.method === "POST") return onRequestPost(context);
   if (context.request.method === "PATCH") return onRequestPatch(context);
-  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, POST, PATCH" });
+  if (context.request.method === "DELETE") return onRequestDelete(context);
+  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, POST, PATCH, DELETE" });
 }
