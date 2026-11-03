@@ -177,6 +177,17 @@
         <div class="command-section-heading"><h3>Особовий склад · дані з реєстру</h3><span>PERSONNEL REGISTRY</span></div>
         <p class="command-description">Переглядова копія відомостей із Google Sheets. Редагування на сайті вимкнено.</p>
         <p id="service-profile-message" role="status"></p>
+        <div class="personnel-toolbar" aria-label="Фільтри особового складу">
+          <label class="personnel-search-label" for="personnel-search">Пошук за ПІБ або військовим номером</label>
+          <input id="personnel-search" type="search" placeholder="Введіть ПІБ або SA-FZ-…" autocomplete="off">
+          <div class="personnel-filter-grid">
+            <label>Звання<select id="personnel-filter-rank"><option value="">Усі звання</option></select></label>
+            <label>Підрозділ<select id="personnel-filter-unit"><option value="">Усі підрозділи</option></select></label>
+            <label>Статус служби<select id="personnel-filter-status"><option value="">Усі статуси</option></select></label>
+          </div>
+          <div class="personnel-results-line"><span id="personnel-results-count" aria-live="polite">Завантаження списку…</span><button id="personnel-reset-filters" class="cabinet-logout" type="button">СКИНУТИ ФІЛЬТРИ</button></div>
+        </div>
+        <div id="personnel-quick-profile" class="personnel-quick-profile" hidden aria-live="polite"></div>
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead><tr><th>Військовий №</th><th>ПІБ</th><th>Звання</th><th>Підрозділ</th><th>MOS</th><th>Статус служби</th><th>Реєстр</th></tr></thead>
