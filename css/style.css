@@ -3505,3 +3505,26 @@ body[data-holiday="new-year"] .seasonal-bar__mark { color: #e0c36a; }
         to { filter: brightness(1.06); }
     }
 }
+
+
+/* Winter Fort Zancudo hero artwork */
+body[data-season="winter"] .home-page .hero {
+    background-image:
+        linear-gradient(90deg, rgba(5,13,22,.94) 0%, rgba(5,13,22,.82) 43%, rgba(5,13,22,.30) 100%),
+        url("../assets/winter-fort-zancudo.svg");
+    background-position: center, center 48%;
+    background-size: cover, cover;
+    background-repeat: no-repeat;
+}
+body[data-season="winter"] .home-page .hero::before {
+    background:
+        radial-gradient(circle at 18% 18%, rgba(235,246,255,.58) 0 1px, transparent 2px),
+        radial-gradient(circle at 32% 72%, rgba(235,246,255,.40) 0 1px, transparent 2px),
+        radial-gradient(circle at 68% 28%, rgba(235,246,255,.46) 0 1px, transparent 2px),
+        linear-gradient(90deg, rgba(5,13,22,.24), rgba(5,13,22,.05));
+}
+@media (max-width: 850px) {
+    body[data-season="winter"] .home-page .hero {
+        background-position: center, 58% center;
+    }
+}
