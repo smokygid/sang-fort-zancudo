@@ -87,9 +87,10 @@ document.addEventListener("DOMContentLoaded", () => {
       date.textContent = formatDate(item.news_date);
       content.appendChild(date);
       row.appendChild(content);
-      const link = element("a","news-announcement-link","ДЕТАЛЬНІШЕ");
-      link.href = "#news-grid";
-      row.appendChild(link);
+      const details = element("details","news-announcement-details");
+      details.appendChild(element("summary","news-announcement-link","ДЕТАЛЬНІШЕ"));
+      details.appendChild(element("p","",item.body || ""));
+      row.appendChild(details);
       announcementsTarget.appendChild(row);
     }
   }
