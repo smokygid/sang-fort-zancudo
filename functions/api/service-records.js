@@ -64,11 +64,18 @@ export async function onRequestPost({ request, env }) {
        (account_id,record_type,title,description,document_number,record_date,created_by)
        VALUES (?,?,?,?,?,?,?)`
     ).bind(accountId,type,title,description,documentNumber,recordDate,auth.actor.id).run();
+    const recordId = inserted.meta?.last_row_id || null;
+    const notificationTitle = type === "award" ? "Нова відзнака" : type === "reprimand" ? "Дисциплінарне стягнення" : "Оновлення службової історії";
+    const notificationMessage = title + (documentNumber ? " · Підстава: " + documentNumber : "");
+    await env.DB.prepare(
+      `INSERT INTO personnel_notifications (account_id,notification_type,title,message,link,source_key)
+       VALUES (?,?,?,?,?,?)`
+    ).bind(accountId,type,notificationTitle,notificationMessage,"#awards-section","service-record:" + String(recordId || Date.now())).run();
     await env.DB.prepare(
       "INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,'service_record_created',?)"
     ).bind(auth.actor.id, accountId).run();
 
-    return json({ success: true, id: inserted.meta?.last_row_id || null, message: "Запис додано до службової історії." });
+    return json({ success: true, id: recordId, message: "Запис додано до службової історії та надіслано сповіщення." });
   } catch (error) {
     console.error("SANG service record create error:", error);
     return json({ message: "Не вдалося додати службовий запис." }, 500);
