@@ -79,10 +79,15 @@ export async function onRequestPost({ request, env }) {
     if (action === "create") {
       const requesterFaction = auth.account.role === "admin" ? "SANG" : (auth.account.faction_name || "Невідома фракція");
       const requesterIsSang = isSang(requesterFaction);
-      const items = parseItems(body.items);
+      const category = String(body.category || "");
+      const items = category === "materials"
+        ? [{ key:"materials", name:"Матеріали", unit:"category", quantity:1 }]
+        : category === "medical"
+          ? [{ key:"medical", name:"Медичні матеріали", unit:"category", quantity:1 }]
+          : null;
       const requestedDate = body.requestedDate, requestedTime = body.requestedTime;
       const comment = typeof body.comment === "string" ? body.comment.trim().slice(0,1000) : "";
-      if (!items) return json({message:"Оберіть матеріали та вкажіть коректну кількість."},400);
+      if (!items) return json({message:"Оберіть категорію замовлення."},400);
       if (!validDate(requestedDate) || requestedDate < new Date().toISOString().slice(0,10) || !validTime(requestedTime))
         return json({message:"Вкажіть коректну майбутню дату та час."},400);
       const count = await env.DB.prepare("SELECT COUNT(*) AS total FROM material_requests").first();
