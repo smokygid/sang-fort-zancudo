@@ -116,6 +116,13 @@ document.addEventListener("DOMContentLoaded", () => {
         state.addEventListener("click",() => changeStatus(item.id,"draft"));
       }
       actions.appendChild(state);
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "cabinet-logout admin-news-delete";
+      remove.textContent = "ВИДАЛИТИ";
+      remove.setAttribute("aria-label", "Видалити публікацію: " + item.title);
+      remove.addEventListener("click",() => deleteNews(item));
+      actions.appendChild(remove);
       card.appendChild(actions);
       list.appendChild(card);
     }
@@ -165,6 +172,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Не вдалося змінити статус.");
       message.textContent = data.message;
+      await loadNews();
+    } catch (error) { message.textContent = error.message; }
+  }
+
+  async function deleteNews(item) {
+    const approved = window.confirm("Остаточно видалити публікацію «" + item.title + "»? Цю дію неможливо скасувати.");
+    if (!approved) return;
+    message.textContent = "";
+    try {
+      const response = await fetch("/api/admin/news",{
+        method:"DELETE",
+        credentials:"same-origin",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({id:item.id})
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося видалити публікацію.");
+      message.textContent = data.message;
+      if (editing && editing.id === item.id) resetEditor();
       await loadNews();
     } catch (error) { message.textContent = error.message; }
   }
