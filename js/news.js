@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!featuredTarget || !gridTarget || !announcementsTarget) return;
 
   const formatDate = value => {
-    const match = String(value || "").match(/^(\\d{4})-(\\d{2})-(\\d{2})$/);
+    const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
     return match ? match[3] + "." + match[2] + "." + match[1] : String(value || "");
   };
-  const excerpt = item => item.excerpt || String(item.body || "").replace(/\\s+/g," ").slice(0,220) + (String(item.body || "").length > 220 ? "…" : "");
+  const excerpt = item => item.excerpt || String(item.body || "").replace(/\s+/g," ").slice(0,220) + (String(item.body || "").length > 220 ? "…" : "");
   const element = (tag, className, value) => {
     const node = document.createElement(tag);
     if (className) node.className = className;
