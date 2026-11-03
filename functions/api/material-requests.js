@@ -1,13 +1,13 @@
 import { json, readCookie, tokenDigest, COOKIE } from "../auth/_session.js";
 
 const CATALOG = {
-  armor: { name: "Броня", unit: "од." },
-  ammo: { name: "Боєприпаси", unit: "кор." },
-  medkit: { name: "Аптечки", unit: "од." },
-  radio: { name: "Радіостанції", unit: "од." },
-  bodycam: { name: "Бодікамери", unit: "од." },
-  sim: { name: "SIM-картки", unit: "од." },
-  fuel: { name: "Паливо", unit: "л" }
+  armor: { name: "Броня", unit: "од.", category: "materials" },
+  ammo: { name: "Боєприпаси", unit: "кор.", category: "materials" },
+  medkit: { name: "Аптечки", unit: "од.", category: "medical" },
+  radio: { name: "Радіостанції", unit: "од.", category: "materials" },
+  bodycam: { name: "Бодікамери", unit: "од.", category: "materials" },
+  sim: { name: "SIM-картки", unit: "од.", category: "materials" },
+  fuel: { name: "Паливо", unit: "л", category: "materials" }
 };
 
 async function getActor(request, env) {
