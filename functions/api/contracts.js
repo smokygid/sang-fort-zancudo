@@ -74,8 +74,13 @@ export async function onRequestPost({ request, env }) {
       env.DB.prepare("INSERT INTO personnel_contracts (account_id,start_date,duration_days,end_date,created_by) VALUES (?,?,?,?,?)").bind(accountId,startDate,durationDays,endDate,auth.actor.id),
       env.DB.prepare("INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,'contract_created',?)").bind(auth.actor.id,accountId)
     ];
-    await env.DB.batch(statements);
-    return json({success:true,startDate,durationDays,endDate,message:"Контракт успішно оформлено."});
+    const batchResult=await env.DB.batch(statements);
+    const contractId=batchResult?.[0]?.meta?.last_row_id || null;
+    await env.DB.prepare(
+      `INSERT INTO personnel_notifications (account_id,notification_type,title,message,link,source_key)
+       VALUES (?,'contract',?,?,?,?,?)`
+    ).bind(accountId,"Новий контракт оформлено","Початок: "+startDate+" · Термін: "+durationDays+" днів · Завершення: "+endDate,"#service-section","contract:"+String(contractId || Date.now())).run();
+    return json({success:true,startDate,durationDays,endDate,message:"Контракт успішно оформлено. Військовослужбовцю надіслано сповіщення."});
   }catch(error){
     console.error("SANG contract create error:",error);
     return json({message:"Не вдалося оформити контракт."},500);
