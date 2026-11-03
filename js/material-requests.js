@@ -5,15 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const message = document.getElementById("material-request-message");
   const esc = value => String(value ?? "—");
   const fmtDate = value => value ? new Date(value + "T00:00:00").toLocaleDateString("uk-UA") : "—";
-  form.querySelectorAll('.material-option input[type="checkbox"]').forEach(check => {
-    check.addEventListener("change", () => {
-      const quantity = form.querySelector('[data-quantity="' + check.value + '"]');
-      quantity.disabled = !check.checked;
-      if (!check.checked) quantity.value = "";
-      else quantity.value = "1";
-    });
-  });
-
   async function api(method, payload) {
     const response = await fetch("/api/material-requests", {
       method, credentials:"same-origin", cache:"no-store",
@@ -71,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
       head.append(make("strong","",request.request_number),make("span","material-status status-"+request.status,({pending:"НОВА",coordination:"УЗГОДЖЕННЯ",approved:"ПОГОДЖЕНО",rejected:"ВІДХИЛЕНО",completed:"ВИКОНАНО"}[request.status]||request.status)));
       card.append(head,make("p","material-request-meta",request.requester_faction+" · "+request.requester_service_number+" · "+fmtDate(request.created_at?.slice(0,10))));
       const items=make("ul","material-items");
-      try{for(const item of JSON.parse(request.items_json))items.append(make("li","",item.name+": "+item.quantity+" "+item.unit));}catch{}
+      try{for(const item of JSON.parse(request.items_json))items.append(make("li","",item.unit==="category"?item.name:item.name+": "+item.quantity+" "+item.unit));}catch{}
       card.append(items,make("p","", "Бажаний час: "+fmtDate(request.requested_date)+" · "+request.requested_time));
       if(request.comment)card.append(make("p","material-request-comment","Коментар: "+request.comment));
       if(data.reviewerSang)renderDecision(card,request,"sang","SANG");
@@ -93,10 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit",async event=>{
     event.preventDefault();message.textContent="";
-    const items=[...form.querySelectorAll('.material-option input[type="checkbox"]:checked')].map(check=>({key:check.value,quantity:Number(form.querySelector('[data-quantity="'+check.value+'"]').value)}));
-    const payload={items,requestedDate:document.getElementById("material-request-date").value,requestedTime:document.getElementById("material-request-time").value,comment:document.getElementById("material-request-comment").value};
+    const payload={category:document.getElementById("material-request-category").value,requestedDate:document.getElementById("material-request-date").value,requestedTime:document.getElementById("material-request-time").value,comment:document.getElementById("material-request-comment").value};
+    if(!["materials","medical"].includes(payload.category)){message.textContent="Оберіть категорію замовлення.";return;}
     const button=form.querySelector('button[type="submit"]');button.disabled=true;
-    try{const result=await api("POST",payload);message.textContent=result.message+" Номер: "+result.requestNumber;form.reset();form.querySelectorAll("[data-quantity]").forEach(input=>{input.disabled=true;input.value="";});await load();}
+    try{const result=await api("POST",payload);message.textContent=result.message+" Номер: "+result.requestNumber;form.reset();await load();}
     catch(error){message.textContent=error.message;}
     finally{button.disabled=false;}
   });
