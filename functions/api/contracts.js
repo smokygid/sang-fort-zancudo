@@ -78,7 +78,7 @@ export async function onRequestPost({ request, env }) {
     const contractId=batchResult?.[0]?.meta?.last_row_id || null;
     await env.DB.prepare(
       `INSERT INTO personnel_notifications (account_id,notification_type,title,message,link,source_key)
-       VALUES (?,'contract',?,?,?,?,?)`
+       VALUES (?,'contract',?,?,?,?)`
     ).bind(accountId,"Новий контракт оформлено","Початок: "+startDate+" · Термін: "+durationDays+" днів · Завершення: "+endDate,"#service-section","contract:"+String(contractId || Date.now())).run();
     return json({success:true,startDate,durationDays,endDate,message:"Контракт успішно оформлено. Військовослужбовцю надіслано сповіщення."});
   }catch(error){
