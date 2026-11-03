@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("soldier-role").textContent = result.soldier.role === "admin" ? "Командування" : "Військовослужбовець";
 
     loadOwnProfile();
+    loadNotifications();
     const adminPanel = document.getElementById("admin-panel");
     if (result.soldier.role === "admin" && adminPanel) {
       // Панелі командування й аудиту відкриваються лише після вибору відповідного пункту меню.
@@ -1030,4 +1031,92 @@ document.addEventListener("DOMContentLoaded",()=>{
     finally{button.disabled=false;}
   });
   document.getElementById("refresh-contracts")?.addEventListener("click",loadAdminContracts);
+});
+
+
+// Unified personal notification center.
+let currentNotifications = [];
+
+function formatNotificationDate(value) {
+  if (!value) return "Дата не зазначена";
+  const date = new Date(String(value).replace(" ", "T") + (String(value).includes("Z") ? "" : "Z"));
+  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString("uk-UA", { dateStyle:"short", timeStyle:"short" });
+}
+
+function renderNotifications(data) {
+  const list=document.getElementById("notifications-list");
+  const count=document.getElementById("notifications-unread-count");
+  const status=document.getElementById("notifications-status");
+  const markAll=document.getElementById("notifications-mark-all");
+  if(!list)return;
+  currentNotifications=Array.isArray(data.notifications)?data.notifications:[];
+  const unread=Number(data.unreadCount||0);
+  if(count)count.textContent=String(unread);
+  if(markAll)markAll.hidden=unread===0;
+  if(status)status.textContent=unread ? "Непрочитаних сповіщень: "+unread : "Усі сповіщення переглянуті.";
+  list.replaceChildren();
+  if(!currentNotifications.length){
+    const empty=document.createElement("p");empty.className="notifications-empty";empty.textContent="Нових службових повідомлень поки немає.";list.appendChild(empty);return;
+  }
+  for(const item of currentNotifications){
+    const card=document.createElement("article");card.className="notification-item"+(Number(item.is_read)===1?" is-read":" is-unread");
+    const top=document.createElement("div");top.className="notification-item-top";
+    const label=document.createElement("span");label.className="notification-type";
+    const labels={contract:"КОНТРАКТ",award:"ВІДЗНАКА",reprimand:"СТЯГНЕННЯ",history:"СЛУЖБОВА ІСТОРІЯ",system:"СИСТЕМА"};
+    label.textContent=labels[item.notification_type]||"СПОВІЩЕННЯ";
+    const date=document.createElement("time");date.textContent=formatNotificationDate(item.created_at);
+    top.append(label,date);
+    const title=document.createElement("h3");title.textContent=item.title||"Службове сповіщення";
+    const message=document.createElement("p");message.textContent=item.message||"";
+    card.append(top,title,message);
+    const actions=document.createElement("div");actions.className="notification-actions";
+    if(item.link && /^#[a-zA-Z0-9_-]+$/.test(item.link)){
+      const link=document.createElement("a");link.href=item.link;link.textContent="ПЕРЕЙТИ ДО РОЗДІЛУ";actions.appendChild(link);
+    }
+    if(Number(item.is_read)!==1){
+      const button=document.createElement("button");button.type="button";button.className="cabinet-logout";button.textContent="ПОЗНАЧИТИ ПРОЧИТАНИМ";
+      button.addEventListener("click",()=>markNotificationRead(item.id,button));actions.appendChild(button);
+    }else{
+      const read=document.createElement("span");read.className="notification-read-label";read.textContent="ПРОЧИТАНО";actions.appendChild(read);
+    }
+    card.appendChild(actions);list.appendChild(card);
+  }
+}
+
+async function loadNotifications() {
+  const list=document.getElementById("notifications-list");if(!list)return;
+  try{
+    const response=await fetch("/api/notifications",{credentials:"same-origin",cache:"no-store"});
+    const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося завантажити сповіщення.");
+    renderNotifications(data);
+  }catch(error){
+    list.textContent=error.message||"Помилка завантаження сповіщень.";
+    const status=document.getElementById("notifications-status");if(status)status.textContent="Центр сповіщень тимчасово недоступний.";
+  }
+}
+
+async function markNotificationRead(id,button) {
+  if(button)button.disabled=true;
+  try{
+    const response=await fetch("/api/notifications",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({notificationId:id})});
+    const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося оновити сповіщення.");
+    await loadNotifications();
+  }catch(error){
+    if(button){button.disabled=false;button.textContent="ПОВТОРИТИ";}
+    const status=document.getElementById("notifications-status");if(status)status.textContent=error.message;
+  }
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const markAll=document.getElementById("notifications-mark-all");
+  markAll?.addEventListener("click",async()=>{
+    markAll.disabled=true;
+    try{
+      const response=await fetch("/api/notifications",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({markAll:true})});
+      const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося оновити сповіщення.");
+      await loadNotifications();
+    }catch(error){
+      const status=document.getElementById("notifications-status");if(status)status.textContent=error.message;
+    }finally{markAll.disabled=false;}
+  });
 });
