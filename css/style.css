@@ -3549,3 +3549,51 @@ body.home-page[data-season="autumn"] .hero::before {
         background-position: center, 58% center;
     }
 }
+
+/* Subtle autumn leaves drifting over the navigation */
+body[data-season="autumn"] .site-header .menu {
+    position: relative;
+}
+
+body[data-season="autumn"] .site-header .menu::before,
+body[data-season="autumn"] .site-header .menu::after {
+    position: absolute;
+    z-index: 3;
+    top: -7px;
+    pointer-events: none;
+    font-size: 15px;
+    line-height: 1;
+    opacity: 0;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .35));
+    animation: sang-menu-leaf-drift 9s ease-in-out infinite;
+}
+
+body[data-season="autumn"] .site-header .menu::before {
+    content: "🍂";
+    left: 8%;
+    animation-delay: -1.5s;
+}
+
+body[data-season="autumn"] .site-header .menu::after {
+    content: "🍁";
+    left: 68%;
+    font-size: 13px;
+    animation-delay: -6s;
+}
+
+@keyframes sang-menu-leaf-drift {
+    0%   { transform: translate3d(0, -5px, 0) rotate(-25deg); opacity: 0; }
+    12%  { opacity: .82; }
+    50%  { transform: translate3d(28px, 12px, 0) rotate(95deg); opacity: .72; }
+    88%  { opacity: .55; }
+    100% { transform: translate3d(58px, 23px, 0) rotate(190deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body[data-season="autumn"] .site-header .menu::before,
+    body[data-season="autumn"] .site-header .menu::after {
+        animation: none;
+        opacity: .65;
+    }
+}
+
