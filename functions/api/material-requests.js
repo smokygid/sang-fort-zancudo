@@ -87,7 +87,7 @@ export async function onRequestPost({ request, env }) {
           : null;
       const requestedDate = body.requestedDate, requestedTime = body.requestedTime;
       const comment = typeof body.comment === "string" ? body.comment.trim().slice(0,1000) : "";
-      if (!items) return json({message:"Оберіть категорію замовлення."},400);
+      if (!items) return json({message:"Оберіть категорію та вкажіть кількість від 1 до 100000."},400);
       if (!validDate(requestedDate) || requestedDate < new Date().toISOString().slice(0,10) || !validTime(requestedTime))
         return json({message:"Вкажіть коректну майбутню дату та час."},400);
       const count = await env.DB.prepare("SELECT COUNT(*) AS total FROM material_requests").first();
