@@ -3528,3 +3528,24 @@ body[data-season="winter"] .home-page .hero::before {
         background-position: center, 58% center;
     }
 }
+
+
+/* Autumn Fort Zancudo hero artwork */
+body[data-season="autumn"] .home-page .hero {
+    background-image:
+        linear-gradient(90deg, rgba(7,15,20,.95) 0%, rgba(7,15,20,.82) 42%, rgba(18,17,14,.24) 100%),
+        url("../assets/autumn-fort-zancudo.svg");
+    background-position: center, center 48%;
+    background-size: cover, cover;
+    background-repeat: no-repeat;
+}
+body[data-season="autumn"] .home-page .hero::before {
+    background:
+        radial-gradient(ellipse at 82% 18%, rgba(242,174,91,.12), transparent 35%),
+        linear-gradient(90deg, rgba(7,15,20,.12), rgba(7,15,20,.02));
+}
+@media (max-width: 850px) {
+    body[data-season="autumn"] .home-page .hero {
+        background-position: center, 58% center;
+    }
+}
