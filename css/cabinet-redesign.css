@@ -77,3 +77,55 @@
 @media(max-width:760px){.cabinet-page .cabinet-shell{grid-template-columns:1fr;max-width:520px;gap:28px}.cabinet-page .cabinet-intro{text-align:center;padding:12px 0}.cabinet-page .cabinet-intro:before{margin:0 auto 22px}.cabinet-page .cabinet-intro>p{margin-left:auto;margin-right:auto}.cabinet-page .dashboard-layout{grid-template-columns:1fr}.cabinet-page .dashboard-sidebar{width:auto;height:auto;min-height:0;position:static;overflow:visible}.cabinet-page .dashboard-main{width:calc(100% - 24px)}.cabinet-page .dashboard-heading{padding:15px}.cabinet-page .cabinet-topbar-inner{width:calc(100% - 24px)}}
 @media(max-width:520px){.cabinet-page .cabinet-main{padding:30px 14px}.cabinet-page .cabinet-intro h1{font-size:48px}.cabinet-page .login-panel{padding:24px 20px}.cabinet-page .workspace-heading{align-items:flex-start}.cabinet-page .workspace-account{padding-top:7px}.cabinet-page .dashboard-identity{padding:16px}.cabinet-page .dashboard-content-grid>.dashboard-card{padding:16px}}
 @media(prefers-reduced-motion:reduce){.cabinet-page *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* Command workspace navigation and section hierarchy */
+.cabinet-page #admin-panel{scroll-margin-top:18px}
+.cabinet-page .command-subnav{
+  position:sticky;top:10px;z-index:6;
+  display:flex;flex-wrap:wrap;gap:7px;
+  margin:0 0 22px;padding:10px;
+  background:rgba(7,17,29,.94);
+  border:1px solid rgba(201,164,74,.24);
+  box-shadow:0 10px 25px rgba(0,0,0,.2);
+  backdrop-filter:blur(12px)
+}
+.cabinet-page .command-subnav a{
+  display:inline-flex;align-items:center;gap:8px;
+  min-height:34px;padding:8px 11px;
+  color:#c2ccd5;background:rgba(255,255,255,.025);
+  border:1px solid rgba(166,187,204,.13);
+  font-size:10px;font-weight:800;letter-spacing:.35px
+}
+.cabinet-page .command-subnav a span{color:var(--cb-gold);font-size:9px;letter-spacing:1px}
+.cabinet-page .command-subnav a:hover,
+.cabinet-page .command-subnav a:focus-visible{
+  color:#fff;background:rgba(201,164,74,.12);
+  border-color:rgba(201,164,74,.58);outline:none
+}
+.cabinet-page .command-anchor{height:1px;scroll-margin-top:80px}
+.cabinet-page #command-personnel,
+.cabinet-page #command-orders,
+.cabinet-page #command-news,
+.cabinet-page #command-factions{scroll-margin-top:82px}
+.cabinet-page #command-accounts{scroll-margin-top:82px}
+.cabinet-page #admin-panel>.command-section-heading{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  min-height:48px;box-sizing:border-box
+}
+.cabinet-page #admin-panel>.command-section-heading span{
+  color:#899bab;font-size:9px;font-weight:800;letter-spacing:1.5px
+}
+.cabinet-page #admin-panel .admin-orders-editor>h3,
+.cabinet-page #admin-panel .admin-profile-editor h3{letter-spacing:.1px}
+.cabinet-page #admin-panel .admin-list-heading{scroll-margin-top:82px}
+.cabinet-page #admin-panel .admin-table-wrap{max-height:520px;overscroll-behavior:contain}
+.cabinet-page #admin-panel .admin-table th{z-index:1}
+.cabinet-page #admin-panel .admin-orders-editor,
+.cabinet-page #admin-panel .admin-profile-editor{scroll-margin-top:82px}
+@media(max-width:650px){
+  .cabinet-page .command-subnav{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:8px;margin-bottom:16px}
+  .cabinet-page .command-subnav a{justify-content:flex-start;min-width:0;padding:8px;font-size:9px}
+  .cabinet-page #admin-panel>.command-section-heading{align-items:flex-start;flex-direction:column;gap:5px}
+  .cabinet-page #admin-panel .admin-table-wrap{max-height:420px}
+}
