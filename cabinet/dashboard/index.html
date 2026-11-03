@@ -93,22 +93,7 @@
           <div><p class="eyebrow">ОСОБОВИЙ СКЛАД · FORT ZANCUDO</p><h1>Мій <span>профіль</span></h1></div>
           <div class="workspace-account"><span>Військовий №</span><strong id="workspace-service-number">—</strong></div>
         </div>
-        <section class="dashboard-card material-requests-card" id="material-requests"><p class="card-kicker">INTERAGENCY SUPPLY · SANG</p><h2>Замовлення матеріалів</h2><p>Створення замовлень від командування SANG. Після надсилання заявку розглядає мерія.</p>
-<form id="material-request-form" class="profile-form">
-<label>Оберіть матеріали та кількість</label><div class="material-catalog-group"><h3>Матеріали</h3><div class="material-catalog">
-<label class="material-option"><span><input type="checkbox" value="armor"> Броня</span><input type="number" min="1" max="100000" data-quantity="armor" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="ammo"> Боєприпаси</span><input type="number" min="1" max="100000" data-quantity="ammo" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="radio"> Радіостанції</span><input type="number" min="1" max="100000" data-quantity="radio" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="bodycam"> Бодікамери</span><input type="number" min="1" max="100000" data-quantity="bodycam" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="sim"> SIM-картки</span><input type="number" min="1" max="100000" data-quantity="sim" placeholder="Кількість" disabled></label>
-<label class="material-option"><span><input type="checkbox" value="fuel"> Паливо (л)</span><input type="number" min="1" max="100000" data-quantity="fuel" placeholder="Кількість" disabled></label>
-</div></div><div class="material-catalog-group"><h3>Медичні матеріали</h3><div class="material-catalog">
-<label class="material-option"><span><input type="checkbox" value="medkit"> Аптечки</span><input type="number" min="1" max="100000" data-quantity="medkit" placeholder="Кількість" disabled></label>
-</div></div>
-<div class="material-request-fields"><label>Бажана дата<input id="material-request-date" type="date" required></label><label>Бажаний час<input id="material-request-time" type="time" required></label></div>
-<label for="material-request-comment">Коментар до замовлення</label><textarea id="material-request-comment" maxlength="1000" rows="3" placeholder="За потреби вкажіть додаткові відомості"></textarea>
-<button class="cabinet-logout" type="submit">НАДІСЛАТИ ЗАМОВЛЕННЯ</button><p id="material-request-message" role="status"></p></form>
-<div class="material-requests-list-head"><h3>Мої замовлення та рішення мерії</h3><button id="material-requests-refresh" class="cabinet-logout" type="button">ОНОВИТИ</button></div><div id="material-requests-list" aria-live="polite"><p>Завантаження заявок…</p></div></section>
+
 <section id="notifications-center" class="dashboard-card notifications-center" aria-labelledby="notifications-title">
           <div class="notifications-heading">
             <div><p class="card-kicker">PERSONNEL ALERTS · SANG</p><h2 id="notifications-title">Центр сповіщень <span id="notifications-unread-count" class="notifications-count">0</span></h2></div>
@@ -132,6 +117,22 @@
             <small>Рівень доступу: <b id="soldier-role">—</b></small>
           </div>
         </article>
+        <section class="dashboard-card material-requests-card" id="material-requests"><p class="card-kicker">INTERAGENCY SUPPLY · SANG</p><h2>Замовлення матеріалів</h2><p>Створення замовлень від командування SANG. Після надсилання заявку розглядає мерія.</p>
+<form id="material-request-form" class="profile-form">
+<label>Оберіть матеріали та кількість</label><div class="material-catalog-group"><h3>Матеріали</h3><div class="material-catalog">
+<label class="material-option"><span><input type="checkbox" value="armor"> Броня</span><input type="number" min="1" max="100000" data-quantity="armor" placeholder="Кількість" disabled></label>
+<label class="material-option"><span><input type="checkbox" value="ammo"> Боєприпаси</span><input type="number" min="1" max="100000" data-quantity="ammo" placeholder="Кількість" disabled></label>
+<label class="material-option"><span><input type="checkbox" value="radio"> Радіостанції</span><input type="number" min="1" max="100000" data-quantity="radio" placeholder="Кількість" disabled></label>
+<label class="material-option"><span><input type="checkbox" value="bodycam"> Бодікамери</span><input type="number" min="1" max="100000" data-quantity="bodycam" placeholder="Кількість" disabled></label>
+<label class="material-option"><span><input type="checkbox" value="sim"> SIM-картки</span><input type="number" min="1" max="100000" data-quantity="sim" placeholder="Кількість" disabled></label>
+<label class="material-option"><span><input type="checkbox" value="fuel"> Паливо (л)</span><input type="number" min="1" max="100000" data-quantity="fuel" placeholder="Кількість" disabled></label>
+</div></div><div class="material-catalog-group"><h3>Медичні матеріали</h3><div class="material-catalog">
+<label class="material-option"><span><input type="checkbox" value="medkit"> Аптечки</span><input type="number" min="1" max="100000" data-quantity="medkit" placeholder="Кількість" disabled></label>
+</div></div>
+<div class="material-request-fields"><label>Бажана дата<input id="material-request-date" type="date" required></label><label>Бажаний час<input id="material-request-time" type="time" required></label></div>
+<label for="material-request-comment">Коментар до замовлення</label><textarea id="material-request-comment" maxlength="1000" rows="3" placeholder="За потреби вкажіть додаткові відомості"></textarea>
+<button class="cabinet-logout" type="submit">НАДІСЛАТИ ЗАМОВЛЕННЯ</button><p id="material-request-message" role="status"></p></form>
+<div class="material-requests-list-head"><h3>Мої замовлення та рішення мерії</h3><button id="material-requests-refresh" class="cabinet-logout" type="button">ОНОВИТИ</button></div><div id="material-requests-list" aria-live="polite"><p>Завантаження заявок…</p></div></section>
         <div class="dashboard-content-grid">
           <article class="dashboard-card profile-card">
             <div class="service-profile" id="service-section">
