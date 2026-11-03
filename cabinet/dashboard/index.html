@@ -188,6 +188,45 @@
         <h3>Реєстр документів та керування</h3>
         <div id="admin-orders-list" class="orders-list"></div>
       </section>
+      <section class="admin-orders-editor admin-news-editor">
+        <h3>Керування новинами сайту</h3>
+        <p>Створюйте офіційні публікації. Чернетки не відображаються відвідувачам; після публікації новина автоматично з’явиться у відкритому розділі «Новини».</p>
+        <form id="news-create-form" class="profile-form">
+          <label for="news-title">Заголовок публікації</label>
+          <input id="news-title" maxlength="180" required placeholder="Наприклад: Проведено планові військові навчання">
+          <label for="news-category">Категорія</label>
+          <select id="news-category" required>
+            <option value="КОМАНДУВАННЯ">Командування</option>
+            <option value="СЛУЖБА">Служба</option>
+            <option value="НАВЧАННЯ">Навчання</option>
+            <option value="ОСОБОВИЙ СКЛАД">Особовий склад</option>
+            <option value="ЗАХОДИ">Заходи</option>
+            <option value="СПІВПРАЦЯ">Співпраця</option>
+            <option value="НАБІР">Набір</option>
+            <option value="ОГОЛОШЕННЯ">Оголошення</option>
+            <option value="ІНШЕ">Інше</option>
+          </select>
+          <label for="news-date">Дата публікації</label>
+          <input id="news-date" type="date" required>
+          <label for="news-image-url">Посилання на зображення</label>
+          <input id="news-image-url" type="url" maxlength="1000" placeholder="https://…">
+          <small class="news-form-hint">Вкажіть пряме HTTPS-посилання на зображення. Файл має бути доступний для перегляду на сайті.</small>
+          <label for="news-excerpt">Короткий опис</label>
+          <textarea id="news-excerpt" rows="3" maxlength="320" placeholder="Короткий текст для картки новини (необов’язково)"></textarea>
+          <label for="news-body">Повний текст публікації</label>
+          <textarea id="news-body" rows="9" maxlength="30000" required placeholder="Введіть повний текст новини…"></textarea>
+          <label class="news-checkbox-label"><input id="news-featured" type="checkbox"> Позначити як головну публікацію</label>
+          <label class="news-checkbox-label"><input id="news-announcement" type="checkbox"> Розмістити також у блоці офіційних оголошень</label>
+          <div id="news-image-preview" class="news-image-preview" hidden></div>
+          <div class="order-form-actions">
+            <button class="cabinet-logout" type="submit" data-news-status="draft">ЗБЕРЕГТИ ЧЕРНЕТКУ</button>
+            <button class="cabinet-logout" type="submit" data-news-status="published">ОПУБЛІКУВАТИ</button>
+          </div>
+          <p id="news-admin-message" role="status"></p>
+        </form>
+        <h3>Реєстр публікацій</h3>
+        <div id="admin-news-list" class="admin-news-list"><p>Завантаження публікацій…</p></div>
+      </section>
       <section class="admin-orders-editor faction-leaders-admin"><div class="admin-list-heading"><h3>Керівники державних фракцій</h3><button id="refresh-accounts-factions" class="cabinet-logout" type="button">ОНОВИТИ</button></div><p>Окремий список керівників, які активували доступ за персональним запрошенням.</p><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ПІБ</th><th>Фракція</th><th>Логін</th><th>ID</th><th>Дата реєстрації</th><th>Статус</th><th>Дія</th></tr></thead><tbody id="faction-leaders-list"><tr><td colspan="7">Завантаження…</td></tr></tbody></table></div></section>
       <div class="admin-list-heading"><h3>Зареєстровані облікові записи</h3><button id="refresh-accounts" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
       <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ID справи</th><th>Роль</th><th>Статус</th><th>Пароль</th><th>Дія</th></tr></thead><tbody id="accounts-list"><tr><td colspan="5">Завантаження…</td></tr></tbody></table></div>
@@ -211,5 +250,6 @@
   <script src="../../js/dashboard.js" defer></script>
   <script src="../../js/orders.js" defer></script>
   <script src="../../js/admin-orders.js" defer></script>
+  <script src="../../js/admin-news.js" defer></script>
 </body>
 </html>
