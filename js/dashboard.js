@@ -588,6 +588,8 @@ const AUDIT_ACTION_LABELS = {
   personal_profile_updated: "Оновлено особисті дані",
   service_profile_updated: "Оновлено службовий профіль",
   service_record_created: "Додано запис до особової справи",
+  service_record_deleted: "Видалено запис з особової справи",
+  order_deleted: "Видалено службовий документ",
   contract_created: "Оформлено / продовжено контракт"
 };
 
