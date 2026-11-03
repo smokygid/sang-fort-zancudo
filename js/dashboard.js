@@ -956,7 +956,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try{
       const response=await fetch("/api/service-records",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({accountId:soldier.value,recordType:document.getElementById("service-record-type").value,title:document.getElementById("service-record-title").value,recordDate:document.getElementById("service-record-date").value,documentNumber:document.getElementById("service-record-document").value,description:document.getElementById("service-record-description").value})});
       const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося додати запис.");
-      message.textContent=data.message||"Запис додано.";form.reset();if(dateInput)dateInput.value=new Date().toISOString().slice(0,10);await loadSelectedServiceRecords();
+      message.textContent=data.message||"Запис додано.";const selectedSoldier=soldier.value;form.reset();soldier.value=selectedSoldier;if(dateInput)dateInput.value=new Date().toISOString().slice(0,10);await loadSelectedServiceRecords();
     }catch(error){message.textContent=error.message;}finally{button.disabled=false;}
   });
 });
