@@ -66,7 +66,7 @@ export async function onRequestPost({ request, env }) {
     const startDate=typeof body.startDate==="string"?body.startDate:"";
     if(!Number.isSafeInteger(accountId)||accountId<1)return json({message:"Оберіть військовослужбовця."},400);
     if(![14,30].includes(durationDays))return json({message:"Строк контракту може становити лише 14 або 30 днів."},400);
-    if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(startDate)||new Date(startDate+"T00:00:00Z").toISOString().slice(0,10)!==startDate)return json({message:"Вкажіть коректну дату початку контракту."},400);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(startDate)||new Date(startDate+"T00:00:00Z").toISOString().slice(0,10)!==startDate)return json({message:"Вкажіть коректну дату початку контракту."},400);
     const target=await env.DB.prepare("SELECT id,role FROM personnel_accounts WHERE id=? LIMIT 1").bind(accountId).first();
     if(!target||target.role!=="soldier")return json({message:"Військовослужбовця не знайдено."},404);
     const endDate=new Date(Date.parse(startDate+"T00:00:00Z")+durationDays*86400000).toISOString().slice(0,10);
