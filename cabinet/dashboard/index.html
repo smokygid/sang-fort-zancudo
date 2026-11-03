@@ -112,6 +112,11 @@
               <div class="identity-meta"><span>Підрозділ</span><b id="profile-unit-copy">—</b></div>
               <div class="identity-meta"><span>MOS</span><b id="profile-mos-copy">—</b></div>
               <p id="profile-service-note">Службові примітки відсутні.</p>
+              <div class="contract-personal" id="personal-contract-panel">
+                <p class="card-kicker">СТРОКОВА СЛУЖБА · КОНТРАКТ</p>
+                <div id="personal-contract-current" class="contract-current"><p>Завантаження даних контракту…</p></div>
+                <div id="personal-contract-history" class="contract-history"></div>
+              </div>
             </div>
           </article>
           <article class="dashboard-card orders-card" id="orders-section">
@@ -206,6 +211,19 @@
             <label for="service-record-description">Примітка</label><textarea id="service-record-description" rows="3" maxlength="1500" placeholder="Короткий опис підстави або обставин"></textarea>
             <button class="cabinet-logout" type="submit">ДОДАТИ ДО ОСОБОВОЇ СПРАВИ</button><p id="service-record-admin-message" role="status"></p>
           </form>
+        </div>
+        <div class="service-record-admin contract-admin">
+          <div class="command-section-heading"><h3>Керування контрактами</h3><span>CONTRACT MANAGEMENT</span></div>
+          <p>Оформлення нового контракту або продовження служби на 14 чи 30 днів. Попередні контракти зберігаються в історії.</p>
+          <form id="contract-form" class="profile-form">
+            <label for="contract-soldier">Військовослужбовець</label><select id="contract-soldier" required><option value="">Завантаження особового складу…</option></select>
+            <label for="contract-start-date">Початок контракту</label><input id="contract-start-date" type="date" required>
+            <label for="contract-duration">Термін контракту</label><select id="contract-duration" required><option value="14">14 днів</option><option value="30">30 днів</option></select>
+            <p class="form-hint" id="contract-date-hint">Дата завершення розраховується автоматично після збереження.</p>
+            <button class="cabinet-logout" type="submit">ОФОРМИТИ / ПРОДОВЖИТИ КОНТРАКТ</button><p id="contract-admin-message" role="status"></p>
+          </form>
+          <div class="command-section-heading contract-list-heading"><h3>Стан контрактів особового складу</h3><button id="refresh-contracts" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ПІБ</th><th>Початок</th><th>Термін</th><th>Завершення</th><th>Залишок</th><th>Стан</th></tr></thead><tbody id="contracts-admin-list"><tr><td colspan="7">Завантаження…</td></tr></tbody></table></div>
         </div>
       </section>
       <section id="command-orders" class="admin-orders-editor">
