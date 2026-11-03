@@ -90,6 +90,14 @@
           <div><p class="eyebrow">ОСОБОВИЙ СКЛАД · FORT ZANCUDO</p><h1>Мій <span>профіль</span></h1></div>
           <div class="workspace-account"><span>Військовий №</span><strong id="workspace-service-number">—</strong></div>
         </div>
+        <section id="notifications-center" class="dashboard-card notifications-center" aria-labelledby="notifications-title">
+          <div class="notifications-heading">
+            <div><p class="card-kicker">PERSONNEL ALERTS · SANG</p><h2 id="notifications-title">Центр сповіщень <span id="notifications-unread-count" class="notifications-count">0</span></h2></div>
+            <button id="notifications-mark-all" class="cabinet-logout" type="button" hidden>ПОЗНАЧИТИ ВСІ ЯК ПРОЧИТАНІ</button>
+          </div>
+          <p id="notifications-status" class="notifications-status" role="status" aria-live="polite">Завантаження сповіщень…</p>
+          <div id="notifications-list" class="notifications-list"><p>Завантаження…</p></div>
+        </section>
         <article class="dashboard-card dashboard-identity" id="profile-section">
           <div class="identity-rank-mark" id="identity-rank-insignia" role="img" aria-label="Знаки розрізнення за військовим званням"></div>
           <div class="identity-data">
@@ -316,7 +324,7 @@
     </section>
     <p class="dashboard-note">ІНФОРМАЦІЯ ДЛЯ СЛУЖБОВОГО КОРИСТУВАННЯ · НЕ ПЕРЕДАВАЙТЕ ДАНІ ВХОДУ ІНШИМ ОСОБАМ</p>
   </main>
-  <script src="../../js/dashboard.js?v=contracts-nav-2" defer></script>
+  <script src="../../js/dashboard.js?v=notifications-center-1" defer></script>
   <script src="../../js/orders.js?v=order-reads-1" defer></script>
   <script src="../../js/admin-orders.js" defer></script>
   <script src="../../js/admin-news.js" defer></script>
