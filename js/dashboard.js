@@ -845,6 +845,13 @@ function setupCabinetTabs() {
     link.setAttribute("href","#" + key);
     link.addEventListener("click", event => { event.preventDefault(); activate(key); });
   });
+  const materialsSection = document.getElementById("material-requests");
+  const profilePanel = panels.querySelector('[data-panel="profile"]');
+  if (materialsSection && profilePanel) {
+    profilePanel.appendChild(materialsSection);
+    materialsSection.hidden = false;
+    materialsSection.style.display = "block";
+  }
   activate("profile");
 }
 document.addEventListener("DOMContentLoaded", setupCabinetTabs);
