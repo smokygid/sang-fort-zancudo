@@ -127,6 +127,15 @@
         </div>
     <section id="admin-panel" class="dashboard-card admin-panel" hidden>
       <div class="command-heading"><div><p class="card-kicker">SANG · COMMAND STAFF</p><h2>ПАНЕЛЬ КОМАНДУВАННЯ</h2><p>Керування обліковими записами та перегляд особового складу.</p><p><a class="cabinet-logout" href="../command/registrations/">РОЗГЛЯД ЗАЯВОК НА РЕЄСТРАЦІЮ</a></p></div><span class="orders-emblem">COMMAND</span></div>
+      <nav class="command-subnav" aria-label="Розділи панелі командування">
+        <a href="#command-access"><span>01</span> Доступи</a>
+        <a href="#command-personnel"><span>02</span> Особовий склад</a>
+        <a href="#command-orders"><span>03</span> Документи</a>
+        <a href="#command-news"><span>04</span> Новини</a>
+        <a href="#command-factions"><span>05</span> Фракції</a>
+        <a href="#command-accounts"><span>06</span> Облікові записи</a>
+      </nav>
+      <div id="command-access" class="command-anchor"></div>
       <div class="command-section-heading"><h3>Керування обліковими записами</h3><span>ACCESS CONTROL</span></div>
       <section class="admin-orders-editor">
         <h3>Запрошення керівника іншої фракції</h3>
@@ -152,7 +161,7 @@
       </form>
       <p id="admin-message" role="status"></p>
       <div id="new-account-result" class="temporary-credential" hidden></div>
-      <section class="admin-profile-editor">
+      <section id="command-personnel" class="admin-profile-editor">
         <div class="command-section-heading"><h3>Особовий склад · дані з реєстру</h3><span>PERSONNEL REGISTRY</span></div>
         <p class="command-description">Переглядова копія відомостей із Google Sheets. Редагування на сайті вимкнено.</p>
         <p id="service-profile-message" role="status"></p>
@@ -163,7 +172,7 @@
           </table>
         </div>
       </section>
-      <section class="admin-orders-editor">
+      <section id="command-orders" class="admin-orders-editor">
         <h3>Створення та публікація документа</h3>
         <p>Оберіть адресатів: загальний документ побачить увесь особовий склад, персональний — один військовослужбовець, груповий — лише вибрані особи.</p>
         <form id="order-create-form" class="profile-form">
@@ -189,7 +198,7 @@
         <h3>Реєстр документів та керування</h3>
         <div id="admin-orders-list" class="orders-list"></div>
       </section>
-      <section class="admin-orders-editor admin-news-editor">
+      <section id="command-news" class="admin-orders-editor admin-news-editor">
         <h3>Керування новинами сайту</h3>
         <p>Створюйте офіційні публікації. Чернетки не відображаються відвідувачам; після публікації новина автоматично з’явиться у відкритому розділі «Новини».</p>
         <form id="news-create-form" class="profile-form">
@@ -228,8 +237,8 @@
         <h3>Реєстр публікацій</h3>
         <div id="admin-news-list" class="admin-news-list"><p>Завантаження публікацій…</p></div>
       </section>
-      <section class="admin-orders-editor faction-leaders-admin"><div class="admin-list-heading"><h3>Керівники державних фракцій</h3><button id="refresh-accounts-factions" class="cabinet-logout" type="button">ОНОВИТИ</button></div><p>Окремий список керівників, які активували доступ за персональним запрошенням.</p><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ПІБ</th><th>Фракція</th><th>Логін</th><th>ID</th><th>Дата реєстрації</th><th>Статус</th><th>Дія</th></tr></thead><tbody id="faction-leaders-list"><tr><td colspan="7">Завантаження…</td></tr></tbody></table></div></section>
-      <div class="admin-list-heading"><h3>Зареєстровані облікові записи</h3><button id="refresh-accounts" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
+      <section id="command-factions" class="admin-orders-editor faction-leaders-admin"><div class="admin-list-heading"><h3>Керівники державних фракцій</h3><button id="refresh-accounts-factions" class="cabinet-logout" type="button">ОНОВИТИ</button></div><p>Окремий список керівників, які активували доступ за персональним запрошенням.</p><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ПІБ</th><th>Фракція</th><th>Логін</th><th>ID</th><th>Дата реєстрації</th><th>Статус</th><th>Дія</th></tr></thead><tbody id="faction-leaders-list"><tr><td colspan="7">Завантаження…</td></tr></tbody></table></div></section>
+      <div id="command-accounts" class="admin-list-heading"><h3>Зареєстровані облікові записи</h3><button id="refresh-accounts" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
       <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ID справи</th><th>Роль</th><th>Статус</th><th>Пароль</th><th>Дія</th></tr></thead><tbody id="accounts-list"><tr><td colspan="5">Завантаження…</td></tr></tbody></table></div>
     </section>
     <section id="audit-panel" class="dashboard-card admin-panel" hidden>
