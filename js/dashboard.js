@@ -365,6 +365,7 @@ async function loadOwnProfile() {
     document.getElementById("profile-mos").textContent = p.mos || "Не зазначено";
     document.getElementById("profile-service-status").textContent = p.serviceStatus || "Не зазначено";
     document.getElementById("profile-service-note").textContent = p.serviceNote || "Службові примітки відсутні.";
+    loadOwnServiceRecords();
   } catch (error) {
     document.getElementById("personal-profile-message").textContent = error.message;
   }
@@ -863,4 +864,45 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   commandLink.addEventListener("click", e => { e.preventDefault(); showAdminSection("command"); });
   auditLink.addEventListener("click", e => { e.preventDefault(); showAdminSection("audit"); });
+});
+
+const SERVICE_RECORD_LABELS = { award:"НАГОРОДА / ЗАОХОЧЕННЯ", reprimand:"ДИСЦИПЛІНАРНЕ СТЯГНЕННЯ", history:"ПОДІЯ ПРОХОДЖЕННЯ СЛУЖБИ" };
+
+function renderServiceRecordItems(target, records) {
+  target.replaceChildren();
+  if (!records.length) { const empty=document.createElement("div"); empty.className="service-record-empty"; empty.textContent="У службовій історії поки немає записів."; target.appendChild(empty); return; }
+  for (const record of records) {
+    const item=document.createElement("article"); item.className="service-record-item"; item.dataset.type=record.record_type;
+    const top=document.createElement("div"); top.className="service-record-top";
+    const type=document.createElement("span"); type.className="service-record-type"; type.textContent=SERVICE_RECORD_LABELS[record.record_type] || "СЛУЖБОВИЙ ЗАПИС";
+    const date=document.createElement("time"); date.className="service-record-date"; date.textContent=record.record_date ? new Date(record.record_date+"T00:00:00").toLocaleDateString("uk-UA") : "Дата не зазначена";
+    top.append(type,date); const title=document.createElement("h3"); title.textContent=record.title || "Без назви"; item.append(top,title);
+    if(record.description){const description=document.createElement("p");description.textContent=record.description;item.appendChild(description);}
+    if(record.document_number){const doc=document.createElement("div");doc.className="service-record-document";doc.textContent="Підстава: "+record.document_number;item.appendChild(doc);}
+    target.appendChild(item);
+  }
+}
+
+async function loadOwnServiceRecords() {
+  const target=document.getElementById("own-service-records"); if(!target)return;
+  try { const response=await fetch("/api/service-records",{credentials:"same-origin",cache:"no-store"}); const data=await response.json(); if(!response.ok)throw new Error(data.message||"Не вдалося завантажити службову історію."); const records=data.records||[]; const count=document.getElementById("service-record-count"); if(count)count.textContent=String(records.length); renderServiceRecordItems(target,records); }
+  catch(error){target.textContent=error.message||"Помилка завантаження службової історії.";}
+}
+
+function populateServiceRecordSoldiers(profiles) {
+  const select=document.getElementById("service-record-soldier"); if(!select)return;
+  select.replaceChildren(new Option("Оберіть військовослужбовця",""));
+  for(const p of profiles){const label=[p.full_name,p.service_number].filter(Boolean).join(" · ");select.appendChild(new Option(label||p.service_number,String(p.id)));}
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form=document.getElementById("service-record-form"); if(!form)return;
+  const dateInput=document.getElementById("service-record-date"); if(dateInput)dateInput.value=new Date().toISOString().slice(0,10);
+  form.addEventListener("submit",async event=>{
+    event.preventDefault(); const message=document.getElementById("service-record-admin-message"); const button=form.querySelector('button[type="submit"]'); button.disabled=true; message.textContent="";
+    try {
+      const response=await fetch("/api/service-records",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({accountId:document.getElementById("service-record-soldier").value,recordType:document.getElementById("service-record-type").value,title:document.getElementById("service-record-title").value,recordDate:document.getElementById("service-record-date").value,documentNumber:document.getElementById("service-record-document").value,description:document.getElementById("service-record-description").value})});
+      const data=await response.json(); if(!response.ok)throw new Error(data.message||"Не вдалося додати запис."); message.textContent=data.message||"Запис додано."; form.reset(); if(dateInput)dateInput.value=new Date().toISOString().slice(0,10);
+    } catch(error){message.textContent=error.message;} finally{button.disabled=false;}
+  });
 });
