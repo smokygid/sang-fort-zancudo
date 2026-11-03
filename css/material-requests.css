@@ -1,0 +1,25 @@
+/* Interagency material request workflow */
+.material-requests-card{margin:22px 0;border:1px solid rgba(201,164,74,.28)}
+.material-catalog{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:10px 0 18px}
+.material-option{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px;border:1px solid var(--cb-line);background:rgba(5,15,25,.45);font-size:12px}
+.material-option span{display:flex;align-items:center;gap:8px}
+.material-option input[type=checkbox]{width:16px;height:16px;accent-color:var(--cb-gold)}
+.material-option input[type=number]{width:112px;min-width:0;padding:8px;background:#081522;color:var(--cb-text);border:1px solid var(--cb-line)}
+.material-request-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.material-request-fields label{display:grid;gap:7px}
+.material-request-fields input,.material-request-card input,.material-decision input{width:100%;box-sizing:border-box;padding:10px;background:#081522;color:var(--cb-text);border:1px solid var(--cb-line)}
+.material-requests-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:25px;border-top:1px solid var(--cb-line);padding-top:16px}
+.material-request-item{margin:12px 0;padding:16px;background:rgba(6,17,28,.7);border:1px solid var(--cb-line);border-left:2px solid var(--cb-gold)}
+.material-request-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.material-status{font-size:9px;letter-spacing:1px;padding:5px 8px;border:1px solid var(--cb-line);color:var(--cb-gold-hi)}
+.material-status.status-approved{color:#91d3a2}.material-status.status-rejected{color:#e69b9b}
+.material-request-meta,.material-request-comment{font-size:11px;color:var(--cb-muted)}
+.material-items{display:flex;flex-wrap:wrap;gap:8px 22px;padding-left:18px;font-size:12px}
+.material-decision{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;padding:12px;border:1px solid rgba(201,164,74,.22);background:rgba(201,164,74,.035)}
+.material-decision h4{grid-column:1/-1;margin:0;color:var(--cb-gold-hi);font-size:11px;letter-spacing:1px}
+.material-decision input{min-width:0}
+.material-decision-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+.material-decision-actions button{cursor:pointer}
+.material-reject{border-color:rgba(220,110,110,.55);color:#e9a0a0}
+.material-error{color:#e9a0a0}
+@media(max-width:650px){.material-catalog,.material-request-fields,.material-decision{grid-template-columns:1fr}.material-decision h4,.material-decision-actions{grid-column:auto}.material-option input[type=number]{width:90px}.material-requests-list-head{align-items:flex-start;flex-direction:column}}
