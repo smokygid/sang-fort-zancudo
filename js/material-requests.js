@@ -37,9 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const block = make("div","material-decision");
     const heading = make("h4","",label + ": " + ({pending:"Очікує рішення",approved:"Підтверджено",proposed:"Запропоновано іншу дату",rejected:"Відхилено"}[status] || status));
     block.append(heading);
-    if (status === "pending") {
-      const date = document.createElement("input"); date.type="date"; date.value=request.requested_date; date.setAttribute("aria-label","Дата рішення "+label);
-      const time = document.createElement("input"); time.type="time"; time.value=request.requested_time; time.setAttribute("aria-label","Час рішення "+label);
+    if (status !== "rejected" && request.status !== "approved" && request.status !== "rejected" && request.status !== "completed") {
+      const date = document.createElement("input"); date.type="date"; date.value=request[(side === "sang" ? "city" : "sang")+"_status"]==="proposed" ? request[(side === "sang" ? "city" : "sang")+"_date"] : request.requested_date; date.setAttribute("aria-label","Дата рішення "+label);
+      const time = document.createElement("input"); time.type="time"; time.value=request[(side === "sang" ? "city" : "sang")+"_status"]==="proposed" ? request[(side === "sang" ? "city" : "sang")+"_time"] : request.requested_time; time.setAttribute("aria-label","Час рішення "+label);
       const comment = document.createElement("input"); comment.maxLength=1000; comment.placeholder="Коментар / причина";
       const actions = make("div","material-decision-actions");
       const approve = make("button","cabinet-logout","ПІДТВЕРДИТИ");
