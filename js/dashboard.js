@@ -913,13 +913,49 @@ function populateServiceRecordSoldiers(profiles) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const form=document.getElementById("service-record-form"); if(!form)return;
-  const dateInput=document.getElementById("service-record-date"); if(dateInput)dateInput.value=new Date().toISOString().slice(0,10);
+  const soldier=document.getElementById("service-record-soldier");
+  const dateInput=document.getElementById("service-record-date");
+  const list=document.getElementById("service-record-admin-list");
+  const message=document.getElementById("service-record-admin-message");
+  if(dateInput)dateInput.value=new Date().toISOString().slice(0,10);
+
+  async function loadSelectedServiceRecords() {
+    if(!list || !soldier.value){if(list)list.textContent="Оберіть військовослужбовця для перегляду записів.";return;}
+    list.textContent="Завантаження записів…";
+    try{
+      const response=await fetch("/api/service-records?accountId="+encodeURIComponent(soldier.value),{credentials:"same-origin",cache:"no-store"});
+      const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося завантажити записи.");
+      list.replaceChildren();
+      const records=data.records||[];
+      if(!records.length){list.textContent="У цього військовослужбовця записів поки немає.";return;}
+      for(const record of records){
+        const card=document.createElement("article");card.className="service-record-item";
+        const heading=document.createElement("h4");heading.textContent=(SERVICE_RECORD_LABELS[record.record_type]||"СЛУЖБОВИЙ ЗАПИС")+" · "+(record.record_date||"");
+        const title=document.createElement("strong");title.textContent=record.title||"Без назви";
+        const description=document.createElement("p");description.textContent=[record.description,record.document_number?"Підстава: "+record.document_number:""].filter(Boolean).join(" · ");
+        const remove=document.createElement("button");remove.type="button";remove.className="cabinet-logout admin-delete-button";remove.textContent="ВИДАЛИТИ ЗАПИС";
+        remove.addEventListener("click",async()=>{
+          if(!confirm("Видалити запис «"+(record.title||"Без назви")+"» з особової справи? Цю дію неможливо скасувати."))return;
+          remove.disabled=true;
+          try{
+            const deletion=await fetch("/api/service-records",{method:"DELETE",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:record.id})});
+            const result=await deletion.json();if(!deletion.ok)throw new Error(result.message||"Не вдалося видалити запис.");
+            message.textContent=result.message;await loadSelectedServiceRecords();
+          }catch(error){message.textContent=error.message;remove.disabled=false;}
+        });
+        card.append(heading,title);if(description.textContent)card.appendChild(description);card.appendChild(remove);list.appendChild(card);
+      }
+    }catch(error){list.textContent=error.message||"Помилка завантаження записів.";}
+  }
+
+  soldier.addEventListener("change",loadSelectedServiceRecords);
   form.addEventListener("submit",async event=>{
-    event.preventDefault(); const message=document.getElementById("service-record-admin-message"); const button=form.querySelector('button[type="submit"]'); button.disabled=true; message.textContent="";
-    try {
-      const response=await fetch("/api/service-records",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({accountId:document.getElementById("service-record-soldier").value,recordType:document.getElementById("service-record-type").value,title:document.getElementById("service-record-title").value,recordDate:document.getElementById("service-record-date").value,documentNumber:document.getElementById("service-record-document").value,description:document.getElementById("service-record-description").value})});
-      const data=await response.json(); if(!response.ok)throw new Error(data.message||"Не вдалося додати запис."); message.textContent=data.message||"Запис додано."; form.reset(); if(dateInput)dateInput.value=new Date().toISOString().slice(0,10);
-    } catch(error){message.textContent=error.message;} finally{button.disabled=false;}
+    event.preventDefault();const button=form.querySelector('button[type="submit"]');button.disabled=true;message.textContent="";
+    try{
+      const response=await fetch("/api/service-records",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({accountId:soldier.value,recordType:document.getElementById("service-record-type").value,title:document.getElementById("service-record-title").value,recordDate:document.getElementById("service-record-date").value,documentNumber:document.getElementById("service-record-document").value,description:document.getElementById("service-record-description").value})});
+      const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося додати запис.");
+      message.textContent=data.message||"Запис додано.";form.reset();if(dateInput)dateInput.value=new Date().toISOString().slice(0,10);await loadSelectedServiceRecords();
+    }catch(error){message.textContent=error.message;}finally{button.disabled=false;}
   });
 });
 
