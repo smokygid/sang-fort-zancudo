@@ -580,7 +580,8 @@ const AUDIT_ACTION_LABELS = {
   account_activated: "Обліковий запис розблоковано",
   account_deactivated: "Обліковий запис заблоковано",
   personal_profile_updated: "Оновлено особисті дані",
-  service_profile_updated: "Оновлено службовий профіль"
+  service_profile_updated: "Оновлено службовий профіль",
+  service_record_created: "Додано запис до особової справи"
 };
 
 let auditEntries = [];
