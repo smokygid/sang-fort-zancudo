@@ -34,7 +34,7 @@ function normalize(body) {
   const excerpt = text(body.excerpt, 320);
   const content = typeof body.body === "string" ? body.body.trim().slice(0, 30000) : "";
   const image = imageUrl(body.imageUrl);
-  if (!title || !CATEGORIES.includes(category) || !/^\\d{4}-\\d{2}-\\d{2}$/.test(newsDate) || !content) {
+  if (!title || !CATEGORIES.includes(category) || !/^\d{4}-\d{2}-\d{2}$/.test(newsDate) || !content) {
     return { error: "Заповніть заголовок, категорію, дату та текст публікації." };
   }
   if (image === null) return { error: "Для зображення вкажіть коректне HTTPS-посилання." };
