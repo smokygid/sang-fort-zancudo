@@ -327,3 +327,209 @@ body.home-page {
   .home-page .steps { grid-template-columns: 1fr; }
   .home-page .step:last-child { grid-column: auto; }
 }
+
+
+/* =========================================================
+   HOMEPAGE — OPERATIONAL BRIEF / COMMAND INFORMATION
+   ========================================================= */
+.home-page .sang-ops-section {
+  padding-top: 34px;
+  padding-bottom: 42px;
+  background: linear-gradient(180deg, #081522 0%, #0a1928 100%);
+}
+.home-page .sang-ops-shell {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(22px, 3.5vw, 38px);
+  background:
+    radial-gradient(ellipse at 92% 8%, rgba(201,164,74,.09), transparent 34%),
+    linear-gradient(145deg, rgba(17,35,52,.98), rgba(7,18,30,.98));
+  border: 1px solid rgba(201,164,74,.28);
+  border-top: 2px solid var(--sang-gold);
+  box-shadow: 0 22px 55px rgba(0,0,0,.22);
+}
+.home-page .sang-ops-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 27px;
+}
+.home-page .sang-ops-heading h2 {
+  margin-top: 10px;
+  color: #f0f3f5;
+  font-size: clamp(25px, 3.7vw, 39px);
+  line-height: 1.08;
+  letter-spacing: -1.2px;
+}
+.home-page .sang-ops-heading h2 span { color: var(--sang-gold-bright); }
+.home-page .sang-ops-heading p {
+  max-width: 620px;
+  margin-top: 11px;
+  color: var(--sang-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.home-page .sang-ops-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+  padding: 9px 12px;
+  border: 1px solid rgba(111,184,137,.24);
+  background: rgba(111,184,137,.06);
+  color: #a5cbb1;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.1px;
+}
+.home-page .sang-ops-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6fb889;
+  box-shadow: 0 0 0 4px rgba(111,184,137,.12);
+}
+.home-page .sang-ops-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: 15px;
+}
+.home-page .sang-ops-facts {
+  display: grid;
+  gap: 9px;
+}
+.home-page .sang-ops-fact {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 83px;
+  padding: 15px 17px;
+  background: rgba(5,15,25,.42);
+  border: 1px solid rgba(173,192,208,.12);
+}
+.home-page .sang-ops-fact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 43px;
+  width: 43px;
+  height: 43px;
+  border: 1px solid rgba(201,164,74,.38);
+  background: rgba(201,164,74,.07);
+  color: var(--sang-gold-bright);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: -.3px;
+}
+.home-page .sang-ops-fact div { display: grid; gap: 4px; }
+.home-page .sang-ops-fact strong {
+  color: #e8edf1;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .8px;
+}
+.home-page .sang-ops-fact div span {
+  color: #91a1b0;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.home-page .sang-ops-fact-link {
+  transition: border-color .2s ease, background .2s ease;
+}
+.home-page .sang-ops-fact-link:hover {
+  border-color: rgba(201,164,74,.48);
+  background: rgba(201,164,74,.055);
+}
+.home-page .sang-ops-message {
+  display: flex;
+  flex-direction: column;
+  min-height: 267px;
+  padding: 20px 22px;
+  background: linear-gradient(145deg, rgba(8,20,32,.94), rgba(12,27,42,.92));
+  border: 1px solid rgba(201,164,74,.24);
+}
+.home-page .sang-ops-message-top {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--sang-gold-bright);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.home-page .sang-ops-message-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(201,164,74,.55);
+  color: var(--sang-gold-bright);
+  font-size: 13px;
+}
+.home-page .sang-ops-message-tag {
+  margin-left: auto;
+  padding: 5px 7px;
+  border: 1px solid rgba(201,164,74,.24);
+  color: #b8a16b;
+  font-size: 8px;
+}
+.home-page .sang-ops-announcement { padding: 22px 0 18px; }
+.home-page .sang-ops-announcement h3 {
+  color: #f0f3f5;
+  font-size: clamp(17px, 2vw, 21px);
+  line-height: 1.3;
+}
+.home-page .sang-ops-announcement p {
+  margin-top: 9px;
+  color: #a6b4c1;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.home-page .sang-ops-announcement time {
+  display: block;
+  margin-top: 12px;
+  color: #8b9aa8;
+  font-size: 9px;
+  letter-spacing: .8px;
+}
+.home-page .sang-ops-archive {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 13px;
+  border-top: 1px solid rgba(173,192,208,.12);
+  color: var(--sang-gold-bright);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.home-page .sang-ops-archive:hover { color: #fff; }
+.home-page .sang-ops-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(173,192,208,.1);
+  color: #718394;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+}
+@media (max-width: 760px) {
+  .home-page .sang-ops-heading { align-items: flex-start; flex-direction: column; }
+  .home-page .sang-ops-grid { grid-template-columns: 1fr; }
+  .home-page .sang-ops-message { min-height: 235px; }
+}
+@media (max-width: 480px) {
+  .home-page .sang-ops-shell { padding: 19px 15px; }
+  .home-page .sang-ops-fact { min-height: 76px; padding: 12px; gap: 11px; }
+  .home-page .sang-ops-fact-icon { flex-basis: 39px; width: 39px; height: 39px; }
+  .home-page .sang-ops-fact strong { font-size: 9px; }
+  .home-page .sang-ops-footer { flex-direction: column; gap: 6px; }
+  .home-page .sang-ops-online { font-size: 8px; }
+}
