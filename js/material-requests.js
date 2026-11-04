@@ -85,7 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (form) form.addEventListener("submit",async event=>{
     event.preventDefault();message.textContent="";
     const payload={category:document.getElementById("material-request-category").value,quantity:Number(document.getElementById("material-request-quantity").value),requestedDate:document.getElementById("material-request-date").value,requestedTime:document.getElementById("material-request-time").value,comment:document.getElementById("material-request-comment").value};
-    if(!["materials","medical"].includes(payload.category)){message.textContent="Оберіть категорію замовлення.";return;}\n    if(!Number.isSafeInteger(payload.quantity)||payload.quantity<1||payload.quantity>100000){message.textContent="Вкажіть кількість від 1 до 100000.";return;}
+    if(!["materials","medical"].includes(payload.category)){message.textContent="Оберіть категорію замовлення.";return;}
+    if(!Number.isSafeInteger(payload.quantity)||payload.quantity<1||payload.quantity>100000){message.textContent="Вкажіть кількість від 1 до 100000.";return;}
     const button=form.querySelector('button[type="submit"]');button.disabled=true;
     try{const result=await api("POST",payload);message.textContent=result.message+" Номер: "+result.requestNumber;form.reset();await load();}
     catch(error){message.textContent=error.message;}
