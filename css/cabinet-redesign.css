@@ -273,3 +273,49 @@
   .cabinet-page .personnel-pagination{align-items:flex-start;flex-direction:column}
   .cabinet-page .personnel-pagination-controls{width:100%;justify-content:space-between}
 }
+
+
+/* Contract administration filters and quick actions */
+.cabinet-page .contract-overview-filters{
+  display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 13px
+}
+.cabinet-page .contract-filter{
+  display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:7px 10px;
+  border:1px solid var(--cb-line);background:rgba(4,14,24,.48);
+  color:#aebdca;font:inherit;font-size:9px;font-weight:900;letter-spacing:.35px;
+  cursor:pointer;transition:background .15s,border-color .15s,color .15s
+}
+.cabinet-page .contract-filter span{
+  display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;
+  padding:0 5px;border-radius:12px;background:rgba(255,255,255,.07);
+  color:var(--cb-text);font-size:9px;font-variant-numeric:tabular-nums
+}
+.cabinet-page .contract-filter:hover,.cabinet-page .contract-filter.is-active{
+  border-color:rgba(201,164,74,.65);background:rgba(201,164,74,.12);color:var(--cb-gold-hi)
+}
+.cabinet-page .contract-search-label{
+  display:block;margin:8px 0 6px;color:var(--cb-muted);font-size:10px;font-weight:800
+}
+.cabinet-page #contract-admin-search{
+  width:100%;max-width:460px;min-height:38px;padding:9px 12px;
+  border:1px solid var(--cb-line);background:rgba(4,14,24,.58);color:var(--cb-text)
+}
+.cabinet-page .contract-admin-results{
+  margin:9px 0;color:var(--cb-muted);font-size:10px
+}
+.cabinet-page .contract-quick-renew{
+  min-height:29px;padding:6px 9px;border:1px solid rgba(201,164,74,.45);
+  background:rgba(201,164,74,.09);color:var(--cb-gold-hi);
+  font-size:8px;font-weight:900;letter-spacing:.45px;white-space:nowrap;cursor:pointer
+}
+.cabinet-page .contract-quick-renew:hover{
+  background:rgba(201,164,74,.18);border-color:var(--cb-gold-hi)
+}
+.cabinet-page #contracts-admin-list tr[data-contract-status="warning"] td:nth-child(7){color:var(--cb-gold-hi);font-weight:900}
+.cabinet-page #contracts-admin-list tr[data-contract-status="expired"] td:nth-child(7){color:#e59a92;font-weight:900}
+.cabinet-page #contracts-admin-list tr[data-contract-status="missing"] td:nth-child(7){color:#9aabba}
+@media(max-width:650px){
+  .cabinet-page .contract-overview-filters{display:grid;grid-template-columns:1fr 1fr}
+  .cabinet-page .contract-filter{justify-content:space-between;text-align:left}
+  .cabinet-page .contract-filter:last-child{grid-column:1/-1}
+}
