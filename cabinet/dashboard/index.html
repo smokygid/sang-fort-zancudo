@@ -342,14 +342,23 @@
     <section id="audit-panel" class="dashboard-card admin-panel" hidden>
       <div class="admin-list-heading"><h3>Журнал аудиту дій</h3><button id="refresh-audit" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
       <p>Останні дії командування та зміни облікових записів.</p>
-      <div class="audit-filters">
-        <label>Військовослужбовець<select id="audit-filter-soldier"><option value="">Усі військовослужбовці</option></select></label>
-        <label>Тип дії<select id="audit-filter-action"><option value="">Усі дії</option></select></label>
-        <label>Від дати<input id="audit-filter-from" type="date"></label>
-        <label>До дати<input id="audit-filter-to" type="date"></label>
-        <button id="audit-filter-reset" class="cabinet-logout" type="button">СКИНУТИ</button>
+      <div class="audit-toolbar">
+        <label class="audit-search-label">Пошук по журналу<input id="audit-filter-search" type="search" placeholder="Дія, виконавець або військовий №"></label>
+        <div class="audit-filters">
+          <label>Військовослужбовець<select id="audit-filter-soldier"><option value="">Усі військовослужбовці</option></select></label>
+          <label>Тип дії<select id="audit-filter-action"><option value="">Усі дії</option></select></label>
+          <label>Від дати<input id="audit-filter-from" type="date"></label>
+          <label>До дати<input id="audit-filter-to" type="date"></label>
+          <label>Порядок<select id="audit-filter-sort"><option value="newest">Спочатку нові</option><option value="oldest">Спочатку старі</option></select></label>
+          <button id="audit-filter-reset" class="cabinet-logout" type="button">СКИНУТИ</button>
+        </div>
       </div>
+      <p id="audit-results-count" class="audit-results-count" aria-live="polite">Завантаження записів…</p>
       <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Дата та час</th><th>Виконавець</th><th>Дія</th><th>Обліковий запис</th></tr></thead><tbody id="audit-list"><tr><td colspan="4">Завантаження…</td></tr></tbody></table></div>
+      <div class="audit-pagination">
+        <label>На сторінці<select id="audit-page-size"><option value="10">10</option><option value="25" selected>25</option><option value="50">50</option></select></label>
+        <div class="audit-pagination-controls"><button id="audit-page-prev" class="cabinet-logout" type="button" disabled>НАЗАД</button><span id="audit-page-label">Сторінка 1 з 1</span><button id="audit-page-next" class="cabinet-logout" type="button" disabled>ДАЛІ</button></div>
+      </div>
     </section>
       </div>
     </section>
