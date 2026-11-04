@@ -211,8 +211,31 @@ async function loadAccounts() {
 document.addEventListener("DOMContentLoaded", () => {
   ["personnel-search","personnel-filter-rank","personnel-filter-unit","personnel-filter-status"].forEach(id => {
     const control = document.getElementById(id);
-    if (control) control.addEventListener("input", renderCommandPersonnel);
-    if (control && control.tagName === "SELECT") control.addEventListener("change", renderCommandPersonnel);
+    if (!control) return;
+    const refresh = () => { personnelCurrentPage = 1; renderCommandPersonnel(); };
+    control.addEventListener("input", refresh);
+    if (control.tagName === "SELECT") control.addEventListener("change", refresh);
+  });
+  document.querySelectorAll(".personnel-sort").forEach(button => button.addEventListener("click", () => {
+    const key = button.dataset.sort;
+    if (!key) return;
+    if (personnelSort.key === key) personnelSort.direction = personnelSort.direction === "asc" ? "desc" : "asc";
+    else personnelSort = {key, direction:"asc"};
+    personnelCurrentPage = 1;
+    renderCommandPersonnel();
+  }));
+  document.getElementById("personnel-page-prev")?.addEventListener("click", () => {
+    personnelCurrentPage = Math.max(1, personnelCurrentPage - 1);
+    renderCommandPersonnel();
+  });
+  document.getElementById("personnel-page-next")?.addEventListener("click", () => {
+    personnelCurrentPage += 1;
+    renderCommandPersonnel();
+  });
+  document.getElementById("personnel-page-size")?.addEventListener("change", event => {
+    personnelPageSize = Number(event.target.value) || 10;
+    personnelCurrentPage = 1;
+    renderCommandPersonnel();
   });
   const resetPersonnelFilters = document.getElementById("personnel-reset-filters");
   if (resetPersonnelFilters) resetPersonnelFilters.addEventListener("click", () => {
@@ -220,6 +243,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const control = document.getElementById(id);
       if (control) control.value = "";
     });
+    personnelCurrentPage = 1;
+    personnelSort = {key:"full_name",direction:"asc"};
     const quick = document.getElementById("personnel-quick-profile");
     if (quick) quick.hidden = true;
     renderCommandPersonnel();
@@ -464,6 +489,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let commandPersonnelProfiles = [];
+let personnelCurrentPage = 1;
+let personnelPageSize = 10;
+let personnelSort = { key: "full_name", direction: "asc" };
 
 function populatePersonnelFilter(id, values, placeholder) {
   const select = document.getElementById(id);
@@ -490,8 +518,20 @@ function renderCommandPersonnel() {
       (!unit || (p.unit || "") === unit) &&
       (!status || (p.service_status || "") === status);
   });
+  const sortValue = p => ({
+    service_number: p.service_number, full_name: p.full_name, rank: p.rank,
+    unit: p.unit, mos: p.mos, service_status: p.service_status
+  }[personnelSort.key] ?? "");
+  filtered.sort((a, b) => {
+    const result = String(sortValue(a) || "").localeCompare(String(sortValue(b) || ""), "uk", {numeric:true,sensitivity:"base"});
+    return personnelSort.direction === "desc" ? -result : result;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / personnelPageSize));
+  personnelCurrentPage = Math.min(Math.max(1, personnelCurrentPage), totalPages);
+  const pageItems = filtered.slice((personnelCurrentPage - 1) * personnelPageSize, personnelCurrentPage * personnelPageSize);
   tbody.replaceChildren();
-  for (const p of filtered) {
+  for (const p of pageItems) {
     const row = document.createElement("tr");
     const values = [p.service_number || "—", p.full_name || "—", p.rank || "—", p.unit || "—", p.mos || "—", p.service_status || "—", p.lookup_error ? "Помилка API" : (p.found_in_registry ? "Знайдено" : "Немає запису")];
     for (const value of values) {
@@ -510,7 +550,11 @@ function renderCommandPersonnel() {
     tbody.appendChild(row);
   }
   const count = document.getElementById("personnel-results-count");
-  if (count) count.textContent = "Знайдено: " + filtered.length + " із " + commandPersonnelProfiles.length;
+  if (count) {
+    const from = filtered.length ? (personnelCurrentPage - 1) * personnelPageSize + 1 : 0;
+    const to = Math.min(personnelCurrentPage * personnelPageSize, filtered.length);
+    count.textContent = "Показано " + from + "–" + to + " із " + filtered.length + " (усього: " + commandPersonnelProfiles.length + ")";
+  }
   if (!filtered.length) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
@@ -519,6 +563,17 @@ function renderCommandPersonnel() {
     row.appendChild(cell);
     tbody.appendChild(row);
   }
+  const pageInfo = document.getElementById("personnel-page-info");
+  if (pageInfo) pageInfo.textContent = "Сторінка " + personnelCurrentPage + " із " + totalPages;
+  const previous = document.getElementById("personnel-page-prev");
+  const next = document.getElementById("personnel-page-next");
+  if (previous) previous.disabled = personnelCurrentPage <= 1 || !filtered.length;
+  if (next) next.disabled = personnelCurrentPage >= totalPages || !filtered.length;
+  document.querySelectorAll(".personnel-sort").forEach(button => {
+    const active = button.dataset.sort === personnelSort.key;
+    button.dataset.direction = active ? personnelSort.direction : "";
+    button.setAttribute("aria-label", button.textContent.trim() + (active ? (personnelSort.direction === "asc" ? ", за зростанням" : ", за спаданням") : ", сортувати"));
+  });
 }
 
 function showCommandPersonnelProfile(p) {
