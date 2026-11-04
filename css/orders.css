@@ -150,3 +150,19 @@
 }
 .order-read-status.is-unread { color: var(--sang-gold-bright, #e0c36a); }
 .order-read-status.is-read { color: #8fa6a0; opacity: .78; }
+
+
+/* Command document registry controls and full-text preview */
+.admin-orders-toolbar { align-items:center; }
+.admin-orders-toolbar .orders-search { flex:1 1 240px; }
+.admin-orders-toolbar .orders-filter { flex:0 1 190px; min-width:145px; }
+.admin-orders-count { margin:0 0 10px; }
+.admin-order-management { padding:15px 17px; }
+.admin-order-management .admin-order-preview { color:#c2cbd3; font-size:12px; line-height:1.55; white-space:pre-line; }
+.admin-order-fulltext { margin:10px 0 13px; padding:10px 12px; border:1px solid rgba(201,164,74,.22); background:rgba(4,14,24,.42); }
+.admin-order-fulltext summary { color:#e0c36a; font-size:10px; font-weight:800; letter-spacing:.6px; cursor:pointer; }
+.admin-order-fulltext p { margin:10px 0 0; color:#d0d8df; font-size:12px; line-height:1.65; white-space:pre-wrap; overflow-wrap:anywhere; }
+@media(max-width:700px) {
+  .admin-orders-toolbar .orders-filter { flex:1 1 100%; min-width:0; }
+  .admin-order-management { padding:12px; }
+}
