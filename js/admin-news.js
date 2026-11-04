@@ -20,10 +20,23 @@ document.addEventListener("DOMContentLoaded", () => {
   filter.className = "orders-filter";
   filter.setAttribute("aria-label","Фільтр публікацій за статусом");
   [["all","Усі публікації"],["draft","Чернетки"],["published","Опубліковані"],["archived","Архів"]].forEach(([value,label]) => filter.add(new Option(label,value)));
+  const categoryFilter = document.createElement("select");
+  categoryFilter.className = "orders-filter";
+  categoryFilter.setAttribute("aria-label","Фільтр публікацій за категорією");
+  const sort = document.createElement("select");
+  sort.className = "orders-filter";
+  sort.setAttribute("aria-label","Сортування публікацій");
+  [["newest","Спочатку нові"],["oldest","Спочатку старі"],["title","За заголовком"]].forEach(([value,label]) => sort.add(new Option(label,value)));
+  const count = document.createElement("p");
+  count.className = "orders-count admin-news-count";
+  count.setAttribute("aria-live","polite");
   list.parentNode.insertBefore(toolbar,list);
-  toolbar.append(search,filter);
+  toolbar.append(search,filter,categoryFilter,sort);
+  list.parentNode.insertBefore(count,list);
   search.addEventListener("input",renderFiltered);
   filter.addEventListener("change",renderFiltered);
+  categoryFilter.addEventListener("change",renderFiltered);
+  sort.addEventListener("change",renderFiltered);
 
   const cancel = document.createElement("button");
   cancel.type = "button";
@@ -61,10 +74,25 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderFiltered() {
     const q = search.value.trim().toLocaleLowerCase("uk");
     const status = filter.value;
-    renderList(allNews.filter(item => {
+    const selectedCategory = categoryFilter.value;
+    const categories = [...new Set(allNews.map(item => item.category).filter(Boolean))].sort((a,b) => a.localeCompare(b,"uk"));
+    categoryFilter.replaceChildren(new Option("Усі категорії","all"));
+    categories.forEach(value => categoryFilter.add(new Option(value,value)));
+    categoryFilter.value = categories.includes(selectedCategory) ? selectedCategory : "all";
+    const items = allNews.filter(item => {
       const hay = [item.title,item.category,item.excerpt,item.body].join(" ").toLocaleLowerCase("uk");
-      return (!q || hay.includes(q)) && (status === "all" || item.status === status);
-    }));
+      return (!q || hay.includes(q)) &&
+        (status === "all" || item.status === status) &&
+        (categoryFilter.value === "all" || item.category === categoryFilter.value);
+    });
+    items.sort((a,b) => {
+      if (sort.value === "title") return String(a.title || "").localeCompare(String(b.title || ""),"uk");
+      const aDate = Date.parse(a.news_date || "") || 0;
+      const bDate = Date.parse(b.news_date || "") || 0;
+      return sort.value === "oldest" ? aDate-bDate : bDate-aDate;
+    });
+    count.textContent = "Знайдено публікацій: " + items.length + " із " + allNews.length;
+    renderList(items);
   }
   function renderList(items) {
     list.replaceChildren();
@@ -91,11 +119,32 @@ document.addEventListener("DOMContentLoaded", () => {
       const meta = document.createElement("p");
       meta.textContent = [item.category,dateLabel(item.news_date),Number(item.is_featured) ? "Головна" : "",Number(item.is_announcement) ? "Оголошення" : ""].filter(Boolean).join(" · ");
       card.appendChild(meta);
+      if (item.image_url) {
+        const image = document.createElement("img");
+        image.className = "admin-news-thumb";
+        image.src = item.image_url;
+        image.alt = "";
+        image.loading = "lazy";
+        image.referrerPolicy = "no-referrer";
+        image.onerror = () => image.remove();
+        card.appendChild(image);
+      }
       if (item.excerpt || item.body) {
         const desc = document.createElement("p");
+        desc.className = "admin-news-excerpt";
         const value = item.excerpt || item.body;
         desc.textContent = value.length > 240 ? value.slice(0,240)+"…" : value;
         card.appendChild(desc);
+      }
+      if ((item.body || "").length > 240) {
+        const full = document.createElement("details");
+        full.className = "admin-news-fulltext";
+        const summary = document.createElement("summary");
+        summary.textContent = "ПОВНИЙ ТЕКСТ ПУБЛІКАЦІЇ";
+        const body = document.createElement("p");
+        body.textContent = item.body;
+        full.append(summary,body);
+        card.appendChild(full);
       }
       const actions = document.createElement("div");
       actions.className = "order-form-actions admin-order-actions";
@@ -210,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
       body:document.getElementById("news-body").value,
       isFeatured:document.getElementById("news-featured").checked,
       isAnnouncement:document.getElementById("news-announcement").checked,
-      status
+      status: editing ? editing.status : status
     };
     try {
       const response = await fetch("/api/admin/news",{
