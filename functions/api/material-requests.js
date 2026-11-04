@@ -55,7 +55,7 @@ async function notify(env, accountId, title, message, sourceKey) {
 export async function onRequestGet({ request, env }) {
   try {
     const auth = await getActor(request, env); if (auth.error) return auth.error;
-    const canCreate = auth.account.role === "admin" || ORDER_ACCESS.has(auth.account.service_number);
+    const canCreate = auth.account.role === "admin" || auth.account.role === "faction_leader" || ORDER_ACCESS.has(auth.account.service_number);
     const faction = auth.account.role === "admin" ? "SANG" : (auth.account.faction_name || "");
     const reviewerSang = auth.account.role !== "admin" && isSang(faction), reviewerCity = auth.account.role !== "admin" && isCity(faction);
     let sql = `SELECT r.*, a.service_number AS requester_service_number
@@ -79,7 +79,7 @@ export async function onRequestPost({ request, env }) {
     let body; try { body = await request.json(); } catch { return json({message:"Некоректний запит."},400); }
     const action = String(body?.action || "create");
     if (action === "create") {
-      if (auth.account.role !== "admin" && !ORDER_ACCESS.has(auth.account.service_number)) return json({message:"Створювати замовлення можуть лише генерал армії та два визначені помічники."},403);
+      if (auth.account.role !== "admin" && auth.account.role !== "faction_leader" && !ORDER_ACCESS.has(auth.account.service_number)) return json({message:"Створювати замовлення можуть лише уповноважені керівники фракцій."},403);
       const requesterFaction = auth.account.role === "admin" ? "SANG" : (auth.account.faction_name || "Невідома фракція");
       const requesterIsSang = isSang(requesterFaction);
       const category = String(body.category || "");
