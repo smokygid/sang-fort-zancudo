@@ -257,7 +257,17 @@
             <button class="cabinet-logout" type="submit">ОФОРМИТИ / ПРОДОВЖИТИ КОНТРАКТ</button><p id="contract-admin-message" role="status"></p>
           </form>
           <div class="command-section-heading contract-list-heading"><h3>Стан контрактів особового складу</h3><button id="refresh-contracts" class="cabinet-logout" type="button">ОНОВИТИ</button></div>
-          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ПІБ</th><th>Початок</th><th>Термін</th><th>Завершення</th><th>Залишок</th><th>Стан</th></tr></thead><tbody id="contracts-admin-list"><tr><td colspan="7">Завантаження…</td></tr></tbody></table></div>
+          <div class="contract-overview-filters" role="group" aria-label="Фільтр контрактів">
+            <button type="button" class="contract-filter is-active" data-contract-filter="all">Усі <span id="contract-count-all">0</span></button>
+            <button type="button" class="contract-filter" data-contract-filter="active">Чинні <span id="contract-count-active">0</span></button>
+            <button type="button" class="contract-filter" data-contract-filter="warning">Завершуються ≤ 3 днів <span id="contract-count-warning">0</span></button>
+            <button type="button" class="contract-filter" data-contract-filter="expired">Завершені <span id="contract-count-expired">0</span></button>
+            <button type="button" class="contract-filter" data-contract-filter="missing">Без контракту <span id="contract-count-missing">0</span></button>
+          </div>
+          <label class="contract-search-label" for="contract-admin-search">Пошук за ПІБ або військовим номером</label>
+          <input id="contract-admin-search" type="search" placeholder="Введіть ПІБ або SA-FZ-…" autocomplete="off">
+          <p id="contract-admin-results" class="contract-admin-results" aria-live="polite">Завантаження списку…</p>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Військовий №</th><th>ПІБ</th><th>Початок</th><th>Термін</th><th>Завершення</th><th>Залишок</th><th>Стан</th><th>Дія</th></tr></thead><tbody id="contracts-admin-list"><tr><td colspan="8">Завантаження…</td></tr></tbody></table></div>
         </div>
       </section>
       <section id="command-orders" class="admin-orders-editor">
