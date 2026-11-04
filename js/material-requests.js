@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("material-request-form");
   const list = document.getElementById("material-requests-list");
-  if (!form || !list) return;
+  if (!list) return;
   const message = document.getElementById("material-request-message");
   const esc = value => String(value ?? "—");
   const fmtDate = value => value ? new Date(value + "T00:00:00").toLocaleDateString("uk-UA") : "—";
@@ -78,11 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function load() {
     list.replaceChildren(make("p","","Завантаження заявок…"));
-    try {const data=await api("GET");render(data.requests||[],data);}
+    try {const data=await api("GET");const panel=document.getElementById("material-requests");if(panel&&data.canCreate)panel.hidden=false;render(data.requests||[],data);}
     catch(error){list.replaceChildren(make("p","material-error",error.message));}
   }
 
-  form.addEventListener("submit",async event=>{
+  if (form) form.addEventListener("submit",async event=>{
     event.preventDefault();message.textContent="";
     const payload={category:document.getElementById("material-request-category").value,quantity:Number(document.getElementById("material-request-quantity").value),requestedDate:document.getElementById("material-request-date").value,requestedTime:document.getElementById("material-request-time").value,comment:document.getElementById("material-request-comment").value};
     if(!["materials","medical"].includes(payload.category)){message.textContent="Оберіть категорію замовлення.";return;}\n    if(!Number.isSafeInteger(payload.quantity)||payload.quantity<1||payload.quantity>100000){message.textContent="Вкажіть кількість від 1 до 100000.";return;}
