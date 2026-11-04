@@ -23,6 +23,7 @@
       <nav class="cabinet-topnav" aria-label="Головна навігація кабінету">
         <a class="topnav-active" href="#profile-section"><span>01</span> Профіль</a>
         <a href="#orders-section"><span>02</span> Накази</a>
+        <a href="#material-requests" id="materials-nav-link"><span>09</span> Матеріали</a>
         <a href="#awards-section"><span>03</span> Відзнаки</a>
         <a href="#service-section"><span>04</span> Служба</a>
         <a href="#admin-panel" id="command-nav-link" hidden><span>05</span> Командування</a>
@@ -79,6 +80,7 @@
         <nav class="dashboard-nav" aria-label="Навігація кабінету">
           <a class="active" href="#profile-section">Мій профіль</a>
           <a href="#orders-section">Накази</a>
+          <a href="#material-requests" id="sidebar-materials-link">Замовлення матеріалів</a>
           <a href="#awards-section">Дисципліна та відзнаки</a>
           <a href="#service-section">Службові відомості</a>
         </nav>
@@ -114,6 +116,21 @@
           </div>
         
         </article>
+        <section class="dashboard-card material-requests-card" id="material-requests" hidden><p class="card-kicker">INTERAGENCY SUPPLY · SANG</p><h2>Замовлення матеріалів</h2><p>Створення замовлень від командування SANG. Після надсилання заявку розглядає мерія.</p>
+<form id="material-request-form" class="profile-form">
+<label for="material-request-category">Категорія замовлення</label>
+<select id="material-request-category" required>
+<option value="">Оберіть категорію</option>
+<option value="materials">Матеріали</option>
+<option value="medical">Медичні матеріали</option>
+</select>
+<label for="material-request-quantity">Кількість</label>
+<input id="material-request-quantity" type="number" min="1" max="100000" step="1" value="1" required>
+<div class="material-request-fields"><label>Бажана дата<input id="material-request-date" type="date" required></label><label>Бажаний час<input id="material-request-time" type="time" required></label></div>
+<label for="material-request-comment">Коментар до замовлення</label><textarea id="material-request-comment" maxlength="1000" rows="3" placeholder="За потреби вкажіть додаткові відомості"></textarea>
+<button class="cabinet-logout" type="submit">НАДІСЛАТИ ЗАМОВЛЕННЯ</button><p id="material-request-message" role="status"></p></form>
+<div class="material-requests-list-head"><h3>Мої замовлення та рішення мерії</h3><button id="material-requests-refresh" class="cabinet-logout" type="button">ОНОВИТИ</button></div><div id="material-requests-list" aria-live="polite"><p>Завантаження заявок…</p></div></section>
+
         <div class="dashboard-content-grid">
           <article class="dashboard-card profile-card">
             <div class="service-profile" id="service-section">
@@ -366,6 +383,7 @@
   </main>
   <script src="../../js/dashboard.js?v=cleanup-6" defer></script>
   <script src="../../js/orders.js?v=order-reads-1" defer></script>
+  <script src="../../js/material-requests.js?v=5" defer></script>
   <script src="../../js/admin-orders.js?v=documents-2" defer></script>
   <script src="../../js/admin-news.js?v=news-registry-2" defer></script>
 </body>
