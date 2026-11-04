@@ -210,9 +210,27 @@
         <div id="personnel-quick-profile" class="personnel-quick-profile" hidden aria-live="polite"></div>
         <div class="admin-table-wrap">
           <table class="admin-table">
-            <thead><tr><th>Військовий №</th><th>ПІБ</th><th>Звання</th><th>Підрозділ</th><th>MOS</th><th>Статус служби</th><th>Реєстр</th><th>Картка</th></tr></thead>
+            <thead><tr>
+              <th><button class="personnel-sort" type="button" data-sort="service_number">Військовий №</button></th>
+              <th><button class="personnel-sort" type="button" data-sort="full_name">ПІБ</button></th>
+              <th><button class="personnel-sort" type="button" data-sort="rank">Звання</button></th>
+              <th><button class="personnel-sort" type="button" data-sort="unit">Підрозділ</button></th>
+              <th><button class="personnel-sort" type="button" data-sort="mos">MOS</button></th>
+              <th><button class="personnel-sort" type="button" data-sort="service_status">Статус служби</button></th>
+              <th>Реєстр</th><th>Картка</th>
+            </tr></thead>
             <tbody id="service-profiles-list"><tr><td colspan="8">Завантаження…</td></tr></tbody>
           </table>
+        </div>
+        <div class="personnel-pagination" aria-label="Сторінки реєстру особового складу">
+          <label for="personnel-page-size">На сторінці
+            <select id="personnel-page-size"><option value="10" selected>10</option><option value="25">25</option><option value="50">50</option></select>
+          </label>
+          <div class="personnel-pagination-controls">
+            <button id="personnel-page-prev" class="cabinet-logout" type="button" disabled>НАЗАД</button>
+            <span id="personnel-page-info" aria-live="polite">Сторінка 1 із 1</span>
+            <button id="personnel-page-next" class="cabinet-logout" type="button" disabled>ДАЛІ</button>
+          </div>
         </div>
         <div class="service-record-admin">
           <div class="command-section-heading"><h3>Новий запис до особової справи</h3><span>OFFICIAL RECORD</span></div>
