@@ -29,10 +29,28 @@ document.addEventListener("DOMContentLoaded", () => {
     option.textContent = label;
     filter.appendChild(option);
   });
+  const categoryFilter = document.createElement("select");
+  categoryFilter.className = "orders-filter";
+  categoryFilter.setAttribute("aria-label", "Фільтр за типом документа");
+  const sort = document.createElement("select");
+  sort.className = "orders-filter";
+  sort.setAttribute("aria-label", "Сортування документів");
+  [["newest","Спочатку нові"],["oldest","Спочатку старі"],["title","За назвою"]].forEach(([value,label]) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    sort.appendChild(option);
+  });
+  const count = document.createElement("p");
+  count.className = "orders-count admin-orders-count";
+  count.setAttribute("aria-live", "polite");
   list.parentNode.insertBefore(toolbar, list);
-  toolbar.append(search, filter);
+  toolbar.append(search, filter, categoryFilter, sort);
+  list.parentNode.insertBefore(count, list);
   search.addEventListener("input", renderFiltered);
   filter.addEventListener("change", renderFiltered);
+  categoryFilter.addEventListener("change", renderFiltered);
+  sort.addEventListener("change", renderFiltered);
 
   const cancelEdit = document.createElement("button");
   cancelEdit.type = "button";
@@ -85,10 +103,30 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderFiltered() {
     const query = search.value.trim().toLocaleLowerCase("uk");
     const status = filter.value;
+    const category = categoryFilter.value;
+    const categories = [...new Set(allOrders.map(order => order.category).filter(Boolean))].sort((a,b) => a.localeCompare(b,"uk"));
+    const selectedCategory = categoryFilter.value;
+    categoryFilter.replaceChildren();
+    [["all","Усі типи"], ...categories.map(value => [value,value])].forEach(([value,label]) => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      categoryFilter.appendChild(option);
+    });
+    categoryFilter.value = categories.includes(selectedCategory) ? selectedCategory : "all";
     const filtered = allOrders.filter(order => {
       const haystack = [order.order_number,order.title,order.category,order.body].join(" ").toLocaleLowerCase("uk");
-      return (!query || haystack.includes(query)) && (status === "all" || order.status === status);
+      return (!query || haystack.includes(query)) &&
+        (status === "all" || order.status === status) &&
+        (categoryFilter.value === "all" || order.category === categoryFilter.value);
     });
+    filtered.sort((a,b) => {
+      if (sort.value === "title") return String(a.title || "").localeCompare(String(b.title || ""),"uk");
+      const aDate = Date.parse(a.order_date || "") || 0;
+      const bDate = Date.parse(b.order_date || "") || 0;
+      return sort.value === "oldest" ? aDate-bDate : bDate-aDate;
+    });
+    count.textContent = "Знайдено документів: " + filtered.length + " із " + allOrders.length;
     renderAdminOrders(list, filtered);
   }
 
@@ -121,8 +159,19 @@ document.addEventListener("DOMContentLoaded", () => {
       info.textContent = order.category + " · " + order.order_date + " · " + audienceLabel + (people ? ": " + people : "");
       card.appendChild(info);
       const preview = document.createElement("p");
-      preview.textContent = order.body.length > 260 ? order.body.slice(0,260) + "…" : order.body;
+      preview.className = "admin-order-preview";
+      preview.textContent = (order.body || "").length > 260 ? order.body.slice(0,260) + "…" : (order.body || "");
       card.appendChild(preview);
+      if ((order.body || "").length > 260) {
+        const fullText = document.createElement("details");
+        fullText.className = "admin-order-fulltext";
+        const summary = document.createElement("summary");
+        summary.textContent = "ПОВНИЙ ТЕКСТ ДОКУМЕНТА";
+        const body = document.createElement("p");
+        body.textContent = order.body;
+        fullText.append(summary, body);
+        card.appendChild(fullText);
+      }
 
       const buttons = document.createElement("div");
       buttons.className = "order-form-actions admin-order-actions";
@@ -260,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
       factionName:audience.value === "faction" ? factionSelect.value : "",
       recipientAccountIds:audience.value === "person" || audience.value === "group" ? [...recipients.selectedOptions].map(option => Number(option.value)) : [],
       body:document.getElementById("order-body").value,
-      status
+      status: editingOrder ? editingOrder.status : status
     };
     try {
       const response = await fetch("/api/admin/orders", {
