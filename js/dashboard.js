@@ -565,6 +565,8 @@ async function loadAdminProfiles() {
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Не вдалося завантажити реєстр.");
     commandPersonnelProfiles = data.profiles || [];
+    const personnelCount = document.getElementById("overview-personnel-total");
+    if (personnelCount) personnelCount.textContent = String(commandPersonnelProfiles.length);
     populateServiceRecordSoldiers(commandPersonnelProfiles);
     populateContractSoldiers(commandPersonnelProfiles);
     loadAdminContracts();
@@ -666,6 +668,15 @@ function updateCommandAccountStats(accounts) {
   set("overview-blocked-accounts", total - active);
   const stamp = document.getElementById("command-overview-updated");
   if (stamp) stamp.textContent = "Оновлено: " + new Date().toLocaleTimeString("uk-UA", {hour:"2-digit",minute:"2-digit"});
+}
+
+function updateCommandContractStats(rows) {
+  const active = rows.filter(row => row.status !== "expired" && row.status !== "missing");
+  const endingSoon = active.filter(row => Number(row.days_left) >= 0 && Number(row.days_left) <= 3);
+  const activeNode = document.getElementById("overview-contracts-active");
+  const warningNode = document.getElementById("overview-contracts-warning");
+  if (activeNode) activeNode.textContent = String(active.length);
+  if (warningNode) warningNode.textContent = String(endingSoon.length);
 }
 
 function renderOverviewFeed(targetId, entries, emptyText, renderEntry) {
@@ -1067,7 +1078,7 @@ function renderAdminContracts(rows) {
 
 async function loadAdminContracts() {
   const tbody=document.getElementById("contracts-admin-list");if(!tbody)return;
-  try{const response=await fetch("/api/contracts",{credentials:"same-origin",cache:"no-store"});const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося завантажити контракти.");adminContractRows=data.contracts||[];renderAdminContracts(adminContractRows);}
+  try{const response=await fetch("/api/contracts",{credentials:"same-origin",cache:"no-store"});const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося завантажити контракти.");adminContractRows=data.contracts||[];renderAdminContracts(adminContractRows);updateCommandContractStats(adminContractRows);}
   catch(error){tbody.replaceChildren();const row=document.createElement("tr"),cell=document.createElement("td");cell.colSpan=7;cell.textContent=error.message||"Помилка завантаження контрактів.";row.appendChild(cell);tbody.appendChild(row);}
 }
 
