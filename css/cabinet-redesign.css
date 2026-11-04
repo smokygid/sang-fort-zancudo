@@ -233,3 +233,43 @@
 .cabinet-page .notification-actions .cabinet-logout{min-height:28px;padding:6px 9px;font-size:8px}
 .cabinet-page .notifications-empty{grid-column:1/-1;margin:0;padding:18px;text-align:center;color:var(--cb-muted);border:1px dashed var(--cb-line);font-size:12px}
 @media(max-width:760px){.cabinet-page .notifications-list{grid-template-columns:1fr}.cabinet-page .notifications-heading{align-items:flex-start;flex-direction:column}.cabinet-page .notifications-heading .cabinet-logout{width:100%}}
+
+
+/* Personnel registry: sortable columns and compact pagination */
+.cabinet-page .personnel-sort{
+  display:inline-flex;align-items:center;gap:5px;padding:2px 0;
+  border:0;background:transparent;color:inherit;font:inherit;font-weight:900;
+  text-align:left;white-space:nowrap;cursor:pointer
+}
+.cabinet-page .personnel-sort:after{content:"↕";color:#72869a;font-size:10px}
+.cabinet-page .personnel-sort[data-direction="asc"]:after{content:"↑";color:var(--cb-gold-hi)}
+.cabinet-page .personnel-sort[data-direction="desc"]:after{content:"↓";color:var(--cb-gold-hi)}
+.cabinet-page .personnel-sort:hover,.cabinet-page .personnel-sort:focus-visible{color:var(--cb-gold-hi);outline:none}
+.cabinet-page .personnel-pagination{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:10px 0 20px;padding:11px 13px;
+  background:rgba(4,14,24,.42);border:1px solid var(--cb-line)
+}
+.cabinet-page .personnel-pagination label{
+  display:flex;align-items:center;gap:8px;color:var(--cb-muted);
+  font-size:10px;font-weight:800;letter-spacing:.3px
+}
+.cabinet-page .personnel-pagination select{
+  min-height:32px;padding:5px 9px;background:#081522;
+  border:1px solid #34495d;color:var(--cb-text)
+}
+.cabinet-page .personnel-pagination-controls{display:flex;align-items:center;gap:9px}
+.cabinet-page .personnel-pagination-controls span{
+  min-width:105px;text-align:center;color:#c2ccd5;font-size:10px;
+  font-variant-numeric:tabular-nums
+}
+.cabinet-page .personnel-pagination-controls .cabinet-logout{
+  min-height:32px;padding:7px 10px;font-size:9px
+}
+.cabinet-page .personnel-pagination-controls .cabinet-logout:disabled{
+  opacity:.38;cursor:not-allowed;transform:none
+}
+@media(max-width:520px){
+  .cabinet-page .personnel-pagination{align-items:flex-start;flex-direction:column}
+  .cabinet-page .personnel-pagination-controls{width:100%;justify-content:space-between}
+}
