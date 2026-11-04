@@ -1,3 +1,12 @@
+// Coalesce simultaneous refreshes so rapid clicks do not duplicate API requests.
+const dashboardLoadPromises = new Map();
+function runDashboardLoad(key, loader) {
+  if (dashboardLoadPromises.has(key)) return dashboardLoadPromises.get(key);
+  const task = Promise.resolve().then(loader).finally(() => dashboardLoadPromises.delete(key));
+  dashboardLoadPromises.set(key, task);
+  return task;
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const status = document.getElementById("dashboard-status");
   const content = document.getElementById("dashboard-content");
@@ -121,7 +130,7 @@ async function loadRegistrySoldiers() {
 }
 
 
-async function loadAccounts() {
+async function loadAccountsInternal() {
   const tbody = document.getElementById("accounts-list");
   const factionBody = document.getElementById("faction-leaders-list");
   if (!tbody && !factionBody) return;
@@ -207,6 +216,11 @@ async function loadAccounts() {
     }
   }
 }
+
+function loadAccounts() {
+  return runDashboardLoad("loadAccounts", loadAccountsInternal);
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
   ["personnel-search","personnel-filter-rank","personnel-filter-unit","personnel-filter-status"].forEach(id => {
@@ -609,7 +623,7 @@ function showCommandPersonnelProfile(p) {
   panel.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 
-async function loadAdminProfiles() {
+async function loadAdminProfilesInternal() {
   const tbody = document.getElementById("service-profiles-list");
   const message = document.getElementById("service-profile-message");
   if (!tbody) return;
@@ -639,6 +653,11 @@ async function loadAdminProfiles() {
     tbody.appendChild(row);
     if (message) message.textContent = error.message;
   }
+}
+
+
+function loadAdminProfiles() {
+  return runDashboardLoad("loadAdminProfiles", loadAdminProfilesInternal);
 }
 
 
@@ -1256,11 +1275,16 @@ function renderAdminContracts(rows) {
   }
 }
 
-async function loadAdminContracts() {
+async function loadAdminContractsInternal() {
   const tbody=document.getElementById("contracts-admin-list");if(!tbody)return;
   try{const response=await fetch("/api/contracts",{credentials:"same-origin",cache:"no-store"});const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося завантажити контракти.");adminContractRows=data.contracts||[];renderAdminContracts(adminContractRows);updateCommandContractStats(adminContractRows);}
   catch(error){tbody.replaceChildren();const row=document.createElement("tr"),cell=document.createElement("td");cell.colSpan=8;cell.textContent=error.message||"Помилка завантаження контрактів.";row.appendChild(cell);tbody.appendChild(row);}
 }
+
+function loadAdminContracts() {
+  return runDashboardLoad("loadAdminContracts", loadAdminContractsInternal);
+}
+
 
 document.addEventListener("DOMContentLoaded",()=>{
   const form=document.getElementById("contract-form");if(!form)return;
@@ -1354,7 +1378,7 @@ function renderNotifications(data) {
   }
 }
 
-async function loadNotifications() {
+async function loadNotificationsInternal() {
   const list=document.getElementById("notifications-list");if(!list)return;
   try{
     const response=await fetch("/api/notifications",{credentials:"same-origin",cache:"no-store"});
@@ -1365,6 +1389,11 @@ async function loadNotifications() {
     const status=document.getElementById("notifications-status");if(status)status.textContent="Центр сповіщень тимчасово недоступний.";
   }
 }
+
+function loadNotifications() {
+  return runDashboardLoad("loadNotifications", loadNotificationsInternal);
+}
+
 
 async function markNotificationRead(id,button) {
   if(button)button.disabled=true;
