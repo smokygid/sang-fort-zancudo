@@ -334,3 +334,21 @@
 .cabinet-page .admin-news-fulltext summary{color:var(--cb-gold-hi);font-size:10px;font-weight:800;letter-spacing:.6px;cursor:pointer}
 .cabinet-page .admin-news-fulltext p{margin:10px 0 0;color:#d0d8df;font-size:12px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:700px){.cabinet-page .admin-news-toolbar .orders-filter{flex:1 1 100%;min-width:0}.cabinet-page .admin-news-item{padding:12px}}
+
+
+/* Audit log: search, filters and pagination */
+.cabinet-page .audit-toolbar{display:grid;gap:10px;margin:14px 0 8px}
+.cabinet-page .audit-search-label,.cabinet-page .audit-filters label,.cabinet-page .audit-pagination label{display:grid;gap:6px;color:#c2ccd5;font-size:10px;font-weight:800;letter-spacing:.3px}
+.cabinet-page #audit-filter-search,.cabinet-page .audit-filters select,.cabinet-page .audit-filters input,.cabinet-page .audit-pagination select{width:100%;min-height:38px;box-sizing:border-box;padding:8px 10px;background:#081522;border:1px solid #34495d;color:var(--cb-text);font:inherit;font-size:11px}
+.cabinet-page .audit-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;align-items:end}
+.cabinet-page .audit-filters .cabinet-logout{min-height:38px;padding:8px 12px}
+.cabinet-page .audit-results-count{margin:8px 0 10px;color:var(--cb-muted);font-size:10px;font-variant-numeric:tabular-nums}
+.cabinet-page .audit-pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 4px;padding:11px 13px;background:rgba(4,14,24,.42);border:1px solid var(--cb-line)}
+.cabinet-page .audit-pagination label{display:flex;align-items:center;gap:8px}
+.cabinet-page .audit-pagination select{width:auto;min-width:72px}
+.cabinet-page .audit-pagination-controls{display:flex;align-items:center;gap:9px}
+.cabinet-page .audit-pagination-controls span{min-width:105px;text-align:center;color:#c2ccd5;font-size:10px;font-variant-numeric:tabular-nums}
+.cabinet-page .audit-pagination-controls .cabinet-logout{min-height:32px;padding:7px 10px;font-size:9px}
+.cabinet-page .audit-pagination-controls .cabinet-logout:disabled{opacity:.38;cursor:not-allowed;transform:none}
+@media(max-width:700px){.cabinet-page .audit-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.cabinet-page .audit-pagination{align-items:flex-start;flex-direction:column}.cabinet-page .audit-pagination-controls{width:100%;justify-content:space-between}}
+@media(max-width:420px){.cabinet-page .audit-filters{grid-template-columns:1fr}}
