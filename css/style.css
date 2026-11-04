@@ -3598,3 +3598,219 @@ body.home-page[data-season="autumn"] .hero::before {
 }
 
 /* Animation intentionally stays active even with prefers-reduced-motion enabled. */
+
+
+/* =========================================================
+   SANG SHARED COMMAND FOOTER — used across all site pages
+========================================================= */
+.sang-global-footer {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin-top: 0;
+    padding: 58px 0 0;
+    color: #edf2f6;
+    background:
+        radial-gradient(ellipse at 12% 0%, rgba(201,164,74,.09), transparent 34%),
+        linear-gradient(145deg, #0b1a2a 0%, #07111d 58%, #050c14 100%);
+    border-top: 1px solid rgba(201,164,74,.38);
+}
+.sang-global-footer::before {
+    content: "SANG";
+    position: absolute;
+    z-index: -1;
+    right: 3%;
+    top: -48px;
+    color: rgba(255,255,255,.018);
+    font-size: clamp(150px, 25vw, 330px);
+    font-weight: 900;
+    letter-spacing: -.08em;
+    line-height: 1;
+    pointer-events: none;
+}
+.sang-footer-main {
+    width: min(1240px, calc(100% - 48px));
+    margin: 0 auto;
+    padding-bottom: 48px;
+    display: grid;
+    grid-template-columns: minmax(230px, 1.35fr) repeat(2, minmax(135px, .8fr)) minmax(220px, 1.1fr);
+    gap: clamp(22px, 3.5vw, 48px);
+}
+.sang-footer-brand { min-width: 0; }
+.sang-footer-identity {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: fit-content;
+    color: #f4f6f8;
+}
+.sang-footer-identity img {
+    width: 68px;
+    height: 68px;
+    object-fit: contain;
+    flex: 0 0 auto;
+    filter: drop-shadow(0 5px 12px rgba(0,0,0,.35));
+}
+.sang-footer-identity span { display: flex; flex-direction: column; gap: 5px; }
+.sang-footer-identity small {
+    color: #c9a44a;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+}
+.sang-footer-identity strong {
+    color: #f2f5f7;
+    font-size: 14px;
+    line-height: 1.2;
+    letter-spacing: .7px;
+}
+.sang-footer-identity em {
+    color: #aab8c5;
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+}
+.sang-footer-description {
+    max-width: 290px;
+    margin: 20px 0 18px;
+    color: #9eafbd;
+    font-size: 12px;
+    line-height: 1.75;
+}
+.sang-footer-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #dce4ea;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+.sang-footer-status > i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #c9a44a;
+    box-shadow: 0 0 12px rgba(201,164,74,.65);
+}
+.sang-footer-status span { display: flex; flex-direction: column; gap: 4px; }
+.sang-footer-status small {
+    color: #728394;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.sang-footer-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+.sang-footer-column h2 {
+    margin: 4px 0 9px;
+    color: #d7b65e;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.7px;
+}
+.sang-footer-column > a {
+    color: #aebbc7;
+    font-size: 12px;
+    line-height: 1.45;
+    transition: color .2s ease, transform .2s ease;
+}
+.sang-footer-column > a:hover {
+    color: #f1d27b;
+    transform: translateX(3px);
+}
+.sang-footer-command {
+    width: 100%;
+    margin-top: 7px;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(201,164,74,.11), rgba(12,28,44,.65));
+    border: 1px solid rgba(201,164,74,.24);
+    border-radius: 7px;
+}
+.sang-footer-command > span {
+    display: block;
+    margin-bottom: 8px;
+    color: #d7b65e;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+.sang-footer-command > strong {
+    display: block;
+    color: #eef2f5;
+    font-size: 11px;
+    letter-spacing: .4px;
+}
+.sang-footer-command p {
+    margin: 8px 0 13px;
+    color: #9eafbd;
+    font-size: 10px;
+    line-height: 1.6;
+}
+.sang-footer-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: #e7c76d;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .8px;
+}
+.sang-footer-cta b { font-size: 15px; transition: transform .2s ease; }
+.sang-footer-cta:hover b { transform: translate(3px,-3px); }
+.sang-footer-bottom {
+    width: min(1240px, calc(100% - 48px));
+    min-height: 58px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    border-top: 1px solid rgba(164,183,199,.13);
+    color: #788b9b;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .8px;
+}
+.sang-footer-bottom-motto { color: #9aa9b6; text-align: right; }
+.sang-footer-bottom-motto i { color: #c9a44a; font-style: normal; padding: 0 5px; }
+@media (max-width: 900px) {
+    .sang-footer-main {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: 34px;
+    }
+    .sang-footer-brand { grid-column: 1 / -1; }
+    .sang-footer-description { max-width: 440px; }
+}
+@media (max-width: 560px) {
+    .sang-global-footer { padding-top: 38px; }
+    .sang-footer-main {
+        width: min(100% - 36px, 440px);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 18px;
+        padding-bottom: 32px;
+    }
+    .sang-footer-identity img { width: 56px; height: 56px; }
+    .sang-footer-identity strong { font-size: 12px; }
+    .sang-footer-column h2 { font-size: 9px; letter-spacing: 1.1px; }
+    .sang-footer-column > a { font-size: 11px; }
+    .sang-footer-contact { grid-column: 1 / -1; }
+    .sang-footer-command { max-width: 360px; }
+    .sang-footer-bottom {
+        width: min(100% - 36px, 440px);
+        min-height: 70px;
+        padding: 14px 0;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 7px;
+        font-size: 8px;
+    }
+    .sang-footer-bottom-motto { text-align: left; font-size: 8px; }
+}
