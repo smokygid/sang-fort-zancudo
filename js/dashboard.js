@@ -655,6 +655,10 @@ const AUDIT_ACTION_LABELS = {
 };
 
 let auditEntries = [];
+let auditCurrentPage = 1;
+let auditPageSize = 25;
+let auditSortDirection = "desc";
+let auditLoadPromise = null;
 
 function renderAuditLog() {
   const tbody = document.getElementById("audit-list");
@@ -663,35 +667,61 @@ function renderAuditLog() {
   const action = document.getElementById("audit-filter-action")?.value || "";
   const from = document.getElementById("audit-filter-from")?.value || "";
   const to = document.getElementById("audit-filter-to")?.value || "";
+  const search = (document.getElementById("audit-filter-search")?.value || "").trim().toLocaleLowerCase("uk");
+  const count = document.getElementById("audit-results-count");
+  const pageLabel = document.getElementById("audit-page-label");
+  const previous = document.getElementById("audit-page-prev");
+  const next = document.getElementById("audit-page-next");
 
   const filtered = auditEntries.filter(entry => {
     const target = entry.target_service_number || "";
-    const rawDate = entry.created_at ? String(entry.created_at).replace(" ", "T") : "";
-    const day = rawDate.slice(0, 10);
+    const actor = entry.actor_service_number || entry.actor_name || "";
+    const rawDate = entry.created_at || entry.timestamp || "";
+    const day = String(rawDate).replace(" ", "T").slice(0, 10);
+    const actionLabel = AUDIT_ACTION_LABELS[entry.action] || entry.action_label || entry.action || "";
+    const haystack = [rawDate, actor, target, actionLabel, entry.action || ""].join(" ").toLocaleLowerCase("uk");
     return (!soldier || target === soldier) &&
       (!action || entry.action === action) &&
       (!from || day >= from) &&
-      (!to || day <= to);
+      (!to || day <= to) &&
+      (!search || haystack.includes(search));
   });
 
+  filtered.sort((a, b) => {
+    const dateA = new Date(String(a.created_at || a.timestamp || "").replace(" ", "T")).getTime() || 0;
+    const dateB = new Date(String(b.created_at || b.timestamp || "").replace(" ", "T")).getTime() || 0;
+    return (dateB - dateA) * (auditSortDirection === "desc" ? 1 : -1);
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / auditPageSize));
+  auditCurrentPage = Math.min(auditCurrentPage, totalPages);
+  const start = (auditCurrentPage - 1) * auditPageSize;
+  const visible = filtered.slice(start, start + auditPageSize);
+  if (count) count.textContent = `Знайдено: ${filtered.length} із ${auditEntries.length} записів`;
+  if (pageLabel) pageLabel.textContent = `Сторінка ${auditCurrentPage} з ${totalPages}`;
+  if (previous) previous.disabled = auditCurrentPage <= 1;
+  if (next) next.disabled = auditCurrentPage >= totalPages;
+
   tbody.replaceChildren();
-  for (const entry of filtered) {
+  for (const entry of visible) {
     const row = document.createElement("tr");
-    const rawDate = entry.created_at ? String(entry.created_at).replace(" ", "T") : "";
-    const date = rawDate ? new Date(rawDate.endsWith("Z") ? rawDate : rawDate + "Z").toLocaleString("uk-UA") : "—";
-    const values = [date, entry.actor_service_number || "Невідомо", AUDIT_ACTION_LABELS[entry.action] || entry.action || "Невідома дія", entry.target_service_number || "—"];
+    const rawDate = entry.created_at || entry.timestamp || "";
+    const normalizedDate = String(rawDate).replace(" ", "T");
+    const parsedDate = normalizedDate ? new Date(normalizedDate.endsWith("Z") ? normalizedDate : normalizedDate + "Z") : null;
+    const date = parsedDate && !Number.isNaN(parsedDate.getTime()) ? parsedDate.toLocaleString("uk-UA") : "—";
+    const values = [date, entry.actor_service_number || entry.actor_name || "Невідомо", AUDIT_ACTION_LABELS[entry.action] || entry.action_label || entry.action || "Невідома дія", entry.target_service_number || "—"];
     for (const value of values) {
       const cell = document.createElement("td");
-      cell.textContent = value;
+      cell.textContent = String(value);
       row.appendChild(cell);
     }
     tbody.appendChild(row);
   }
-  if (!filtered.length) {
+  if (!visible.length) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
     cell.colSpan = 4;
-    cell.textContent = auditEntries.length ? "За вибраними фільтрами записів не знайдено." : "Записів поки немає.";
+    cell.textContent = auditEntries.length ? "За вибраними параметрами записів не знайдено." : "Записів поки немає.";
     row.appendChild(cell);
     tbody.appendChild(row);
   }
@@ -707,9 +737,40 @@ function setupAuditFilters() {
   if (action.options.length <= 1) {
     for (const [key, label] of Object.entries(AUDIT_ACTION_LABELS)) action.appendChild(new Option(label, key));
   }
-  [soldier, action, from, to].forEach(control => control.addEventListener("change", renderAuditLog));
+  [soldier, action, from, to].forEach(control => control.addEventListener("change", () => {
+    auditCurrentPage = 1;
+    renderAuditLog();
+  }));
+  document.getElementById("audit-filter-search")?.addEventListener("input", () => {
+    auditCurrentPage = 1;
+    renderAuditLog();
+  });
+  document.getElementById("audit-filter-sort")?.addEventListener("change", event => {
+    auditSortDirection = event.target.value === "oldest" ? "asc" : "desc";
+    auditCurrentPage = 1;
+    renderAuditLog();
+  });
+  document.getElementById("audit-page-size")?.addEventListener("change", event => {
+    auditPageSize = Number(event.target.value) || 25;
+    auditCurrentPage = 1;
+    renderAuditLog();
+  });
+  document.getElementById("audit-page-prev")?.addEventListener("click", () => {
+    auditCurrentPage = Math.max(1, auditCurrentPage - 1);
+    renderAuditLog();
+  });
+  document.getElementById("audit-page-next")?.addEventListener("click", () => {
+    auditCurrentPage += 1;
+    renderAuditLog();
+  });
   document.getElementById("audit-filter-reset")?.addEventListener("click", () => {
     soldier.value = ""; action.value = ""; from.value = ""; to.value = "";
+    const search = document.getElementById("audit-filter-search");
+    const sort = document.getElementById("audit-filter-sort");
+    if (search) search.value = "";
+    if (sort) sort.value = "newest";
+    auditSortDirection = "desc";
+    auditCurrentPage = 1;
     renderAuditLog();
   });
 }
@@ -787,31 +848,37 @@ function renderCommandAuditOverview() {
 async function loadAuditLog() {
   const tbody = document.getElementById("audit-list");
   if (!tbody) return;
+  if (auditLoadPromise) return auditLoadPromise;
   tbody.innerHTML = '<tr><td colspan="4">Завантаження…</td></tr>';
-  try {
-    const response = await fetch("/api/admin/audit", { credentials: "same-origin", cache: "no-store" });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Не вдалося завантажити журнал.");
-    auditEntries = data.entries || [];
-    renderCommandAuditOverview();
-    const soldier = document.getElementById("audit-filter-soldier");
-    if (soldier) {
-      const selected = soldier.value;
-      soldier.replaceChildren(new Option("Усі військовослужбовці", ""));
-      for (const id of [...new Set(auditEntries.map(e => e.target_service_number).filter(Boolean))].sort()) soldier.appendChild(new Option(id, id));
-      if ([...soldier.options].some(o => o.value === selected)) soldier.value = selected;
+  auditLoadPromise = (async () => {
+    try {
+      const response = await fetch("/api/admin/audit", { credentials: "same-origin", cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося завантажити журнал.");
+      auditEntries = Array.isArray(data.entries) ? data.entries : [];
+      renderCommandAuditOverview();
+      const soldier = document.getElementById("audit-filter-soldier");
+      if (soldier) {
+        const selected = soldier.value;
+        soldier.replaceChildren(new Option("Усі військовослужбовці", ""));
+        for (const id of [...new Set(auditEntries.map(e => e.target_service_number).filter(Boolean))].sort()) soldier.appendChild(new Option(id, id));
+        if ([...soldier.options].some(o => o.value === selected)) soldier.value = selected;
+      }
+      setupAuditFilters();
+      renderAuditLog();
+    } catch (error) {
+      tbody.replaceChildren();
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+      cell.colSpan = 4;
+      cell.textContent = error.message || "Помилка завантаження журналу.";
+      row.appendChild(cell);
+      tbody.appendChild(row);
+    } finally {
+      auditLoadPromise = null;
     }
-    setupAuditFilters();
-    renderAuditLog();
-  } catch (error) {
-    tbody.replaceChildren();
-    const row = document.createElement("tr");
-    const cell = document.createElement("td");
-    cell.colSpan = 4;
-    cell.textContent = error.message || "Помилка завантаження журналу.";
-    row.appendChild(cell);
-    tbody.appendChild(row);
-  }
+  })();
+  return auditLoadPromise;
 }
 
 
