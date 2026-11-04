@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function load() {
     list.replaceChildren(make("p","","Завантаження заявок…"));
-    try {const data=await api("GET");const panel=document.getElementById("material-requests");if(panel&&data.canCreate)panel.hidden=false;render(data.requests||[],data);}
+    try {const data=await api("GET");const panel=document.getElementById("material-requests");if(panel&&(data.canCreate||data.reviewerSang||data.reviewerCity))panel.hidden=false;const requestForm=document.getElementById("material-request-form");if(requestForm)requestForm.hidden=!data.canCreate;render(data.requests||[],data);}
     catch(error){list.replaceChildren(make("p","material-error",error.message));}
   }
 
