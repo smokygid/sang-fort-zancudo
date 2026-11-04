@@ -1,5 +1,6 @@
 import { json, readCookie, tokenDigest, COOKIE } from "./auth/_session.js";
 
+const ORDER_ACCESS = new Set(["SA-FZ-260005", "SA-FZ-260012"]);
 const CATALOG = {
   armor: { name: "Броня", unit: "од.", category: "materials" },
   ammo: { name: "Боєприпаси", unit: "кор.", category: "materials" },
@@ -20,7 +21,7 @@ async function getActor(request, env) {
     "SELECT a.id,a.role,a.faction_name,a.service_number FROM cabinet_sessions s JOIN personnel_accounts a ON a.id=s.account_id WHERE s.id=? AND s.expires_at>? AND a.active=1 LIMIT 1"
   ).bind(await tokenDigest(token), new Date().toISOString()).first();
   if (!account) return { error: json({ message: "Сесію не знайдено." }, 401) };
-  if (account.role !== "faction_leader" && account.role !== "admin") return { error: json({ message: "Замовлення доступні командуванню та керівникам фракцій." }, 403) };
+  if (account.role !== "faction_leader" && account.role !== "admin" && !ORDER_ACCESS.has(account.service_number)) return { error: json({ message: "Доступ до замовлень матеріалів обмежено." }, 403) };
   return { account };
 }
 
@@ -54,6 +55,7 @@ async function notify(env, accountId, title, message, sourceKey) {
 export async function onRequestGet({ request, env }) {
   try {
     const auth = await getActor(request, env); if (auth.error) return auth.error;
+    const canCreate = auth.account.role === "admin" || ORDER_ACCESS.has(auth.account.service_number);
     const faction = auth.account.role === "admin" ? "SANG" : (auth.account.faction_name || "");
     const reviewerSang = auth.account.role !== "admin" && isSang(faction), reviewerCity = auth.account.role !== "admin" && isCity(faction);
     let sql = `SELECT r.*, a.service_number AS requester_service_number
@@ -64,7 +66,7 @@ export async function onRequestGet({ request, env }) {
     } else {
       rows = await env.DB.prepare(sql + " WHERE r.requester_account_id=? ORDER BY r.created_at DESC LIMIT 100").bind(auth.account.id).all();
     }
-    return json({ success:true, catalog:CATALOG, requests:rows.results || [], reviewerSang, reviewerCity, faction });
+    return json({ success:true, catalog:CATALOG, requests:rows.results || [], reviewerSang, reviewerCity, canCreate, faction });
   } catch (error) {
     console.error("SANG material requests list:",error);
     return json({ message:"Не вдалося завантажити замовлення матеріалів." },500);
@@ -77,6 +79,7 @@ export async function onRequestPost({ request, env }) {
     let body; try { body = await request.json(); } catch { return json({message:"Некоректний запит."},400); }
     const action = String(body?.action || "create");
     if (action === "create") {
+      if (auth.account.role !== "admin" && !ORDER_ACCESS.has(auth.account.service_number)) return json({message:"Створювати замовлення можуть лише генерал армії та два визначені помічники."},403);
       const requesterFaction = auth.account.role === "admin" ? "SANG" : (auth.account.faction_name || "Невідома фракція");
       const requesterIsSang = isSang(requesterFaction);
       const category = String(body.category || "");
