@@ -368,3 +368,19 @@
   .cabinet-page .admin-table-wrap{scrollbar-width:thin}
   .cabinet-page .admin-table-wrap>.admin-table{min-width:720px}
 }
+
+/* Keep the personnel profile visible while the main workspace scrolls. */
+@media (min-width: 761px) {
+  .cabinet-page .dashboard-sidebar {
+    position: sticky;
+    top: 18px;
+    align-self: start;
+    height: fit-content;
+    max-height: calc(100vh - 36px);
+    max-height: calc(100dvh - 36px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201,164,74,.45) rgba(7,17,29,.25);
+  }
+}
