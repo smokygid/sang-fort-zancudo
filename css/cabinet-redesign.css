@@ -319,3 +319,18 @@
   .cabinet-page .contract-filter{justify-content:space-between;text-align:left}
   .cabinet-page .contract-filter:last-child{grid-column:1/-1}
 }
+
+
+/* Command news registry controls and previews */
+.cabinet-page .admin-news-toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:14px 0 8px}
+.cabinet-page .admin-news-toolbar .orders-search{flex:1 1 230px;min-width:180px}
+.cabinet-page .admin-news-toolbar .orders-filter{flex:0 1 180px;min-width:145px;min-height:40px;padding:8px 10px;background:#081522;border:1px solid #34485b;color:var(--cb-text);font:inherit;font-size:11px}
+.cabinet-page .admin-news-count{margin:0 0 10px;color:var(--cb-muted);font-size:10px;letter-spacing:.6px}
+.cabinet-page .admin-news-item{padding:15px 17px}
+.cabinet-page .admin-news-item>p{color:#aebbc7;font-size:11px;line-height:1.55}
+.cabinet-page .admin-news-thumb{display:block;width:min(100%,360px);max-height:170px;object-fit:cover;margin:10px 0;border:1px solid rgba(201,164,74,.25);border-radius:3px}
+.cabinet-page .admin-news-excerpt{white-space:pre-line}
+.cabinet-page .admin-news-fulltext{margin:10px 0;padding:10px 12px;background:rgba(4,14,24,.42);border:1px solid rgba(201,164,74,.22)}
+.cabinet-page .admin-news-fulltext summary{color:var(--cb-gold-hi);font-size:10px;font-weight:800;letter-spacing:.6px;cursor:pointer}
+.cabinet-page .admin-news-fulltext p{margin:10px 0 0;color:#d0d8df;font-size:12px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:700px){.cabinet-page .admin-news-toolbar .orders-filter{flex:1 1 100%;min-width:0}.cabinet-page .admin-news-item{padding:12px}}
