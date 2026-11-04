@@ -748,3 +748,275 @@
   .cabinet-page .dashboard-content-grid>.dashboard-card{padding:15px}
   .cabinet-page #admin-panel{padding:14px}
 }
+
+
+/* =========================================================
+   PERSONNEL COMMAND — phase 2: personnel identity & service record
+   CSS only: all existing profile IDs and data bindings are preserved.
+   ========================================================= */
+.cabinet-page #profile-section{
+  isolation:isolate;
+  min-height:166px;
+  grid-template-columns:116px minmax(0,1.35fr) minmax(205px,.8fr);
+  gap:22px;
+  padding:22px 24px;
+  border:1px solid rgba(201,164,74,.48);
+  background:
+    linear-gradient(90deg,rgba(201,164,74,.045),transparent 32%),
+    linear-gradient(125deg,#152a3e 0%,#0b1928 58%,#091522 100%);
+  box-shadow:0 18px 38px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.035);
+}
+.cabinet-page #profile-section:before{
+  content:"PERSONNEL FILE";
+  position:absolute;
+  top:13px;
+  left:16px;
+  color:rgba(201,164,74,.62);
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1.8px;
+}
+.cabinet-page #profile-section .identity-rank-mark{
+  width:116px;
+  height:94px;
+  margin-top:12px;
+  padding:9px;
+  border:1px solid rgba(201,164,74,.24);
+  background:rgba(3,12,21,.28);
+}
+.cabinet-page #profile-section .identity-data{
+  display:grid;
+  align-content:center;
+  gap:0;
+  min-width:0;
+  padding-top:10px;
+}
+.cabinet-page #profile-section .identity-meta{
+  display:grid;
+  grid-template-columns:minmax(76px,.55fr) minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+  padding:8px 0;
+  border-bottom:1px solid rgba(166,187,204,.1);
+}
+.cabinet-page #profile-section .identity-meta:first-child b{
+  color:#f4e4b5;
+  font-size:15px;
+  letter-spacing:.15px;
+}
+.cabinet-page #profile-section .identity-meta span{
+  color:#8fa2b4;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.cabinet-page #profile-section .identity-meta b{
+  min-width:0;
+  color:#e8edf2;
+  font-size:12px;
+  font-weight:800;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+.cabinet-page #profile-section .identity-status{
+  align-self:stretch;
+  align-content:center;
+  gap:10px;
+  padding:12px 0 12px 20px;
+  border-left:1px solid rgba(201,164,74,.3);
+}
+.cabinet-page #profile-section .status-label{
+  color:#9aabba;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1.5px;
+}
+.cabinet-page #profile-section .identity-status>strong{
+  display:inline-flex;
+  align-items:center;
+  justify-self:start;
+  min-height:30px;
+  padding:6px 10px;
+  border:1px solid rgba(117,198,140,.28);
+  background:rgba(57,132,83,.12);
+  color:#91d6a6;
+  font-size:12px;
+  letter-spacing:.3px;
+}
+.cabinet-page #profile-section .identity-status small{
+  color:#8194a6;
+  font-size:9px;
+}
+.cabinet-page #profile-section .identity-status small b{
+  color:#d6dee5;
+  font-size:10px;
+}
+.cabinet-page .profile-card{
+  overflow:hidden;
+  background:linear-gradient(150deg,rgba(17,36,54,.99),rgba(8,20,32,.99));
+}
+.cabinet-page .profile-card .service-profile{
+  margin:0;
+  padding:0;
+  border:0;
+}
+.cabinet-page .profile-card .service-profile>.card-kicker{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 15px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(201,164,74,.2);
+  color:#e0c36a!important;
+  font-size:8px;
+  letter-spacing:1.35px;
+}
+.cabinet-page .profile-card .service-profile>.card-kicker:after{
+  content:"VERIFIED RECORD";
+  margin-left:auto;
+  color:#7890a4;
+  font-size:7px;
+  letter-spacing:1px;
+}
+.cabinet-page .profile-card .identity-meta{
+  display:grid;
+  grid-template-columns:minmax(90px,.7fr) minmax(0,1fr);
+  align-items:center;
+  gap:10px;
+  margin:0;
+  padding:10px 0;
+  border-bottom:1px solid rgba(166,187,204,.09);
+  font-size:11px;
+}
+.cabinet-page .profile-card .identity-meta span{
+  color:#8195a7;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
+.cabinet-page .profile-card .identity-meta b{
+  color:#e7edf2;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+.cabinet-page #profile-service-note{
+  margin:13px 0 0;
+  padding:10px 11px;
+  border-left:2px solid rgba(201,164,74,.45);
+  background:rgba(3,12,21,.28);
+  color:#aebdca;
+  font-size:10px;
+  line-height:1.6;
+}
+.cabinet-page #personal-contract-panel{
+  margin-top:18px;
+  padding:14px;
+  border:1px solid rgba(201,164,74,.2);
+  background:linear-gradient(145deg,rgba(201,164,74,.055),rgba(3,12,21,.24));
+}
+.cabinet-page #personal-contract-panel>.card-kicker{
+  margin:0 0 11px;
+  color:#e0c36a!important;
+  font-size:8px;
+  letter-spacing:1.2px;
+}
+.cabinet-page #personal-contract-current{
+  min-width:0;
+}
+.cabinet-page #personal-contract-current p,
+.cabinet-page #personal-contract-history p{
+  color:#aebdca;
+  font-size:10px;
+  line-height:1.6;
+}
+.cabinet-page #personal-contract-history{
+  display:grid;
+  gap:7px;
+  margin-top:9px;
+}
+.cabinet-page #personal-contract-history:empty{
+  display:none;
+}
+.cabinet-page #personal-contract-panel :is(.contract-current,.contract-history)>*{
+  min-width:0;
+}
+@media(max-width:900px){
+  .cabinet-page #profile-section{
+    grid-template-columns:88px minmax(0,1fr);
+    gap:15px;
+  }
+  .cabinet-page #profile-section .identity-rank-mark{
+    width:88px;
+    height:78px;
+  }
+  .cabinet-page #profile-section .identity-status{
+    grid-column:1/-1;
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:8px 12px;
+    padding:12px 0 0;
+    border-left:0;
+    border-top:1px solid rgba(201,164,74,.25);
+  }
+  .cabinet-page #profile-section .identity-status .status-label{
+    grid-column:1/-1;
+  }
+  .cabinet-page #profile-section .identity-status>strong{
+    grid-column:1;
+    grid-row:2;
+  }
+  .cabinet-page #profile-section .identity-status small{
+    grid-column:2;
+    text-align:right;
+  }
+}
+@media(max-width:520px){
+  .cabinet-page #profile-section{
+    grid-template-columns:64px minmax(0,1fr);
+    gap:11px;
+    padding:20px 14px 15px;
+  }
+  .cabinet-page #profile-section .identity-rank-mark{
+    width:64px;
+    height:62px;
+    padding:5px;
+  }
+  .cabinet-page #profile-section .identity-meta{
+    grid-template-columns:1fr;
+    gap:3px;
+    padding:6px 0;
+  }
+  .cabinet-page #profile-section .identity-meta b{
+    text-align:left;
+    font-size:11px;
+  }
+  .cabinet-page #profile-section .identity-meta:first-child b{
+    font-size:13px;
+  }
+  .cabinet-page #profile-section .identity-status{
+    grid-template-columns:1fr;
+  }
+  .cabinet-page #profile-section .identity-status .status-label,
+  .cabinet-page #profile-section .identity-status>strong,
+  .cabinet-page #profile-section .identity-status small{
+    grid-column:1;
+    grid-row:auto;
+    text-align:left;
+  }
+  .cabinet-page .profile-card .service-profile>.card-kicker:after{
+    display:none;
+  }
+  .cabinet-page .profile-card .identity-meta{
+    grid-template-columns:1fr;
+    gap:4px;
+  }
+  .cabinet-page .profile-card .identity-meta b{
+    text-align:left;
+  }
+  .cabinet-page #personal-contract-panel{
+    padding:11px;
+  }
+}
