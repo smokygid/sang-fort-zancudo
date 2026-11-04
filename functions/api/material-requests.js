@@ -57,7 +57,7 @@ export async function onRequestGet({ request, env }) {
     const auth = await getActor(request, env); if (auth.error) return auth.error;
     const canCreate = auth.account.role === "admin" || auth.account.role === "faction_leader" || ORDER_ACCESS.has(auth.account.service_number);
     const faction = auth.account.role === "admin" ? "SANG" : (auth.account.faction_name || "");
-    const reviewerSang = auth.account.role !== "admin" && isSang(faction), reviewerCity = auth.account.role !== "admin" && isCity(faction);
+    const reviewerSang = isSang(faction), reviewerCity = auth.account.role !== "admin" && isCity(faction);
     let sql = `SELECT r.*, a.service_number AS requester_service_number
       FROM material_requests r JOIN personnel_accounts a ON a.id=r.requester_account_id`;
     let rows;
@@ -112,7 +112,7 @@ export async function onRequestPost({ request, env }) {
     if (!Number.isSafeInteger(id) || id < 1) return json({message:"Некоректний номер заявки."},400);
     const current = await env.DB.prepare("SELECT * FROM material_requests WHERE id=? LIMIT 1").bind(id).first();
     if (!current) return json({message:"Заявку не знайдено."},404);
-    const sang = auth.account.role !== "admin" && isSang(auth.account.faction_name), city = auth.account.role !== "admin" && isCity(auth.account.faction_name);
+    const sang = auth.account.role === "admin" || isSang(auth.account.faction_name), city = auth.account.role !== "admin" && isCity(auth.account.faction_name);
     if (!sang && !city) return json({message:"Рішення доступне лише керівникам SANG та мерії."},403);
     const side = sang ? "sang" : "city";
     const decision = String(body.decision || "");
