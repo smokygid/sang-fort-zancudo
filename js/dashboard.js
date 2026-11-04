@@ -1116,25 +1116,83 @@ function populateContractSoldiers(profiles) {
   for(const p of profiles){const label=[p.full_name,p.service_number].filter(Boolean).join(" · ");select.appendChild(new Option(label||p.service_number,String(p.id)));}
 }
 
+let contractAdminFilter = "all";
+
+function getContractGroup(contract) {
+  if (contract.status === "missing") return "missing";
+  if (contract.status === "expired") return "expired";
+  if (Number(contract.days_left) >= 0 && Number(contract.days_left) <= 3) return "warning";
+  return "active";
+}
+
+function updateContractFilterCounts(rows) {
+  const counts = {all:rows.length,active:0,warning:0,expired:0,missing:0};
+  rows.forEach(contract => counts[getContractGroup(contract)]++);
+  Object.entries(counts).forEach(([key,value]) => {
+    const node=document.getElementById("contract-count-"+key);
+    if(node)node.textContent=String(value);
+  });
+}
+
 function renderAdminContracts(rows) {
   const tbody=document.getElementById("contracts-admin-list");if(!tbody)return;
+  updateContractFilterCounts(rows);
+  const query=(document.getElementById("contract-admin-search")?.value||"").trim().toLocaleLowerCase("uk");
+  const filtered=rows.filter(contract=>{
+    const group=getContractGroup(contract);
+    const haystack=[contract.full_name,contract.service_number].filter(Boolean).join(" ").toLocaleLowerCase("uk");
+    return (contractAdminFilter==="all"||group===contractAdminFilter)&&(!query||haystack.includes(query));
+  }).sort((a,b)=>{
+    const dateA=a.end_date||"9999-12-31",dateB=b.end_date||"9999-12-31";
+    return dateA.localeCompare(dateB)||String(a.full_name||"").localeCompare(String(b.full_name||""),"uk");
+  });
   tbody.replaceChildren();
-  if(!rows.length){const row=document.createElement("tr"),cell=document.createElement("td");cell.colSpan=7;cell.textContent="Контракти ще не оформлені.";row.appendChild(cell);tbody.appendChild(row);return;}
-  for(const c of rows){
+  const result=document.getElementById("contract-admin-results");
+  if(result)result.textContent="Показано: "+filtered.length+" із "+rows.length+" військовослужбовців";
+  document.querySelectorAll(".contract-filter").forEach(button=>{
+    const active=button.dataset.contractFilter===contractAdminFilter;
+    button.classList.toggle("is-active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
+  if(!filtered.length){
+    const row=document.createElement("tr"),cell=document.createElement("td");
+    cell.colSpan=8;
+    cell.textContent=rows.length?"За вибраними параметрами контрактів не знайдено.":"Контракти ще не оформлені.";
+    row.appendChild(cell);tbody.appendChild(row);return;
+  }
+  for(const contract of filtered){
     const row=document.createElement("tr");
-    const days=c.id===null||c.id===undefined?"—":c.status==="expired"?"0":String(c.days_left);
-    let status=c.status==="missing"?"Не оформлено":c.status==="expired"?"Завершено":Number(c.days_left)<=3?"Завершується":"Діє";
-    const values=[c.service_number||"—",c.full_name||"Не зазначено",formatContractDate(c.start_date),c.duration_days?c.duration_days+" днів":"—",formatContractDate(c.end_date),days,status];
+    const group=getContractGroup(contract);
+    const days=contract.id===null||contract.id===undefined?"—":group==="expired"?"0":String(contract.days_left);
+    const status=group==="missing"?"Не оформлено":group==="expired"?"Завершено":group==="warning"?"Завершується":"Діє";
+    const values=[contract.service_number||"—",contract.full_name||"Не зазначено",formatContractDate(contract.start_date),contract.duration_days?contract.duration_days+" днів":"—",formatContractDate(contract.end_date),days,status];
     for(const value of values){const cell=document.createElement("td");cell.textContent=value;row.appendChild(cell);}
-    if(c.status==="expired")row.dataset.contractStatus="expired";else if(c.status==="missing")row.dataset.contractStatus="missing";else if(Number(c.days_left)<=3)row.dataset.contractStatus="warning";
-    tbody.appendChild(row);
+    row.dataset.contractStatus=group;
+    const actionCell=document.createElement("td");
+    if(contract.account_id!==null&&contract.account_id!==undefined){
+      const button=document.createElement("button");
+      button.type="button";button.className="contract-quick-renew";button.textContent="ОФОРМИТИ / ПРОДОВЖИТИ";
+      button.addEventListener("click",()=>{
+        const selector=document.getElementById("contract-soldier");
+        const form=document.getElementById("contract-form");
+        if(!selector||!form)return;
+        selector.value=String(contract.account_id);
+        selector.dispatchEvent(new Event("change",{bubbles:true}));
+        form.scrollIntoView({behavior:"smooth",block:"center"});
+        selector.focus({preventScroll:true});
+        const message=document.getElementById("contract-admin-message");
+        if(message)message.textContent="Обрано: "+(contract.full_name||contract.service_number||"військовослужбовець")+". Перевірте дату та оберіть термін контракту.";
+      });
+      actionCell.appendChild(button);
+    }else actionCell.textContent="—";
+    row.appendChild(actionCell);tbody.appendChild(row);
   }
 }
 
 async function loadAdminContracts() {
   const tbody=document.getElementById("contracts-admin-list");if(!tbody)return;
   try{const response=await fetch("/api/contracts",{credentials:"same-origin",cache:"no-store"});const data=await response.json();if(!response.ok)throw new Error(data.message||"Не вдалося завантажити контракти.");adminContractRows=data.contracts||[];renderAdminContracts(adminContractRows);updateCommandContractStats(adminContractRows);}
-  catch(error){tbody.replaceChildren();const row=document.createElement("tr"),cell=document.createElement("td");cell.colSpan=7;cell.textContent=error.message||"Помилка завантаження контрактів.";row.appendChild(cell);tbody.appendChild(row);}
+  catch(error){tbody.replaceChildren();const row=document.createElement("tr"),cell=document.createElement("td");cell.colSpan=8;cell.textContent=error.message||"Помилка завантаження контрактів.";row.appendChild(cell);tbody.appendChild(row);}
 }
 
 document.addEventListener("DOMContentLoaded",()=>{
@@ -1171,6 +1229,11 @@ document.addEventListener("DOMContentLoaded",()=>{
     }catch(error){message.textContent=error.message||"Помилка збереження контракту.";}
     finally{button.disabled=false;}
   });
+  document.querySelectorAll(".contract-filter").forEach(button=>button.addEventListener("click",()=>{
+    contractAdminFilter=button.dataset.contractFilter||"all";
+    renderAdminContracts(adminContractRows);
+  }));
+  document.getElementById("contract-admin-search")?.addEventListener("input",()=>renderAdminContracts(adminContractRows));
   document.getElementById("refresh-contracts")?.addEventListener("click",loadAdminContracts);
 });
 
