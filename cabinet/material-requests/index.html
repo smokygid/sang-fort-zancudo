@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Замовлення матеріалів | SANG</title>
+<link rel="stylesheet" href="../../css/style.css"><link rel="stylesheet" href="../../css/cabinet.css"><link rel="stylesheet" href="../../css/dashboard.css"><link rel="stylesheet" href="../../css/material-requests.css?v=3">
+</head>
+<body class="cabinet-page">
+<header class="site-header"><div class="container"><a class="logo" href="../../">SANG <span>FORT ZANCUDO</span></a><nav><a href="../dashboard/">Кабінет</a><button id="logout-button" class="cabinet-logout" type="button">ВИЙТИ</button></nav></div></header>
+<main class="dashboard-main">
+<section class="dashboard-heading"><p class="eyebrow">SECURE SUPPLY PORTAL · SANG</p><h1>ЗАМОВЛЕННЯ <span>МАТЕРІАЛІВ</span></h1><p id="material-page-status" role="status">Перевірка службової сесії…</p></section>
+<section class="dashboard-card material-requests-card" id="material-requests" hidden>
+<p class="card-kicker">INTERAGENCY SUPPLY · SANG</p><h2>Замовлення матеріалів</h2><p>Подання заявок на матеріальне та медичне забезпечення. Статус і рішення за заявками відображаються нижче.</p>
+<form id="material-request-form" class="profile-form">
+<label for="material-request-category">Категорія замовлення</label><select id="material-request-category" required><option value="">Оберіть категорію</option><option value="materials">Матеріали</option><option value="medical">Медичні матеріали</option></select>
+<label for="material-request-quantity">Кількість</label><input id="material-request-quantity" type="number" min="1" max="100000" step="1" value="1" required>
+<div class="material-request-fields"><label>Бажана дата<input id="material-request-date" type="date" required></label><label>Бажаний час<input id="material-request-time" type="time" required></label></div>
+<label for="material-request-comment">Коментар до замовлення</label><textarea id="material-request-comment" maxlength="1000" rows="3" placeholder="За потреби вкажіть додаткові відомості"></textarea>
+<button class="cabinet-logout" type="submit">НАДІСЛАТИ ЗАМОВЛЕННЯ</button><p id="material-request-message" role="status"></p></form>
+<div class="material-requests-list-head"><h3>Заявки та рішення</h3><button id="material-requests-refresh" class="cabinet-logout" type="button">ОНОВИТИ</button></div><div id="material-requests-list" aria-live="polite"><p>Завантаження заявок…</p></div>
+</section>
+<p class="dashboard-note">СЛУЖБОВА ІНФОРМАЦІЯ · УСІ ДІЇ ФІКСУЮТЬСЯ В ЖУРНАЛІ АУДИТУ</p>
+</main><div data-sang-footer></div>
+<script>
+document.addEventListener("DOMContentLoaded",async()=>{const status=document.getElementById("material-page-status");try{const r=await fetch("/api/auth/me",{credentials:"same-origin",cache:"no-store"});const d=await r.json();if(!r.ok||!d.authenticated){location.replace("/cabinet/");return;}if(!["admin","faction_leader"].includes(d.soldier.role)){status.textContent="Доступ до сторінки обмежено.";return;}status.textContent="Сесію підтверджено · "+d.soldier.serviceNumber;document.getElementById("logout-button").addEventListener("click",async()=>{await fetch("/api/auth/logout",{method:"POST",credentials:"same-origin"});location.replace("/cabinet/");});}catch{status.textContent="Не вдалося перевірити службову сесію.";}}); 
+</script>
+<script src="../../js/material-requests.js?v=6" defer></script><script src="/js/footer.js?v=1" defer></script>
+</body></html>
