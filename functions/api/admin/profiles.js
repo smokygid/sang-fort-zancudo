@@ -149,8 +149,17 @@ export async function onRequestDelete({ request, env }) {
     const auth = await requireAdmin(request, env);
     if (auth.error) return auth.error;
     let body;
-    try { body = await request.json(); } catch { return json({ message: "Некоректний запит." }, 400); }
-    const serviceNumber = typeof body?.serviceNumber === "string" ? body.serviceNumber.trim().toUpperCase() : "";
+    try {
+      const rawBody = await request.text();
+      body = JSON.parse(rawBody);
+    } catch (error) {
+      console.error("SANG personnel delete: invalid request body:", error);
+      return json({ message: "Не вдалося прочитати дані запиту. Оновіть сторінку та повторіть спробу." }, 400);
+    }
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return json({ message: "Некоректні параметри видалення." }, 400);
+    }
+    const serviceNumber = typeof body.serviceNumber === "string" ? body.serviceNumber.trim().toUpperCase() : "";
     if (!/^[A-Z0-9-]{3,32}$/.test(serviceNumber)) return json({ message: "Некоректний військовий номер." }, 400);
     if (!env.SHEETS_API_URL || !env.SHEETS_API_SECRET) return json({ message: "Інтеграцію з реєстром не налаштовано. Видалення не виконано." }, 503);
 
