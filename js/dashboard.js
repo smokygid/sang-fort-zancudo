@@ -312,6 +312,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("click", async event => {
+  const remove = event.target.closest(".personnel-delete-button");
+  if (remove) {
+    const serviceNumber = String(remove.dataset.serviceNumber || "").trim();
+    const fullName = String(remove.dataset.fullName || "").trim();
+    if (!serviceNumber || !confirm("УВАГА! Повністю видалити запис " + (fullName ? fullName + " · " : "") + serviceNumber + " з реєстру та систему доступу SANG? Цю дію неможливо скасувати.")) return;
+    remove.disabled = true;
+    try {
+      const response = await fetch("/api/admin/profiles", {
+        method: "DELETE", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ serviceNumber })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося видалити військовослужбовця.");
+      const quick = document.getElementById("personnel-quick-profile");
+      if (quick) quick.hidden = true;
+      const message = document.getElementById("service-profile-message");
+      if (message) message.textContent = data.message || "Запис видалено.";
+      await loadAdminProfiles();
+      await loadAccounts();
+    } catch (error) {
+      alert(error.message);
+      remove.disabled = false;
+    }
+    return;
+  }
   const button = event.target.closest(".account-status-button");
   if (!button) return;
   const accountId = Number(button.dataset.accountId);
@@ -560,6 +586,13 @@ function renderCommandPersonnel() {
     button.textContent = "ПРОФІЛЬ";
     button.addEventListener("click", () => showCommandPersonnelProfile(p));
     actionCell.appendChild(button);
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "personnel-delete-button";
+    remove.textContent = "ВИДАЛИТИ";
+    remove.dataset.serviceNumber = p.service_number || "";
+    remove.dataset.fullName = p.full_name || "";
+    actionCell.appendChild(remove);
     row.appendChild(actionCell);
     tbody.appendChild(row);
   }
