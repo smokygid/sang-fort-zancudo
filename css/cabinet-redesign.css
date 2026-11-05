@@ -733,10 +733,10 @@
   .cabinet-page .dashboard-heading:before{display:none}
   .cabinet-page .dashboard-layout{grid-template-columns:1fr}
   .cabinet-page .dashboard-sidebar{width:auto}
-  .cabinet-page .sidebar-identity{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:12px;text-align:left;align-items:center}
-  .cabinet-page .sidebar-avatar{grid-row:span 3;width:54px;height:54px;margin:0;font-size:25px}
-  .cabinet-page .dashboard-nav{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cabinet-page .sidebar-identity-card{max-width:420px;margin:0 auto}.cabinet-page .sidebar-motto{margin-top:12px}
+  .cabinet-page .sidebar-identity-card{width:100%;max-width:420px;margin:0 auto}
+  .cabinet-page .sidebar-identity{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center}
+  .cabinet-page .sidebar-avatar{width:68px;height:68px;margin:0 auto 12px}
+  .cabinet-page .sidebar-motto{margin-top:12px}
   .cabinet-page .dashboard-identity{grid-template-columns:72px minmax(0,1fr);gap:12px}
   .cabinet-page .identity-rank-mark{width:72px;height:58px}
   .cabinet-page .identity-status{grid-column:1/-1}
