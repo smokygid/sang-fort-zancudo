@@ -58,20 +58,24 @@
     </section>
     <section id="dashboard-content" class="dashboard-layout" hidden>
       <aside class="dashboard-sidebar">
-        <div class="sidebar-identity">
-          <div class="sidebar-avatar" aria-hidden="true">S</div>
-          <strong id="sidebar-soldier-name">Військовослужбовець SANG</strong>
-          <span id="sidebar-soldier-rank">Особовий склад</span>
-          <small id="soldier-number">—</small>
-</div>
-        <nav class="dashboard-nav" aria-label="Навігація кабінету">
-          <a class="active" href="#profile-section">Мій профіль</a>
-          <a href="#orders-section">Накази</a>
-          <a href="../material-requests/" id="sidebar-materials-link" hidden>Замовлення матеріалів</a>
-          <a href="#awards-section">Дисципліна та відзнаки</a>
-          <a href="#service-section">Службові відомості</a>
-        </nav>
-        <div class="sidebar-motto">HONOR · DUTY · COUNTRY</div>
+        <section class="sidebar-identity-card" aria-label="Ідентифікаційна картка військовослужбовця">
+          <p class="sidebar-card-kicker">SANG · PERSONNEL ID</p>
+          <div class="sidebar-avatar" aria-hidden="true"><img src="../../assets/sang-logo.png" alt=""></div>
+          <div class="sidebar-identity">
+            <strong id="sidebar-soldier-name">Військовослужбовець SANG</strong>
+            <span id="sidebar-soldier-rank">Особовий склад</span>
+          </div>
+          <div class="sidebar-service-state">
+            <i aria-hidden="true"></i>
+            <span id="sidebar-service-status">Статус не визначено</span>
+          </div>
+          <div class="sidebar-service-number">
+            <small>ВІЙСЬКОВИЙ НОМЕР</small>
+            <strong id="soldier-number">—</strong>
+          </div>
+          <div class="sidebar-motto">HONOR · DUTY · COUNTRY</div>
+          <p class="sidebar-card-footer">FORT ZANCUDO<br>UNITED STATES OF SAN ANDREAS</p>
+        </section>
       </aside>
       <div class="dashboard-workspace">
         <div class="workspace-heading">
