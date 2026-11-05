@@ -1404,3 +1404,61 @@
   .cabinet-page #material-requests-list .material-request-head{flex-direction:column}
   .cabinet-page #orders-section .orders-heading{align-items:flex-start}
 }
+
+
+/* Unified destructive action buttons across the SANG cabinet */
+.cabinet-page .personnel-delete-button,
+.cabinet-page .admin-delete-button,
+.cabinet-page .admin-news-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 7px 12px;
+  border: 1px solid rgba(190, 91, 91, .58);
+  border-radius: 4px;
+  background: rgba(151, 55, 55, .10);
+  color: #e7a0a0;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.cabinet-page .personnel-delete-button::before,
+.cabinet-page .admin-delete-button::before,
+.cabinet-page .admin-news-delete::before {
+  content: "×";
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: .8;
+}
+.cabinet-page .personnel-delete-button:hover,
+.cabinet-page .admin-delete-button:hover,
+.cabinet-page .admin-news-delete:hover {
+  background: rgba(164, 58, 58, .22);
+  border-color: #c66d6d;
+  color: #ffd0d0;
+  box-shadow: 0 4px 14px rgba(125, 35, 35, .18);
+  transform: translateY(-1px);
+}
+.cabinet-page .personnel-delete-button:focus-visible,
+.cabinet-page .admin-delete-button:focus-visible,
+.cabinet-page .admin-news-delete:focus-visible {
+  outline: 2px solid #e0a0a0;
+  outline-offset: 2px;
+}
+.cabinet-page .personnel-delete-button:disabled,
+.cabinet-page .admin-delete-button:disabled,
+.cabinet-page .admin-news-delete:disabled {
+  opacity: .55;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
