@@ -418,6 +418,8 @@ async function loadOwnProfile() {
     if (insignia) { insignia.replaceChildren(buildRankInsignia(p.rank)); insignia.setAttribute("aria-label", "Знаки розрізнення: " + (p.rank || "звання не зазначено")); insignia.title = p.rank || "Звання не зазначено"; }
     document.getElementById("profile-unit").textContent = p.unit || "Не зазначено";
     const sidebarRank = document.getElementById("sidebar-soldier-rank");
+    const sidebarStatus = document.getElementById("sidebar-service-status");
+    if (sidebarStatus) sidebarStatus.textContent = p.serviceStatus || "Статус не визначено";
     const rankCopy = document.getElementById("profile-rank-copy");
     const unitCopy = document.getElementById("profile-unit-copy");
     const mosCopy = document.getElementById("profile-mos-copy");
