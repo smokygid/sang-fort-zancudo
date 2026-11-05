@@ -486,49 +486,75 @@
     linear-gradient(180deg,rgba(17,36,54,.98),rgba(7,18,29,.99) 72%);
   box-shadow:0 18px 42px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.025);
 }
-.cabinet-page .sidebar-identity{
-  padding:8px 6px 18px;
+.cabinet-page .sidebar-identity-card{
+  position:relative;
+  padding:16px 12px 14px;
+  border:1px solid rgba(201,164,74,.28);
+  background:linear-gradient(155deg,rgba(22,43,62,.92),rgba(7,17,29,.96) 72%);
+  box-shadow:inset 0 1px rgba(255,255,255,.035),0 12px 28px rgba(0,0,0,.18);
+  text-align:center;
+  overflow:hidden;
+}
+.cabinet-page .sidebar-identity-card:before,
+.cabinet-page .sidebar-identity-card:after{
+  content:"";
+  position:absolute;
+  width:34px;
+  height:34px;
+  border-color:rgba(201,164,74,.55);
+  pointer-events:none;
+}
+.cabinet-page .sidebar-identity-card:before{top:6px;left:6px;border-top:1px solid;border-left:1px solid}
+.cabinet-page .sidebar-identity-card:after{right:6px;bottom:6px;border-right:1px solid;border-bottom:1px solid}
+.cabinet-page .sidebar-card-kicker{
+  margin:0 0 16px;
+  color:#c9a44a;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:2px;
 }
 .cabinet-page .sidebar-avatar{
-  width:72px;
-  height:72px;
-  border-radius:4px;
-  border-color:rgba(201,164,74,.65);
+  display:grid;
+  place-items:center;
+  width:76px;
+  height:76px;
+  margin:0 auto 14px;
+  padding:7px;
+  border:1px solid rgba(201,164,74,.68);
+  border-radius:3px;
+  background:rgba(255,255,255,.035);
   box-shadow:0 0 0 5px rgba(201,164,74,.055),0 12px 24px rgba(0,0,0,.2);
 }
-.cabinet-page .sidebar-identity strong{
-  font-size:13px;
-  letter-spacing:.15px;
-}
+.cabinet-page .sidebar-avatar img{display:block;width:100%;height:100%;object-fit:contain}
+.cabinet-page .sidebar-identity{display:flex;flex-direction:column;align-items:center;gap:7px;padding:0 0 12px}
+.cabinet-page .sidebar-identity strong{font-size:13px;line-height:1.4;letter-spacing:.15px;overflow-wrap:anywhere}
 .cabinet-page .sidebar-identity span{
   display:inline-block;
-  margin-top:8px;
+  margin:0;
   padding:4px 8px;
   border:1px solid rgba(201,164,74,.22);
   background:rgba(201,164,74,.07);
+  color:#e0c36a;
   font-size:10px;
 }
-.cabinet-page .dashboard-nav{
-  gap:4px;
-  padding:13px 0;
+.cabinet-page .sidebar-service-state{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:9px 4px;
+  border-top:1px solid rgba(255,255,255,.07);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  color:#c6d1dc;
+  font-size:10px;
+  line-height:1.4;
 }
-.cabinet-page .dashboard-nav a{
-  position:relative;
-  padding:10px 11px;
-  border:1px solid transparent;
-  border-left:2px solid transparent;
-  font-size:11px;
-}
-.cabinet-page .dashboard-nav a:hover,
-.cabinet-page .dashboard-nav a.active{
-  background:linear-gradient(90deg,rgba(201,164,74,.13),rgba(201,164,74,.025));
-  border-color:rgba(201,164,74,.13);
-  border-left-color:var(--cb-gold);
-}
-.cabinet-page .sidebar-motto{
-  font-size:9px;
-  letter-spacing:1.8px;
-}
+.cabinet-page .sidebar-service-state i{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#c9a44a;box-shadow:0 0 9px rgba(201,164,74,.4)}
+.cabinet-page .sidebar-service-number{display:flex;flex-direction:column;gap:5px;padding:13px 4px 8px}
+.cabinet-page .sidebar-service-number small{color:#8193a4;font-size:8px;letter-spacing:1.5px}
+.cabinet-page .sidebar-service-number strong{color:#e0c36a;font-size:12px;letter-spacing:1px;overflow-wrap:anywhere}
+.cabinet-page .sidebar-motto{margin-top:12px;color:#c9a44a;font-size:8px;letter-spacing:1.4px}
+.cabinet-page .sidebar-card-footer{margin:13px 0 0;color:#667b8e;font-size:7px;line-height:1.7;letter-spacing:1.2px}
 .cabinet-page .workspace-heading{
   align-items:center;
   margin:2px 0 15px;
@@ -710,7 +736,7 @@
   .cabinet-page .sidebar-identity{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:12px;text-align:left;align-items:center}
   .cabinet-page .sidebar-avatar{grid-row:span 3;width:54px;height:54px;margin:0;font-size:25px}
   .cabinet-page .dashboard-nav{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cabinet-page .sidebar-motto{margin-top:8px}
+  .cabinet-page .sidebar-identity-card{max-width:420px;margin:0 auto}.cabinet-page .sidebar-motto{margin-top:12px}
   .cabinet-page .dashboard-identity{grid-template-columns:72px minmax(0,1fr);gap:12px}
   .cabinet-page .identity-rank-mark{width:72px;height:58px}
   .cabinet-page .identity-status{grid-column:1/-1}
