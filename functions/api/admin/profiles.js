@@ -143,8 +143,45 @@ export async function onRequestPatch({ request, env }) {
   }
 }
 
+
+export async function onRequestDelete({ request, env }) {
+  try {
+    const auth = await requireAdmin(request, env);
+    if (auth.error) return auth.error;
+    let body;
+    try { body = await request.json(); } catch { return json({ message: "Некоректний запит." }, 400); }
+    const serviceNumber = typeof body?.serviceNumber === "string" ? body.serviceNumber.trim().toUpperCase() : "";
+    if (!/^[A-Z0-9-]{3,32}$/.test(serviceNumber)) return json({ message: "Некоректний військовий номер." }, 400);
+    if (!env.SHEETS_API_URL || !env.SHEETS_API_SECRET) return json({ message: "Інтеграцію з реєстром не налаштовано. Видалення не виконано." }, 503);
+
+    const target = await env.DB.prepare("SELECT id,role FROM personnel_accounts WHERE service_number=? LIMIT 1").bind(serviceNumber).first();
+    if (!target || target.role !== "soldier") return json({ message: "Військовослужбовця не знайдено або запис не можна видалити." }, 404);
+
+    const sheetResponse = await fetch(env.SHEETS_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ secret: env.SHEETS_API_SECRET, action: "delete", serviceNumber })
+    });
+    if (!sheetResponse.ok) return json({ message: "Google Sheets не підтвердив видалення. Обліковий запис залишено без змін." }, 502);
+    const sheetResult = await sheetResponse.json();
+    if (!sheetResult.success) return json({ message: sheetResult.message || "Google Sheets не підтвердив видалення. Обліковий запис залишено без змін." }, 502);
+
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM cabinet_sessions WHERE account_id=?").bind(target.id),
+      env.DB.prepare("DELETE FROM personnel_profiles WHERE account_id=?").bind(target.id),
+      env.DB.prepare("DELETE FROM personnel_accounts WHERE id=?").bind(target.id),
+      env.DB.prepare("INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,'personnel_deleted',NULL)").bind(auth.actor.id)
+    ]);
+    return json({ success: true, message: "Запис " + serviceNumber + " повністю видалено з реєстру та системи доступу SANG." });
+  } catch (error) {
+    console.error("SANG personnel delete error:", error);
+    return json({ message: "Не вдалося повністю видалити військовослужбовця. Перевірте журнал помилок." }, 500);
+  }
+}
+
 export async function onRequest(context) {
   if (context.request.method === "GET") return onRequestGet(context);
   if (context.request.method === "PATCH") return onRequestPatch(context);
-  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, PATCH" });
+  if (context.request.method === "DELETE") return onRequestDelete(context);
+  return json({ message: "Метод не підтримується." }, 405, { Allow: "GET, PATCH, DELETE" });
 }
