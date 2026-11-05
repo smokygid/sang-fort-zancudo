@@ -508,27 +508,6 @@
   background:rgba(201,164,74,.07);
   font-size:10px;
 }
-.cabinet-page .sidebar-personal{
-  margin-top:16px;
-  padding:12px 10px 8px;
-  text-align:left;
-  background:rgba(3,12,21,.32);
-  border:1px solid rgba(166,187,204,.12);
-}
-.cabinet-page .sidebar-personal-title{
-  margin:0 0 10px;
-  color:var(--cb-gold-hi);
-  font-size:9px;
-  letter-spacing:1.4px;
-}
-.cabinet-page .sidebar-personal-form{
-  gap:5px;
-}
-.cabinet-page .sidebar-personal-form label{
-  margin-top:5px;
-  color:#8fa2b4;
-  font-size:9px;
-}
 .cabinet-page .dashboard-nav{
   gap:4px;
   padding:13px 0;
@@ -730,7 +709,6 @@
   .cabinet-page .dashboard-sidebar{width:auto}
   .cabinet-page .sidebar-identity{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:12px;text-align:left;align-items:center}
   .cabinet-page .sidebar-avatar{grid-row:span 3;width:54px;height:54px;margin:0;font-size:25px}
-  .cabinet-page .sidebar-personal{grid-column:1/-1}
   .cabinet-page .dashboard-nav{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cabinet-page .sidebar-motto{margin-top:8px}
   .cabinet-page .dashboard-identity{grid-template-columns:72px minmax(0,1fr);gap:12px}
