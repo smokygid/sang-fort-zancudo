@@ -7,17 +7,19 @@ function fromBase64Url(value) {
   return Uint8Array.from(binary, char => char.charCodeAt(0));
 }
 
-async function verifySignature(serviceNumber, signature, secret) {
+async function decryptServiceNumber(token, secret) {
   try {
-    const key = await crypto.subtle.importKey(
-      "raw", new TextEncoder().encode(secret),
-      { name: "HMAC", hash: "SHA-256" }, false, ["verify"]
-    );
-    return await crypto.subtle.verify(
-      "HMAC", key, fromBase64Url(signature), new TextEncoder().encode(serviceNumber)
-    );
+    const parts = token.split(".");
+    if (parts.length !== 2 || !/^[A-Za-z0-9_-]{16}$/.test(parts[0]) || !/^[A-Za-z0-9_-]{20,100}$/.test(parts[1])) return "";
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(secret));
+    const key = await crypto.subtle.importKey("raw", digest, { name: "AES-GCM" }, false, ["decrypt"]);
+    const iv = fromBase64Url(parts[0]);
+    const encrypted = fromBase64Url(parts[1]);
+    const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, encrypted);
+    const serviceNumber = new TextDecoder().decode(decrypted);
+    return /^[A-Z0-9-]{3,32}$/.test(serviceNumber) ? serviceNumber : "";
   } catch {
-    return false;
+    return "";
   }
 }
 
@@ -27,13 +29,10 @@ export async function onRequestGet({ request, env }) {
       return json({ valid: false, message: "Сервіс перевірки тимчасово недоступний." }, 503);
     }
     const token = new URL(request.url).searchParams.get("token") || "";
-    const parts = token.split(".");
-    if (parts.length !== 2 || !/^[A-Z0-9-]{3,32}$/.test(parts[0]) || !/^[A-Za-z0-9_-]{40,100}$/.test(parts[1])) {
-      return json({ valid: false, message: "QR-код або посилання перевірки некоректне." }, 400);
-    }
-    const [serviceNumber, signature] = parts;
-    if (!await verifySignature(serviceNumber, signature, env.SHEETS_API_SECRET)) {
-      return json({ valid: false, message: "Підпис документа не підтверджено." }, 403);
+    if (token.length > 180) return json({ valid: false, message: "QR-код або посилання перевірки некоректне." }, 400);
+    const serviceNumber = await decryptServiceNumber(token, env.SHEETS_API_SECRET);
+    if (!serviceNumber) {
+      return json({ valid: false, message: "QR-код недійсний або пошкоджений." }, 403);
     }
 
     const account = await env.DB.prepare(
