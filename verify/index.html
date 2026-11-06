@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#07111d">
+  <title>Перевірка військового квитка | SANG</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/cabinet-redesign.css">
+  <style>
+    body{min-height:100vh;background:#07111d;color:#f2f5f7}
+    .verify-shell{width:min(680px,calc(100% - 28px));margin:8vh auto;padding:28px;background:linear-gradient(145deg,#112438,#081522);border:1px solid rgba(201,164,74,.42);box-shadow:0 24px 70px rgba(0,0,0,.35)}
+    .verify-brand{display:flex;align-items:center;gap:14px;padding-bottom:20px;border-bottom:1px solid rgba(201,164,74,.25)}
+    .verify-brand img{width:58px;height:58px;object-fit:contain}
+    .verify-brand strong{display:block;color:#e0c36a;letter-spacing:1.5px}
+    .verify-brand span{font-size:10px;color:#9aabba;letter-spacing:1px}
+    .verify-result{margin-top:24px;padding:20px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.14)}
+    .verify-result[data-valid="true"]{border-color:rgba(87,184,130,.5)}
+    .verify-result[data-valid="false"]{border-color:rgba(207,105,96,.5)}
+    .verify-status{display:flex;align-items:center;gap:10px;margin:0 0 16px;font-size:18px;font-weight:800}
+    .verify-status:before{content:"";width:10px;height:10px;border-radius:50%;background:#c9a44a}
+    [data-valid="true"] .verify-status:before{background:#57b882;box-shadow:0 0 12px #57b882}
+    [data-valid="false"] .verify-status:before{background:#cf6960;box-shadow:0 0 12px #cf6960}
+    .verify-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .verify-field{padding:11px;background:rgba(255,255,255,.035)}
+    .verify-field small{display:block;color:#9aabba;font-size:9px;letter-spacing:.8px;margin-bottom:5px}
+    .verify-field strong{font-size:13px;overflow-wrap:anywhere}
+    .verify-foot{margin:20px 0 0;color:#8293a3;font-size:10px;line-height:1.6}
+    @media(max-width:520px){.verify-shell{padding:18px}.verify-fields{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <main class="verify-shell">
+    <div class="verify-brand">
+      <img src="../assets/sang-logo.png" alt="SANG">
+      <div><strong>SAN ANDREAS NATIONAL GUARD</strong><span>FORT ZANCUDO · DOCUMENT VERIFICATION</span></div>
+    </div>
+    <section id="verify-result" class="verify-result" aria-live="polite">
+      <p class="verify-status" id="verify-status">Перевірка документа…</p>
+      <p id="verify-message">Зачекайте, система перевіряє підпис і актуальність запису.</p>
+      <div id="verify-fields" class="verify-fields" hidden></div>
+    </section>
+    <p class="verify-foot">Перевірка здійснюється за актуальними даними реєстру SANG. Ця сторінка підтверджує статус документа на момент перевірки.</p>
+  </main>
+  <script src="../js/verify-id-card.js" defer></script>
+</body>
+</html>
