@@ -43,7 +43,7 @@ export async function onRequestGet({ request, env }) {
        WHERE a.service_number=? LIMIT 1`
     ).bind(serviceNumber).first();
 
-    if (!account || account.role !== "soldier" || account.active !== 1) {
+    if (!account || !["soldier", "admin"].includes(account.role) || account.active !== 1) {
       return json({ valid: false, message: "Документ недійсний: обліковий запис неактивний або відсутній." }, 200);
     }
 
