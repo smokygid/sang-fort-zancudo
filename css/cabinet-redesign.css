@@ -1466,3 +1466,60 @@
   transform: none;
   box-shadow: none;
 }
+
+
+/* Electronic military ID card */
+.cabinet-page .digital-id-actions{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding:17px 19px;border:1px solid rgba(201,164,74,.32);background:linear-gradient(120deg,rgba(19,40,59,.92),rgba(8,20,32,.96))}
+.cabinet-page .digital-id-actions>div{display:grid;gap:5px}
+.cabinet-page .digital-id-actions .card-kicker{margin:0;color:var(--cb-gold);font-size:9px;letter-spacing:1.3px}
+.cabinet-page .digital-id-actions>div>strong{font-size:14px;color:#f2f5f7}
+.cabinet-page .digital-id-actions>div>span{font-size:11px;color:var(--cb-muted);line-height:1.5}
+.cabinet-page .digital-id-actions .cabinet-logout{flex:0 0 auto}
+.cabinet-page .digital-id-panel{margin:0 0 20px;padding:18px;border:1px solid rgba(201,164,74,.35);background:rgba(5,14,23,.55)}
+.cabinet-page .digital-id-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.cabinet-page .digital-id-toolbar h2{margin:0;font-size:18px}
+.cabinet-page .digital-id-toolbar .card-kicker{margin:0 0 5px;color:var(--cb-gold);font-size:9px;letter-spacing:1px}
+.cabinet-page .digital-id-toolbar-actions{display:flex;gap:7px;flex-wrap:wrap}
+.cabinet-page .digital-id-toolbar-actions .cabinet-logout{min-height:32px;padding:7px 10px;font-size:9px}
+.cabinet-page .digital-id-card{position:relative;max-width:900px;margin:0 auto;padding:22px 25px;color:#edf2f5;border:1px solid rgba(201,164,74,.75);background:radial-gradient(ellipse at 90% 10%,rgba(201,164,74,.1),transparent 35%),linear-gradient(145deg,#142b40,#071421 72%);box-shadow:inset 0 0 0 5px rgba(201,164,74,.055),0 18px 40px rgba(0,0,0,.24);overflow:hidden}
+.cabinet-page .digital-id-card:before,.cabinet-page .digital-id-card:after{content:"";position:absolute;width:34px;height:34px;border-color:rgba(224,195,106,.65);pointer-events:none}
+.cabinet-page .digital-id-card:before{top:8px;left:8px;border-top:1px solid;border-left:1px solid}
+.cabinet-page .digital-id-card:after{right:8px;bottom:8px;border-right:1px solid;border-bottom:1px solid}
+.cabinet-page .digital-id-topline{display:flex;justify-content:space-between;gap:10px;color:#8fa1b1;font-size:8px;font-weight:800;letter-spacing:1.7px}
+.cabinet-page .digital-id-header{display:grid;grid-template-columns:62px minmax(0,1fr) auto;align-items:center;gap:14px;margin:16px 0}
+.cabinet-page .digital-id-header>img{width:60px;height:60px;object-fit:contain}
+.cabinet-page .digital-id-header p{margin:0 0 4px;color:#c9a44a;font-size:9px;font-weight:900;letter-spacing:1.3px}
+.cabinet-page .digital-id-header h2{margin:0;color:#f1d58a;font-size:22px;letter-spacing:1px}
+.cabinet-page .digital-id-header>div>span{color:#8799aa;font-size:8px;letter-spacing:1.2px}
+.cabinet-page .digital-id-serial{display:grid;gap:5px;text-align:right}
+.cabinet-page .digital-id-serial small,.cabinet-page .digital-id-fields small{color:#8fa1b1;font-size:8px;letter-spacing:1px}
+.cabinet-page .digital-id-serial strong{color:#e0c36a;font-size:12px;overflow-wrap:anywhere}
+.cabinet-page .digital-id-gold-rule{height:1px;background:linear-gradient(90deg,transparent,#c9a44a 12%,#e0c36a 50%,#c9a44a 88%,transparent)}
+.cabinet-page .digital-id-main{display:grid;grid-template-columns:105px minmax(0,1fr) 112px;align-items:center;gap:18px;padding:20px 0}
+.cabinet-page .digital-id-photo{display:grid;place-items:center;gap:6px;min-height:112px;padding:10px;border:1px solid rgba(201,164,74,.5);background:rgba(255,255,255,.035)}
+.cabinet-page .digital-id-photo img{width:70px;height:70px;object-fit:contain}
+.cabinet-page .digital-id-photo span{color:#8295a6;font-size:7px;letter-spacing:1.5px}
+.cabinet-page .digital-id-person>small{color:#9aabba;font-size:8px;letter-spacing:1.4px}
+.cabinet-page .digital-id-person h3{margin:6px 0 8px;color:#fff;font-size:22px;line-height:1.25;overflow-wrap:anywhere}
+.cabinet-page .digital-id-rank{color:#e0c36a;font-size:13px;font-weight:800}
+.cabinet-page .digital-id-status{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 9px;border:1px solid rgba(87,184,130,.32);background:rgba(87,184,130,.08);color:#b9e5c9;font-size:9px;font-weight:900;letter-spacing:.7px}
+.cabinet-page .digital-id-status i{width:7px;height:7px;border-radius:50%;background:#57b882;box-shadow:0 0 8px rgba(87,184,130,.65)}
+.cabinet-page .digital-id-qr-wrap{display:grid;justify-items:center;gap:7px}
+.cabinet-page #id-card-qr{display:grid;place-items:center;width:104px;height:104px;padding:5px;background:#fff;border:1px solid #d2b56d}
+.cabinet-page #id-card-qr img,.cabinet-page #id-card-qr canvas{display:block;max-width:100%;max-height:100%}
+.cabinet-page .digital-id-qr-wrap>small{color:#aebdca;text-align:center;font-size:7px;letter-spacing:.8px;line-height:1.4}
+.cabinet-page .digital-id-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:rgba(201,164,74,.22);border:1px solid rgba(201,164,74,.22)}
+.cabinet-page .digital-id-fields>div{display:grid;gap:6px;min-height:58px;padding:10px 12px;background:rgba(7,17,29,.86)}
+.cabinet-page .digital-id-fields strong{font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+.cabinet-page .digital-id-footer{display:flex;justify-content:space-between;gap:12px;margin-top:17px;padding-top:12px;border-top:1px solid rgba(201,164,74,.25);color:#c9a44a;font-size:8px;font-weight:800;letter-spacing:1.2px}
+.cabinet-page .digital-id-message,.cabinet-page .digital-id-disclaimer{max-width:900px;margin:10px auto 0;color:var(--cb-muted);font-size:10px;line-height:1.55}
+.cabinet-page .digital-id-message:empty{display:none}
+@media(max-width:700px){.cabinet-page .digital-id-actions{align-items:flex-start;flex-direction:column}.cabinet-page .digital-id-actions .cabinet-logout{width:100%}.cabinet-page .digital-id-toolbar{align-items:flex-start;flex-direction:column}.cabinet-page .digital-id-toolbar-actions{width:100%}.cabinet-page .digital-id-toolbar-actions .cabinet-logout{flex:1}.cabinet-page .digital-id-card{padding:18px 15px}.cabinet-page .digital-id-header{grid-template-columns:48px minmax(0,1fr);gap:9px}.cabinet-page .digital-id-header>img{width:46px;height:46px}.cabinet-page .digital-id-header h2{font-size:17px}.cabinet-page .digital-id-serial{grid-column:1/-1;text-align:left}.cabinet-page .digital-id-main{grid-template-columns:78px minmax(0,1fr);gap:12px;padding:15px 0}.cabinet-page .digital-id-photo{min-height:88px}.cabinet-page .digital-id-photo img{width:54px;height:54px}.cabinet-page .digital-id-person h3{font-size:17px}.cabinet-page .digital-id-qr-wrap{grid-column:1/-1;grid-template-columns:auto 1fr;justify-items:start;align-items:center}.cabinet-page .digital-id-qr-wrap>small{text-align:left}.cabinet-page .digital-id-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.cabinet-page .digital-id-footer{flex-direction:column;gap:5px}}
+@media print{
+  body.id-card-print-mode *{visibility:hidden!important}
+  body.id-card-print-mode #electronic-id-card-panel,body.id-card-print-mode #electronic-id-card-panel *{visibility:visible!important}
+  body.id-card-print-mode #electronic-id-card-panel{display:block!important;position:absolute!important;inset:0!important;width:100%!important;margin:0!important;padding:0!important;border:0!important;background:#fff!important}
+  body.id-card-print-mode #electronic-id-card-panel .digital-id-toolbar,body.id-card-print-mode #electronic-id-card-panel .digital-id-message,body.id-card-print-mode #electronic-id-card-panel .digital-id-disclaimer{display:none!important}
+  body.id-card-print-mode .digital-id-card{max-width:none!important;margin:20mm auto!important;box-shadow:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{size:A4 landscape;margin:12mm}
+}
