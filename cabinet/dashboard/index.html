@@ -107,7 +107,35 @@
           </div>
         
         </article>
-        
+
+        <div class="digital-id-actions">
+          <div><p class="card-kicker">PERSONNEL IDENTIFICATION · SANG</p><strong>Ваш офіційний цифровий документ</strong><span>Електронний військовий квиток із QR-перевіркою чинності.</span></div>
+          <button id="open-electronic-id-card" class="cabinet-logout" type="button">ВІДКРИТИ ВІЙСЬКОВИЙ КВИТОК</button>
+        </div>
+        <section id="electronic-id-card-panel" class="digital-id-panel" hidden aria-live="polite">
+          <div class="digital-id-toolbar"><div><p class="card-kicker">SANG · DIGITAL PERSONNEL DOCUMENT</p><h2>Електронний військовий квиток</h2></div><div class="digital-id-toolbar-actions"><button id="print-electronic-id-card" class="cabinet-logout" type="button">ДРУК / PDF</button><button id="close-electronic-id-card" class="cabinet-logout" type="button">ЗАКРИТИ</button></div></div>
+          <article id="electronic-id-card" class="digital-id-card">
+            <div class="digital-id-topline"><span>UNITED STATES OF SAN ANDREAS</span><span>FORT ZANCUDO</span></div>
+            <header class="digital-id-header"><img src="../../assets/sang-logo.png" alt="Емблема SANG"><div><p>SAN ANDREAS NATIONAL GUARD</p><h2>ВІЙСЬКОВИЙ КВИТОК</h2><span>PERSONNEL IDENTIFICATION CARD</span></div><div class="digital-id-serial"><small>№ ДОКУМЕНТА</small><strong id="id-card-number">—</strong></div></header>
+            <div class="digital-id-gold-rule"></div>
+            <div class="digital-id-main">
+              <div class="digital-id-photo"><img src="../../assets/sang-logo.png" alt=""><span>PERSONNEL</span></div>
+              <div class="digital-id-person"><small>ВІЙСЬКОВОСЛУЖБОВЕЦЬ</small><h3 id="id-card-name">—</h3><div class="digital-id-rank" id="id-card-rank">—</div><div class="digital-id-status"><i></i><span id="id-card-status">—</span></div></div>
+              <div class="digital-id-qr-wrap"><div id="id-card-qr" aria-label="QR-код для перевірки документа"></div><small>СКАНУЙТЕ ДЛЯ ПЕРЕВІРКИ</small></div>
+            </div>
+            <div class="digital-id-fields">
+              <div><small>ВІЙСЬКОВИЙ НОМЕР</small><strong id="id-card-service-number">—</strong></div>
+              <div><small>ПІДРОЗДІЛ</small><strong id="id-card-unit">—</strong></div>
+              <div><small>ВОЄННО-ОБЛІКОВА СПЕЦІАЛЬНІСТЬ · MOS</small><strong id="id-card-mos">—</strong></div>
+              <div><small>ДАТА ПОЧАТКУ КОНТРАКТУ</small><strong id="id-card-contract-start">—</strong></div>
+              <div><small>ДАТА ЗАВЕРШЕННЯ КОНТРАКТУ</small><strong id="id-card-contract-end">—</strong></div>
+              <div><small>ДАТА ФОРМУВАННЯ</small><strong id="id-card-issued">—</strong></div>
+            </div>
+            <footer class="digital-id-footer"><span>HONOR · DUTY · COUNTRY</span><span>ВИДАНО КОМАНДУВАННЯМ SANG</span></footer>
+          </article>
+          <p id="id-card-message" class="digital-id-message" role="status"></p>
+          <p class="digital-id-disclaimer">Документ формується автоматично на підставі актуального реєстру SANG. Чинність підтверджується онлайн за QR-кодом.</p>
+        </section>
 
         <div class="dashboard-content-grid">
           <article class="dashboard-card profile-card">
@@ -360,7 +388,9 @@
     <p class="dashboard-note">ІНФОРМАЦІЯ ДЛЯ СЛУЖБОВОГО КОРИСТУВАННЯ · НЕ ПЕРЕДАВАЙТЕ ДАНІ ВХОДУ ІНШИМ ОСОБАМ</p>
   </main>
 <div data-sang-footer></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
   <script src="../../js/dashboard.js?v=nav-fix-1" defer></script>
+  <script src="../../js/id-card.js?v=1" defer></script>
   <script src="../../js/orders.js?v=order-reads-1" defer></script>
   <script src="../../js/admin-orders.js?v=documents-2" defer></script>
   <script src="../../js/admin-news.js?v=news-registry-2" defer></script>
