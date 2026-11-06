@@ -33,13 +33,12 @@ function toBase64Url(bytes) {
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 
-async function signServiceNumber(serviceNumber, secret) {
-  const key = await crypto.subtle.importKey(
-    "raw", new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
-  );
-  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(serviceNumber));
-  return toBase64Url(new Uint8Array(signature));
+async function encryptServiceNumber(serviceNumber, secret) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(secret));
+  const key = await crypto.subtle.importKey("raw", digest, { name: "AES-GCM" }, false, ["encrypt"]);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(serviceNumber));
+  return toBase64Url(iv) + "." + toBase64Url(new Uint8Array(encrypted));
 }
 
 export async function onRequestGet({ request, env }) {
@@ -73,8 +72,7 @@ export async function onRequestGet({ request, env }) {
       contractDuration: contract?.duration_days || null,
       issuedAt: new Date().toISOString()
     };
-    const signature = await signServiceNumber(card.serviceNumber, env.SHEETS_API_SECRET);
-    const token = card.serviceNumber + "." + signature;
+    const token = await encryptServiceNumber(card.serviceNumber, env.SHEETS_API_SECRET);
     const verifyUrl = new URL("/verify/?token=" + encodeURIComponent(token), new URL(request.url).origin).toString();
 
     return json({ success: true, card, verifyUrl }, 200, { "Cache-Control": "private, no-store" });
