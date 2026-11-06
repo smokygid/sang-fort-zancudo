@@ -45,7 +45,7 @@ export async function onRequestGet({ request, env }) {
   try {
     const auth = await currentAccount(request, env);
     if (auth.error) return auth.error;
-    if (auth.account.role !== "soldier") return json({ message: "Електронний військовий квиток доступний лише військовослужбовцям." }, 403);
+    if (!["soldier", "admin"].includes(auth.account.role)) return json({ message: "Електронний військовий квиток доступний лише особовому складу SANG." }, 403);
 
     const [saved, registry, contract] = await Promise.all([
       env.DB.prepare(
