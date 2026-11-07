@@ -159,7 +159,7 @@ async function loadAccountsInternal() {
           tr.appendChild(td);
         }
         const actionCell = document.createElement("td");
-        if (account.role !== "admin") {
+        if (account.role !== "admin" && !account.dismissed) {
           const action = document.createElement("button");
           action.type = "button";
           action.className = "cabinet-logout account-status-button";
@@ -167,7 +167,7 @@ async function loadAccountsInternal() {
           action.dataset.nextActive = account.active ? "false" : "true";
           action.textContent = account.active ? "ЗАБЛОКУВАТИ" : "РОЗБЛОКУВАТИ";
           actionCell.appendChild(action);
-        } else actionCell.textContent = "—";
+        } else actionCell.textContent = account.dismissed ? "ЗВІЛЬНЕНИЙ" : "—";
         tr.appendChild(actionCell);
         tbody.appendChild(tr);
       }
