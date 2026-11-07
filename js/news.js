@@ -16,6 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (value !== undefined) node.textContent = value;
     return node;
   };
+  function bindCollapse(details, summary, closedLabel, openLabel) {
+    details.addEventListener("toggle", () => {
+      summary.textContent = details.open ? openLabel : closedLabel;
+    });
+  }
   function addImage(container, url, className) {
     if (!url) return;
     const wrap = element("div", className);
@@ -41,8 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
     copy.appendChild(element("p","",excerpt(item)));
     copy.appendChild(element("time","news-date-live",formatDate(item.news_date)));
     const details = element("details","news-feature-details");
-    details.appendChild(element("summary","news-read-more","ЧИТАТИ ПОВНІСТЮ"));
+    const summary = element("summary","news-read-more","ЧИТАТИ ПОВНІСТЮ");
+    details.appendChild(summary);
     details.appendChild(element("p","news-feature-full-body",item.body || ""));
+    bindCollapse(details, summary, "ЧИТАТИ ПОВНІСТЮ", "ЗГОРНУТИ НОВИНУ");
     copy.appendChild(details);
     card.appendChild(copy);
     addImage(card,item.image_url,"news-feature-image");
@@ -71,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const summary = element("summary","news-read-more","ЧИТАТИ ПОВНІСТЮ");
       const body = element("p","news-full-body",item.body || "");
       details.append(summary,body);
+      bindCollapse(details, summary, "ЧИТАТИ ПОВНІСТЮ", "ЗГОРНУТИ НОВИНУ");
       copy.appendChild(details);
       card.appendChild(copy);
       gridTarget.appendChild(card);
@@ -92,8 +100,10 @@ document.addEventListener("DOMContentLoaded", () => {
       content.appendChild(date);
       row.appendChild(content);
       const details = element("details","news-announcement-details");
-      details.appendChild(element("summary","news-announcement-link","ДЕТАЛЬНІШЕ"));
+      const summary = element("summary","news-announcement-link","ДЕТАЛЬНІШЕ");
+      details.appendChild(summary);
       details.appendChild(element("p","",item.body || ""));
+      bindCollapse(details, summary, "ДЕТАЛЬНІШЕ", "ЗГОРНУТИ");
       row.appendChild(details);
       announcementsTarget.appendChild(row);
     }
