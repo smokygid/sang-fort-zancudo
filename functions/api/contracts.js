@@ -25,9 +25,10 @@ export async function onRequestGet({ request, env }) {
     if (auth.actor.role === "admin") {
       const rows = await env.DB.prepare(`
         SELECT a.id AS account_id,a.service_number,p.full_name,
+          EXISTS(SELECT 1 FROM personnel_service_records sr WHERE sr.account_id=a.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби') AS dismissed,
           c.id,c.start_date,c.duration_days,c.end_date,
-          MAX(0,CAST(julianday(c.end_date)-julianday(date('now')) AS INTEGER)) AS days_left,
-          CASE WHEN c.id IS NULL THEN 'missing' WHEN c.end_date < date('now') THEN 'expired' ELSE 'active' END AS status
+          CASE WHEN EXISTS(SELECT 1 FROM personnel_service_records sr WHERE sr.account_id=a.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби') THEN 0 ELSE MAX(0,CAST(julianday(c.end_date)-julianday(date('now')) AS INTEGER)) END AS days_left,
+          CASE WHEN EXISTS(SELECT 1 FROM personnel_service_records sr WHERE sr.account_id=a.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби') THEN 'terminated' WHEN c.id IS NULL THEN 'missing' WHEN c.end_date < date('now') THEN 'expired' ELSE 'active' END AS status
         FROM personnel_accounts a
         LEFT JOIN personnel_profiles p ON p.account_id=a.id
         LEFT JOIN personnel_contracts c ON c.id=(
@@ -67,8 +68,9 @@ export async function onRequestPost({ request, env }) {
     if(!Number.isSafeInteger(accountId)||accountId<1)return json({message:"Оберіть військовослужбовця."},400);
     if(![14,30].includes(durationDays))return json({message:"Строк контракту може становити лише 14 або 30 днів."},400);
     if(!/^\d{4}-\d{2}-\d{2}$/.test(startDate)||new Date(startDate+"T00:00:00Z").toISOString().slice(0,10)!==startDate)return json({message:"Вкажіть коректну дату початку контракту."},400);
-    const target=await env.DB.prepare("SELECT id,role FROM personnel_accounts WHERE id=? LIMIT 1").bind(accountId).first();
+    const target=await env.DB.prepare("SELECT id,role,EXISTS(SELECT 1 FROM personnel_service_records sr WHERE sr.account_id=personnel_accounts.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби') AS dismissed FROM personnel_accounts WHERE id=? LIMIT 1").bind(accountId).first();
     if(!target||target.role!=="soldier")return json({message:"Військовослужбовця не знайдено."},404);
+    if(target.dismissed)return json({message:"Контракт не можна оформити: військовослужбовця вже звільнено зі служби."},409);
     const endDate=new Date(Date.parse(startDate+"T00:00:00Z")+durationDays*86400000).toISOString().slice(0,10);
     const statements=[
       env.DB.prepare("INSERT INTO personnel_contracts (account_id,start_date,duration_days,end_date,created_by) VALUES (?,?,?,?,?)").bind(accountId,startDate,durationDays,endDate,auth.actor.id),
