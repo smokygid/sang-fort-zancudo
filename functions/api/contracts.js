@@ -39,7 +39,33 @@ export async function onRequestGet({ request, env }) {
         ORDER BY CASE WHEN c.id IS NULL THEN 0 WHEN c.end_date < date('now') THEN 1 ELSE 2 END,
           c.end_date ASC,a.service_number ASC
       `).all();
-      return json({ success:true, contracts:rows.results||[] },200,{"Cache-Control":"private, no-store"});
+      const contracts = await Promise.all((rows.results || []).map(async row => {
+        // ПІБ може зберігатися лише в Google Sheets, а не в D1-профілі.
+        let fullName = row.full_name || "";
+        if (!fullName && env.SHEETS_API_URL && env.SHEETS_API_SECRET) {
+          try {
+            const sheetResponse = await fetch(env.SHEETS_API_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                secret: env.SHEETS_API_SECRET,
+                action: "profile",
+                serviceNumber: row.service_number
+              })
+            });
+            if (sheetResponse.ok) {
+              const sheetResult = await sheetResponse.json();
+              fullName = sheetResult.success && sheetResult.profile
+                ? (sheetResult.profile["ПІБ"] || "")
+                : "";
+            }
+          } catch (error) {
+            console.error("SANG contract name lookup error:", row.service_number, error);
+          }
+        }
+        return { ...row, full_name: fullName };
+      }));
+      return json({ success:true, contracts },200,{"Cache-Control":"private, no-store"});
     }
     const current = await env.DB.prepare(contractSelect+`
       WHERE c.account_id=? ORDER BY c.start_date DESC,c.id DESC LIMIT 1
