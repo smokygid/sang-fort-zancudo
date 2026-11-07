@@ -420,3 +420,20 @@
 #admin-panel .admin-news-item .admin-order-actions{margin-top:12px}
 #admin-panel .admin-news-item .order-status{margin-left:auto}
 @media(max-width:560px){#admin-panel .admin-news-item .admin-order-actions{display:grid;grid-template-columns:1fr}#admin-panel .admin-news-item .admin-order-actions button{width:100%}}
+
+
+/* Early service dismissal workflow */
+.personnel-dismiss-trigger,.personnel-dismiss-confirm{background:#4b2024;border:1px solid #b75b5b;color:#ffe1df;padding:10px 14px;font-size:11px;font-weight:800;letter-spacing:.8px;cursor:pointer;margin:12px 8px 12px 0}
+.personnel-dismiss-trigger:hover,.personnel-dismiss-confirm:hover{background:#682b30}
+.personnel-dismissed-note{display:inline-block;color:#e5a0a0!important;border:1px solid #8e4545;padding:9px 12px;font-size:11px!important;font-weight:800;letter-spacing:.7px}
+.personnel-dismissal-form{display:grid;gap:10px;margin:16px 0;padding:18px;background:#091521;border:1px solid rgba(183,91,91,.65)}
+.personnel-dismissal-form h4{margin:0;color:#f0d1d1;font-size:16px}
+.personnel-dismissal-form>p{margin:0;color:#b7a4a4;font-size:12px;line-height:1.5}
+.personnel-dismissal-form label{display:grid;gap:6px;color:#c7d0d9;font-size:12px}
+.personnel-dismissal-form input,.personnel-dismissal-form textarea{width:100%;box-sizing:border-box;background:#07111d;border:1px solid #45515d;color:#f0f3f6;padding:10px;font:inherit}
+.personnel-dismissal-form textarea{resize:vertical}
+.personnel-dismissal-form .personnel-dismissal-message{min-height:18px;color:#e0c36a;font-size:12px}
+.personnel-dismissal-actions{display:flex;gap:10px;flex-wrap:wrap}
+.personnel-dismissal-actions button:disabled{opacity:.55;cursor:wait}
+.contract-filter[data-contract-filter="terminated"]{border-color:#9d5555;color:#e4aaaa}
+@media(max-width:560px){.personnel-dismissal-actions{display:grid}.personnel-dismissal-actions button{width:100%}}
