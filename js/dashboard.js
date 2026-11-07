@@ -587,7 +587,7 @@ function showCommandPersonnelProfile(p) {
   heading.append(title, number);
   const grid = document.createElement("div");
   grid.className = "personnel-quick-grid";
-  const fields = [["Звання",p.rank],["Підрозділ",p.unit],["MOS",p.mos],["Статус служби",p.service_status],["Запис у реєстрі",p.lookup_error ? "Помилка API" : (p.found_in_registry ? "Знайдено" : "Не знайдено")]];
+  const fields = [["Звання",p.rank],["Підрозділ",p.unit],["MOS",p.mos],["Статус служби",p.service_status],["Запис у реєстрі",p.lookup_error ? "Помилка API" : (p.found_in_registry ? "Знайдено" : "Не знайдено")],...(p.dismissed ? [["Дата звільнення",p.dismissal_date],["Підстава звільнення",p.dismissal_reason],["Документ-підстава",p.dismissal_document]] : [])];
   for (const [label,value] of fields) {
     const item = document.createElement("div");
     const caption = document.createElement("small");
@@ -898,7 +898,7 @@ function updateCommandAccountStats(accounts) {
 }
 
 function updateCommandContractStats(rows) {
-  const active = rows.filter(row => row.status !== "expired" && row.status !== "missing");
+  const active = rows.filter(row => row.status !== "expired" && row.status !== "missing" && row.status !== "terminated");
   const endingSoon = active.filter(row => Number(row.days_left) >= 0 && Number(row.days_left) <= 3);
   const activeNode = document.getElementById("overview-contracts-active");
   const warningNode = document.getElementById("overview-contracts-warning");
