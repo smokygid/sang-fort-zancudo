@@ -34,6 +34,9 @@ export async function onRequestGet({ request, env }) {
     const accounts = await env.DB.prepare(
       `SELECT a.id,a.service_number,a.personnel_id,a.active,
         EXISTS(SELECT 1 FROM personnel_service_records sr WHERE sr.account_id=a.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби') AS dismissed,
+        (SELECT sr.record_date FROM personnel_service_records sr WHERE sr.account_id=a.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби' ORDER BY sr.id DESC LIMIT 1) AS dismissal_date,
+        (SELECT sr.description FROM personnel_service_records sr WHERE sr.account_id=a.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби' ORDER BY sr.id DESC LIMIT 1) AS dismissal_reason,
+        (SELECT sr.document_number FROM personnel_service_records sr WHERE sr.account_id=a.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби' ORDER BY sr.id DESC LIMIT 1) AS dismissal_document,
         p.full_name,p.rank,p.unit,p.mos,p.service_status,p.service_note,p.updated_at
        FROM personnel_accounts a
        LEFT JOIN personnel_profiles p ON p.account_id=a.id
@@ -50,6 +53,9 @@ export async function onRequestGet({ request, env }) {
           personnel_id: account.personnel_id,
           active: Boolean(account.active),
           dismissed: Boolean(account.dismissed),
+          dismissal_date: account.dismissal_date || "",
+          dismissal_reason: account.dismissal_reason || "",
+          dismissal_document: account.dismissal_document || "",
           found_in_registry: Boolean(row),
           full_name: account.full_name || row?.["ПІБ"] || "",
           rank: account.rank || row?.["Звання"] || "",
@@ -117,9 +123,10 @@ export async function onRequestPatch({ request, env }) {
       if (values[key].length > max) return json({ message: `Поле «${label}» перевищує ${max} символів.` }, 400);
     }
 
-    const target = await env.DB.prepare("SELECT id,role FROM personnel_accounts WHERE id=? LIMIT 1").bind(accountId).first();
+    const target = await env.DB.prepare("SELECT id,role,EXISTS(SELECT 1 FROM personnel_service_records sr WHERE sr.account_id=personnel_accounts.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби') AS dismissed FROM personnel_accounts WHERE id=? LIMIT 1").bind(accountId).first();
     if (!target) return json({ message: "Обліковий запис не знайдено." }, 404);
     if (target.role !== "soldier") return json({ message: "Можна змінювати службові дані лише військовослужбовців." }, 403);
+    if (target.dismissed && values.serviceStatus !== "Звільнений") return json({ message: "Статус звільненого військовослужбовця не можна змінити." }, 409);
 
     await env.DB.prepare(
       `INSERT INTO personnel_profiles (account_id,rank,unit,mos,service_status,service_note,updated_by,updated_at)
