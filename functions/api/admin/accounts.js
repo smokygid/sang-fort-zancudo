@@ -66,7 +66,7 @@ export async function onRequestGet({ request, env }) {
       return json({ success: true, soldiers });
     }
     const result = await env.DB.prepare(
-      "SELECT a.id, a.service_number, a.personnel_id, a.role, a.active, a.must_change_password, a.created_at, a.faction_name, p.full_name FROM personnel_accounts a LEFT JOIN personnel_profiles p ON p.account_id=a.id ORDER BY a.role DESC, a.service_number ASC"
+      "SELECT a.id, a.service_number, a.personnel_id, a.role, a.active, a.must_change_password, a.created_at, a.faction_name, p.full_name, EXISTS(SELECT 1 FROM personnel_service_records sr WHERE sr.account_id=a.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби') AS dismissed FROM personnel_accounts a LEFT JOIN personnel_profiles p ON p.account_id=a.id ORDER BY a.role DESC, a.service_number ASC"
     ).all();
     return json({ success: true, accounts: result.results || [] });
   } catch (error) {
@@ -132,9 +132,10 @@ export async function onRequestPatch({ request, env }) {
   }
   if (accountId === auth.actor.id) return json({ message: "Не можна змінити статус власного облікового запису." }, 400);
   try {
-    const target = await env.DB.prepare("SELECT id, role, active FROM personnel_accounts WHERE id=? LIMIT 1").bind(accountId).first();
+    const target = await env.DB.prepare("SELECT id, role, active, EXISTS(SELECT 1 FROM personnel_service_records sr WHERE sr.account_id=personnel_accounts.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби') AS dismissed FROM personnel_accounts WHERE id=? LIMIT 1").bind(accountId).first();
     if (!target) return json({ message: "Обліковий запис не знайдено." }, 404);
     if (target.role === "admin") return json({ message: "Зміна статусу адміністратора через цю панель заборонена." }, 403);
+    if (target.dismissed && active) return json({ message: "Звільненого військовослужбовця не можна розблокувати. Повторне зарахування оформлюється окремою процедурою." }, 409);
     if (Boolean(target.active) === active) return json({ success: true, active, message: "Статус не змінився." });
     await env.DB.prepare("UPDATE personnel_accounts SET active=?, updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(active ? 1 : 0, accountId).run();
     await env.DB.prepare("INSERT INTO cabinet_audit_log (actor_account_id,action,target_account_id) VALUES (?,?,?)")
