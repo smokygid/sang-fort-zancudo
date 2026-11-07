@@ -53,6 +53,7 @@ export async function onRequestPost({ request, env }) {
     if (!Number.isSafeInteger(accountId) || accountId < 1) return json({ message: "Оберіть військовослужбовця." }, 400);
     if (!["award","reprimand","history"].includes(type)) return json({ message: "Оберіть тип службового запису." }, 400);
     if (title.length < 3 || title.length > 160) return json({ message: "Назва має містити від 3 до 160 символів." }, 400);
+    if (title === "Дострокове звільнення зі служби") return json({ message: "Запис про дострокове звільнення створюється лише через процедуру командування." }, 409);
     if (description.length > 1500 || documentNumber.length > 80) return json({ message: "Перевищено допустиму довжину тексту." }, 400);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(recordDate) || Number.isNaN(Date.parse(recordDate + "T00:00:00Z"))) return json({ message: "Вкажіть коректну дату запису." }, 400);
 
@@ -93,6 +94,7 @@ export async function onRequestDelete({ request, env }) {
     if (!Number.isSafeInteger(id) || id < 1) return json({ message:"Некоректний ID запису." },400);
     const current = await env.DB.prepare("SELECT id,account_id,record_type,title FROM personnel_service_records WHERE id=? LIMIT 1").bind(id).first();
     if (!current) return json({ message:"Запис не знайдено." },404);
+    if (current.title === "Дострокове звільнення зі служби") return json({ message:"Офіційний запис про звільнення не можна видалити зі службової історії." },409);
     await env.DB.batch([
       env.DB.prepare("DELETE FROM personnel_notifications WHERE account_id=? AND source_key=?").bind(current.account_id,"service-record:"+String(id)),
       env.DB.prepare("DELETE FROM personnel_service_records WHERE id=?").bind(id),
