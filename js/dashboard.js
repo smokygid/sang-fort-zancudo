@@ -602,10 +602,117 @@ function showCommandPersonnelProfile(p) {
   close.className = "cabinet-logout";
   close.textContent = "ЗАКРИТИ";
   close.addEventListener("click", () => { panel.hidden = true; });
-  panel.append(heading,grid,close);
+  panel.append(heading,grid);
+  if (!p.dismissed) {
+    const dismiss = document.createElement("button");
+    dismiss.type = "button";
+    dismiss.className = "personnel-dismiss-trigger";
+    dismiss.textContent = "ДОСТРОКОВО ЗВІЛЬНИТИ";
+    dismiss.addEventListener("click", () => showDismissalForm(p));
+    panel.appendChild(dismiss);
+  } else {
+    const dismissed = document.createElement("p");
+    dismissed.className = "personnel-dismissed-note";
+    dismissed.textContent = "СЛУЖБУ ПРИПИНЕНО · ДОСТУП ЗАКРИТО";
+    panel.appendChild(dismissed);
+  }
+  panel.appendChild(close);
   panel.hidden = false;
   panel.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
+
+function showDismissalForm(p) {
+  const panel = document.getElementById("personnel-quick-profile");
+  if (!panel || p.dismissed) return;
+  const previous = panel.querySelector(".personnel-dismissal-form");
+  if (previous) { previous.remove(); return; }
+
+  const form = document.createElement("form");
+  form.className = "personnel-dismissal-form";
+  const heading = document.createElement("h4");
+  heading.textContent = "Оформлення дострокового звільнення";
+  const warning = document.createElement("p");
+  warning.textContent = "Після підтвердження доступ військовослужбовця до кабінету буде припинено. Запис залишиться в особовій справі.";
+  const dateLabel = document.createElement("label");
+  dateLabel.textContent = "Дата звільнення";
+  const date = document.createElement("input");
+  date.type = "date";
+  date.required = true;
+  date.value = localDateInputValue();
+  date.max = localDateInputValue();
+  dateLabel.appendChild(date);
+  const reasonLabel = document.createElement("label");
+  reasonLabel.textContent = "Підстава звільнення";
+  const reason = document.createElement("textarea");
+  reason.rows = 4;
+  reason.maxLength = 1500;
+  reason.required = true;
+  reason.placeholder = "Зазначте причину та обставини дострокового звільнення…";
+  reasonLabel.appendChild(reason);
+  const documentLabel = document.createElement("label");
+  documentLabel.textContent = "Наказ / документ-підстава (необов’язково)";
+  const documentNumber = document.createElement("input");
+  documentNumber.type = "text";
+  documentNumber.maxLength = 80;
+  documentNumber.placeholder = "Наприклад: Наказ № 014";
+  documentLabel.appendChild(documentNumber);
+  const message = document.createElement("p");
+  message.className = "personnel-dismissal-message";
+  message.setAttribute("role", "status");
+  const actions = document.createElement("div");
+  actions.className = "personnel-dismissal-actions";
+  const submit = document.createElement("button");
+  submit.type = "submit";
+  submit.className = "personnel-dismiss-confirm";
+  submit.textContent = "ПІДТВЕРДИТИ ЗВІЛЬНЕННЯ";
+  const cancel = document.createElement("button");
+  cancel.type = "button";
+  cancel.className = "cabinet-logout";
+  cancel.textContent = "СКАСУВАТИ";
+  cancel.addEventListener("click", () => form.remove());
+  actions.append(submit, cancel);
+  form.append(heading, warning, dateLabel, reasonLabel, documentLabel, message, actions);
+  const close = panel.querySelector("button.cabinet-logout");
+  if (close) panel.insertBefore(form, close);
+  else panel.appendChild(form);
+  form.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!date.value || !reason.value.trim()) {
+      message.textContent = "Заповніть дату та підставу звільнення.";
+      return;
+    }
+    if (!confirm("Підтвердити дострокове звільнення " + (p.full_name || p.service_number) + "? Доступ до кабінету буде припинено, а рішення буде записано до службової історії.")) return;
+    submit.disabled = true;
+    cancel.disabled = true;
+    message.textContent = "Оформлення звільнення…";
+    try {
+      const response = await fetch("/api/admin/dismissals", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          accountId: p.id,
+          dismissalDate: date.value,
+          reason: reason.value.trim(),
+          documentNumber: documentNumber.value.trim()
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Не вдалося оформити звільнення.");
+      const status = document.getElementById("service-profile-message");
+      if (status) status.textContent = data.message;
+      panel.hidden = true;
+      await Promise.all([loadAdminProfiles(), loadAccounts(), loadAuditLog()]);
+    } catch (error) {
+      message.textContent = error.message || "Помилка оформлення звільнення.";
+      submit.disabled = false;
+      cancel.disabled = false;
+    }
+  });
+}
+
 
 async function loadAdminProfilesInternal() {
   const tbody = document.getElementById("service-profiles-list");
@@ -654,7 +761,8 @@ const AUDIT_ACTION_LABELS = {
   service_record_created: "Додано запис до особової справи",
   service_record_deleted: "Видалено запис з особової справи",
   order_deleted: "Видалено службовий документ",
-  contract_created: "Оформлено / продовжено контракт"
+  contract_created: "Оформлено / продовжено контракт",
+  personnel_dismissed: "Дострокове звільнення зі служби"
 };
 
 let auditEntries = [];
@@ -1083,7 +1191,7 @@ async function loadOwnServiceRecords() {
 function populateServiceRecordSoldiers(profiles) {
   const select=document.getElementById("service-record-soldier"); if(!select)return;
   select.replaceChildren(new Option("Оберіть військовослужбовця",""));
-  for(const p of profiles){const label=[p.full_name,p.service_number].filter(Boolean).join(" · ");select.appendChild(new Option(label||p.service_number,String(p.id)));}
+  for(const p of profiles.filter(person => !person.dismissed)){const label=[p.full_name,p.service_number].filter(Boolean).join(" · ");select.appendChild(new Option(label||p.service_number,String(p.id)));}
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1189,6 +1297,7 @@ function populateContractSoldiers(profiles) {
 let contractAdminFilter = "all";
 
 function getContractGroup(contract) {
+  if (contract.status === "terminated" || contract.dismissed) return "terminated";
   if (contract.status === "missing") return "missing";
   if (contract.status === "expired") return "expired";
   if (Number(contract.days_left) >= 0 && Number(contract.days_left) <= 3) return "warning";
@@ -1196,7 +1305,7 @@ function getContractGroup(contract) {
 }
 
 function updateContractFilterCounts(rows) {
-  const counts = {all:rows.length,active:0,warning:0,expired:0,missing:0};
+  const counts = {all:rows.length,active:0,warning:0,expired:0,terminated:0,missing:0};
   rows.forEach(contract => counts[getContractGroup(contract)]++);
   Object.entries(counts).forEach(([key,value]) => {
     const node=document.getElementById("contract-count-"+key);
@@ -1233,13 +1342,13 @@ function renderAdminContracts(rows) {
   for(const contract of filtered){
     const row=document.createElement("tr");
     const group=getContractGroup(contract);
-    const days=contract.id===null||contract.id===undefined?"—":group==="expired"?"0":String(contract.days_left);
-    const status=group==="missing"?"Не оформлено":group==="expired"?"Завершено":group==="warning"?"Завершується":"Діє";
+    const days=contract.id===null||contract.id===undefined?"—":(group==="expired"||group==="terminated")?"0":String(contract.days_left);
+    const status=group==="missing"?"Не оформлено":group==="terminated"?"Достроково припинено":group==="expired"?"Завершено":group==="warning"?"Завершується":"Діє";
     const values=[contract.service_number||"—",contract.full_name||"Не зазначено",formatContractDate(contract.start_date),contract.duration_days?contract.duration_days+" днів":"—",formatContractDate(contract.end_date),days,status];
     for(const value of values){const cell=document.createElement("td");cell.textContent=value;row.appendChild(cell);}
     row.dataset.contractStatus=group;
     const actionCell=document.createElement("td");
-    if(contract.account_id!==null&&contract.account_id!==undefined){
+    if(contract.account_id!==null&&contract.account_id!==undefined&&group!=="terminated"){
       const button=document.createElement("button");
       button.type="button";button.className="contract-quick-renew";button.textContent="ОФОРМИТИ / ПРОДОВЖИТИ";
       button.addEventListener("click",()=>{
@@ -1254,7 +1363,7 @@ function renderAdminContracts(rows) {
         if(message)message.textContent="Обрано: "+(contract.full_name||contract.service_number||"військовослужбовець")+". Перевірте дату та оберіть термін контракту.";
       });
       actionCell.appendChild(button);
-    }else actionCell.textContent="—";
+    }else actionCell.textContent=group==="terminated"?"ЗВІЛЬНЕНИЙ":"—";
     row.appendChild(actionCell);tbody.appendChild(row);
   }
 }
