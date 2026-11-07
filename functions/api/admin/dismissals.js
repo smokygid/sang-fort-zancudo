@@ -37,10 +37,10 @@ export async function onRequestPost({ request, env }) {
     const accountId = Number(body.accountId);
     const dismissalDate = typeof body.dismissalDate === "string" ? body.dismissalDate : "";
     const reason = typeof body.reason === "string" ? body.reason.trim() : "";
-    const documentNumber = typeof body.documentNumber === "string" ? body.documentNumber.trim().replace(/\\s+/g, " ") : "";
+    const documentNumber = typeof body.documentNumber === "string" ? body.documentNumber.trim().replace(/\s+/g, " ") : "";
 
     if (!Number.isSafeInteger(accountId) || accountId < 1) return json({ message: "Оберіть військовослужбовця." }, 400);
-    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(dismissalDate) ||
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dismissalDate) ||
         Number.isNaN(Date.parse(dismissalDate + "T00:00:00Z")) ||
         new Date(dismissalDate + "T00:00:00Z").toISOString().slice(0, 10) !== dismissalDate ||
         dismissalDate > kyivDate()) {
