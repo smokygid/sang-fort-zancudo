@@ -33,6 +33,7 @@ export async function onRequestGet({ request, env }) {
 
     const accounts = await env.DB.prepare(
       `SELECT a.id,a.service_number,a.personnel_id,a.active,
+        EXISTS(SELECT 1 FROM personnel_service_records sr WHERE sr.account_id=a.id AND sr.record_type='history' AND sr.title='Дострокове звільнення зі служби') AS dismissed,
         p.full_name,p.rank,p.unit,p.mos,p.service_status,p.service_note,p.updated_at
        FROM personnel_accounts a
        LEFT JOIN personnel_profiles p ON p.account_id=a.id
@@ -48,12 +49,13 @@ export async function onRequestGet({ request, env }) {
           service_number: account.service_number,
           personnel_id: account.personnel_id,
           active: Boolean(account.active),
+          dismissed: Boolean(account.dismissed),
           found_in_registry: Boolean(row),
           full_name: account.full_name || row?.["ПІБ"] || "",
           rank: account.rank || row?.["Звання"] || "",
           unit: account.unit || row?.["Підрозділ"] || "",
           mos: account.mos || row?.["MOS"] || "",
-          service_status: account.service_status || row?.["Статус служби"] || "",
+          service_status: account.dismissed ? "Звільнений" : (account.service_status || row?.["Статус служби"] || ""),
           service_note: account.service_note || "",
           updated_at: account.updated_at || row?.["Останнє оновлення"] || ""
         };
@@ -70,7 +72,7 @@ export async function onRequestGet({ request, env }) {
           rank: account.rank || "",
           unit: account.unit || "",
           mos: account.mos || "",
-          service_status: account.service_status || "",
+          service_status: account.dismissed ? "Звільнений" : (account.service_status || ""),
           service_note: account.service_note || "",
           updated_at: account.updated_at || ""
         };
