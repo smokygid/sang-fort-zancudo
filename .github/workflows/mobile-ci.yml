@@ -45,6 +45,16 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Verify Expo package compatibility
+        run: npx expo install --check
+
+      - name: Check mobile source for server secrets
+        run: |
+          if grep -R -n -E "SHEETS_API_SECRET|SANG_API_SECRET" . --exclude-dir=node_modules --exclude-dir=.expo; then
+            echo "Server-side secrets must never be included in the mobile app."
+            exit 1
+          fi
+
       - name: TypeScript check
         run: npm run typecheck
 
