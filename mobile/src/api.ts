@@ -72,6 +72,13 @@ export const api = {
     return result.news || [];
   },
 
+  async changePassword(token: string, currentPassword: string, newPassword: string): Promise<void> {
+    await request<{ success: true }>("/api/auth/change-password", token, {
+      method: "POST",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+  },
+
   async logout(token: string): Promise<void> {
     await request<{ success: true }>("/api/auth/logout", token, { method: "POST" });
   },
