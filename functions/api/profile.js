@@ -10,7 +10,7 @@ async function currentAccount(request, env) {
   if (!token || token.length > 128) return { error: json({ message: "Потрібна авторизація." }, 401) };
 
   const account = await env.DB.prepare(
-    `SELECT a.id, a.service_number, a.personnel_id, a.role
+    `SELECT a.id, a.service_number, a.personnel_id, a.role, a.must_change_password
      FROM cabinet_sessions s
      JOIN personnel_accounts a ON a.id=s.account_id
      WHERE s.id=? AND s.expires_at>? AND a.active=1
@@ -53,6 +53,7 @@ export async function onRequestGet({ request, env }) {
       success: true,
       profile: {
         serviceNumber: auth.account.service_number,
+        mustChangePassword: auth.account.must_change_password === 1,
         fullName: saved?.full_name || row["ПІБ"] || "",
         age: saved?.age ?? null,
         contact: saved?.contact || "",
