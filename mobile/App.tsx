@@ -32,6 +32,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("Головна");
   const [serviceId, setServiceId] = useState("");
   const [password, setPassword] = useState("");
+  const [mustChangePassword, setMustChangePassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [booting, setBooting] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,6 +61,10 @@ export default function App() {
       setToken(null);
       setProfile(null);
       setPassword("");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setMustChangePassword(false);
       setActiveTab("Головна");
     }
   }, [token]);
@@ -71,6 +79,7 @@ export default function App() {
         const publications = await api.news();
         if (mounted) {
           setToken(saved);
+          setMustChangePassword(false);
           setProfile(account);
           setNews(publications);
         }
@@ -93,17 +102,43 @@ export default function App() {
     setError("");
     try {
       const result = await api.login(normalizedId, password);
-      if (result.mustChangePassword) {
-        await api.logout(result.sessionToken);
-        setError("Для першого входу потрібно змінити тимчасовий пароль на вебпорталі SANG. Після цього увійдіть у застосунок з новим паролем.");
-        return;
-      }
       await SecureStore.setItemAsync(TOKEN_KEY, result.sessionToken);
-      await loadAccount(result.sessionToken);
       setToken(result.sessionToken);
       setPassword("");
+      if (result.mustChangePassword) {
+        setMustChangePassword(true);
+        setCurrentPassword(password);
+        return;
+      }
+      await loadAccount(result.sessionToken);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Не вдалося увійти. Спробуйте ще раз.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const submitPasswordChange = async () => {
+    if (!token) return;
+    if (newPassword !== confirmPassword) {
+      setError("Підтвердження нового пароля не збігається.");
+      return;
+    }
+    if (newPassword.length < 12 || !/[a-z]/.test(newPassword) || !/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+      setError("Пароль має містити щонайменше 12 символів, великі й малі літери та цифри.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    try {
+      await api.changePassword(token, currentPassword, newPassword);
+      setMustChangePassword(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      await loadAccount(token);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Не вдалося змінити пароль.");
     } finally {
       setBusy(false);
     }
@@ -167,6 +202,34 @@ export default function App() {
             <Text style={styles.loginHint}>Використовуйте ті самі облікові дані, що й на порталі SANG.</Text>
           </View>
           <Text style={styles.disclaimer}>ОФІЦІЙНИЙ МОБІЛЬНИЙ КАБІНЕТ SANG</Text>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    );
+  }
+
+  if (mustChangePassword) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <StatusBar barStyle="light-content" />
+        <KeyboardAvoidingView style={styles.loginWrap} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+          <View style={styles.brandMark}><Text style={styles.brandMarkText}>S</Text></View>
+          <Text style={styles.loginTitle}>ЗМІНА ПАРОЛЯ</Text>
+          <Text style={styles.loginSubtitle}>ПЕРШИЙ ВХІД · ОБОВ’ЯЗКОВА ПРОЦЕДУРА</Text>
+          <View style={styles.loginCard}>
+            <Text style={styles.sectionTitle}>Створіть особистий пароль</Text>
+            <Text style={styles.loginHint}>Мінімум 12 символів, великі й малі літери та цифри. Після зміни пароля інші активні сесії буде завершено.</Text>
+            <Text style={styles.fieldLabel}>ПОТОЧНИЙ ПАРОЛЬ</Text>
+            <TextInput value={currentPassword} onChangeText={setCurrentPassword} secureTextEntry editable={!busy} style={styles.input} placeholder="Тимчасовий пароль" placeholderTextColor="#65768A" />
+            <Text style={styles.fieldLabel}>НОВИЙ ПАРОЛЬ</Text>
+            <TextInput value={newPassword} onChangeText={setNewPassword} secureTextEntry editable={!busy} style={styles.input} placeholder="Новий пароль" placeholderTextColor="#65768A" />
+            <Text style={styles.fieldLabel}>ПОВТОРІТЬ НОВИЙ ПАРОЛЬ</Text>
+            <TextInput value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry editable={!busy} style={styles.input} placeholder="Підтвердження пароля" placeholderTextColor="#65768A" onSubmitEditing={submitPasswordChange} />
+            {!!error && <Text style={styles.error}>{error}</Text>}
+            <TouchableOpacity style={[styles.primaryButton, busy && styles.disabled]} onPress={submitPasswordChange} disabled={busy}>
+              {busy ? <ActivityIndicator color={BG} /> : <Text style={styles.primaryButtonText}>ЗБЕРЕГТИ НОВИЙ ПАРОЛЬ</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={signOut} style={{ padding: 14, alignItems: "center" }}><Text style={styles.logoutText}>ВИЙТИ З ОБЛІКОВОГО ЗАПИСУ</Text></TouchableOpacity>
+          </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     );
