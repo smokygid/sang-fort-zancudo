@@ -2,6 +2,7 @@ const API_BASE = "https://sang-fort-zancudo.pages.dev";
 
 export type Profile = {
   serviceNumber: string;
+  mustChangePassword?: boolean;
   fullName: string;
   age?: number | null;
   contact?: string;
