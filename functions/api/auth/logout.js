@@ -1,8 +1,8 @@
-import { json, readCookie, tokenDigest, COOKIE } from "./_session.js";
+import { json, readSessionToken, tokenDigest, COOKIE } from "./_session.js";
 
 export async function onRequestPost({ request, env }) {
   if (!env.DB) return json({ message: "Сервіс кабінету недоступний." }, 503);
-  const token = readCookie(request, COOKIE);
+  const token = readSessionToken(request);
   try {
     if (token && token.length <= 128) {
       const digest = await tokenDigest(token);
@@ -11,7 +11,8 @@ export async function onRequestPost({ request, env }) {
     return json({ success: true }, 200, {
       "Set-Cookie": `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`
     });
-  } catch {
+  } catch (error) {
+    console.error("SANG logout error:", error);
     return json({ message: "Не вдалося завершити сесію." }, 500);
   }
 }
