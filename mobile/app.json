@@ -18,6 +18,14 @@
     },
     "extra": {
       "websiteUrl": "https://sang-fort-zancudo.pages.dev"
-    }
+    },
+    "plugins": [
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true
+        }
+      ]
+    ]
   }
 }
