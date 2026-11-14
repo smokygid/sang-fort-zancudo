@@ -160,6 +160,35 @@ export default function App() {
     return <SafeAreaView style={styles.center}><ActivityIndicator color={GOLD} size="large" /><Text style={styles.loadingText}>ПЕРЕВІРКА СЕСІЇ SANG</Text></SafeAreaView>;
   }
 
+  if (mustChangePassword) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <StatusBar barStyle="light-content" />
+        <KeyboardAvoidingView style={styles.loginWrap} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+          <View style={styles.brandMark}><Text style={styles.brandMarkText}>S</Text></View>
+          <Text style={styles.loginTitle}>ЗМІНА ПАРОЛЯ</Text>
+          <Text style={styles.loginSubtitle}>ПЕРШИЙ ВХІД · ОБОВ’ЯЗКОВА ПРОЦЕДУРА</Text>
+          <View style={styles.loginCard}>
+            <Text style={styles.sectionTitle}>Створіть особистий пароль</Text>
+            <Text style={styles.loginHint}>Мінімум 12 символів, великі й малі літери та цифри. Після зміни пароля інші активні сесії буде завершено.</Text>
+            <Text style={styles.fieldLabel}>ПОТОЧНИЙ ПАРОЛЬ</Text>
+            <TextInput value={currentPassword} onChangeText={setCurrentPassword} secureTextEntry editable={!busy} style={styles.input} placeholder="Тимчасовий пароль" placeholderTextColor="#65768A" />
+            <Text style={styles.fieldLabel}>НОВИЙ ПАРОЛЬ</Text>
+            <TextInput value={newPassword} onChangeText={setNewPassword} secureTextEntry editable={!busy} style={styles.input} placeholder="Новий пароль" placeholderTextColor="#65768A" />
+            <Text style={styles.fieldLabel}>ПОВТОРІТЬ НОВИЙ ПАРОЛЬ</Text>
+            <TextInput value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry editable={!busy} style={styles.input} placeholder="Підтвердження пароля" placeholderTextColor="#65768A" onSubmitEditing={submitPasswordChange} />
+            {!!error && <Text style={styles.error}>{error}</Text>}
+            <TouchableOpacity style={[styles.primaryButton, busy && styles.disabled]} onPress={submitPasswordChange} disabled={busy}>
+              {busy ? <ActivityIndicator color={BG} /> : <Text style={styles.primaryButtonText}>ЗБЕРЕГТИ НОВИЙ ПАРОЛЬ</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={signOut} style={{ padding: 14, alignItems: "center" }}><Text style={styles.logoutText}>ВИЙТИ З ОБЛІКОВОГО ЗАПИСУ</Text></TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    );
+  }
+
+
   if (!token || !profile) {
     return (
       <SafeAreaView style={styles.safe}>
@@ -207,33 +236,6 @@ export default function App() {
     );
   }
 
-  if (mustChangePassword) {
-    return (
-      <SafeAreaView style={styles.safe}>
-        <StatusBar barStyle="light-content" />
-        <KeyboardAvoidingView style={styles.loginWrap} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-          <View style={styles.brandMark}><Text style={styles.brandMarkText}>S</Text></View>
-          <Text style={styles.loginTitle}>ЗМІНА ПАРОЛЯ</Text>
-          <Text style={styles.loginSubtitle}>ПЕРШИЙ ВХІД · ОБОВ’ЯЗКОВА ПРОЦЕДУРА</Text>
-          <View style={styles.loginCard}>
-            <Text style={styles.sectionTitle}>Створіть особистий пароль</Text>
-            <Text style={styles.loginHint}>Мінімум 12 символів, великі й малі літери та цифри. Після зміни пароля інші активні сесії буде завершено.</Text>
-            <Text style={styles.fieldLabel}>ПОТОЧНИЙ ПАРОЛЬ</Text>
-            <TextInput value={currentPassword} onChangeText={setCurrentPassword} secureTextEntry editable={!busy} style={styles.input} placeholder="Тимчасовий пароль" placeholderTextColor="#65768A" />
-            <Text style={styles.fieldLabel}>НОВИЙ ПАРОЛЬ</Text>
-            <TextInput value={newPassword} onChangeText={setNewPassword} secureTextEntry editable={!busy} style={styles.input} placeholder="Новий пароль" placeholderTextColor="#65768A" />
-            <Text style={styles.fieldLabel}>ПОВТОРІТЬ НОВИЙ ПАРОЛЬ</Text>
-            <TextInput value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry editable={!busy} style={styles.input} placeholder="Підтвердження пароля" placeholderTextColor="#65768A" onSubmitEditing={submitPasswordChange} />
-            {!!error && <Text style={styles.error}>{error}</Text>}
-            <TouchableOpacity style={[styles.primaryButton, busy && styles.disabled]} onPress={submitPasswordChange} disabled={busy}>
-              {busy ? <ActivityIndicator color={BG} /> : <Text style={styles.primaryButtonText}>ЗБЕРЕГТИ НОВИЙ ПАРОЛЬ</Text>}
-            </TouchableOpacity>
-            <TouchableOpacity onPress={signOut} style={{ padding: 14, alignItems: "center" }}><Text style={styles.logoutText}>ВИЙТИ З ОБЛІКОВОГО ЗАПИСУ</Text></TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    );
-  }
 
   return (
     <SafeAreaView style={styles.safe}>
