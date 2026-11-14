@@ -1,0 +1,57 @@
+name: SANG Mobile CI
+
+on:
+  push:
+    branches:
+      - mobile-app
+    paths:
+      - "mobile/**"
+      - "functions/api/auth/**"
+      - "functions/api/profile.js"
+      - ".github/workflows/mobile-ci.yml"
+  pull_request:
+    branches:
+      - mobile-app
+    paths:
+      - "mobile/**"
+      - "functions/api/auth/**"
+      - "functions/api/profile.js"
+      - ".github/workflows/mobile-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sang-mobile-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate mobile app
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: TypeScript check
+        run: npm run typecheck
+
+      - name: Expo Android export
+        run: npx expo export --platform android --output-dir ../.ci-export/android
+
+      - name: Expo iOS export
+        run: npx expo export --platform ios --output-dir ../.ci-export/ios
