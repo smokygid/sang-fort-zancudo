@@ -79,7 +79,7 @@ export default function App() {
         const publications = await api.news();
         if (mounted) {
           setToken(saved);
-          setMustChangePassword(false);
+          setMustChangePassword(account.mustChangePassword === true);
           setProfile(account);
           setNews(publications);
         }
