@@ -93,6 +93,11 @@ export default function App() {
     setError("");
     try {
       const result = await api.login(normalizedId, password);
+      if (result.mustChangePassword) {
+        await api.logout(result.sessionToken);
+        setError("Для першого входу потрібно змінити тимчасовий пароль на вебпорталі SANG. Після цього увійдіть у застосунок з новим паролем.");
+        return;
+      }
       await SecureStore.setItemAsync(TOKEN_KEY, result.sessionToken);
       await loadAccount(result.sessionToken);
       setToken(result.sessionToken);
