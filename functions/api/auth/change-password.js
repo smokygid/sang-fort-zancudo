@@ -1,4 +1,4 @@
-import { json, readCookie, tokenDigest, COOKIE } from "./_session.js";
+import { json, readSessionToken, tokenDigest } from "./_session.js";
 
 function decodeBase64(value) {
   try {
@@ -21,7 +21,7 @@ async function hashPassword(password, salt, iterations = PASSWORD_ITERATIONS) {
 export async function onRequestPost({ request, env }) {
   if (!env.DB) return json({ message: "База даних недоступна." }, 503);
   if (request.headers.get("Origin") && request.headers.get("Origin") !== new URL(request.url).origin) return json({ message: "Запит відхилено." }, 403);
-  const token = readCookie(request, COOKIE);
+  const token = readSessionToken(request);
   if (!token || token.length > 128) return json({ message: "Сесія завершилася. Увійдіть знову." }, 401);
   let body;
   try { body = await request.json(); } catch { return json({ message: "Некоректний запит." }, 400); }
