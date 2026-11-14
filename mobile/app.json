@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "SANG Mobile",
+    "slug": "sang-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "sangmobile",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sangfortzancudo.mobile"
+    },
+    "android": {
+      "package": "com.sangfortzancudo.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#07111D"
+      }
+    },
+    "extra": {
+      "websiteUrl": "https://sang-fort-zancudo.pages.dev"
+    }
+  }
+}
