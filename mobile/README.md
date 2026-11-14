@@ -1,13 +1,14 @@
 # SANG Mobile
 
-Cross-platform mobile client for the San Andreas National Guard portal.
+Native cross-platform mobile client for the San Andreas National Guard portal.
 
 ## Stack
 
 - React Native + Expo SDK 58
 - TypeScript
 - Android and iOS from one codebase
-- Existing SANG website remains the source of truth
+- Expo SecureStore for device-protected session storage
+- Existing SANG Cloudflare backend remains the source of truth
 
 ## Run locally
 
@@ -17,21 +18,38 @@ npm install
 npx expo start
 ```
 
-Use a development build for device testing and production builds through EAS Build.
+Use an Expo development build for device testing and EAS Build for Android/iOS binaries.
 
-## Current milestone
+## Current milestone: authentication foundation
 
-The first native dashboard prototype is in place. It establishes the dark navy / gold visual language, quick-access service modules, command news cards, and bottom navigation.
+- Native sign-in using the existing service number and password.
+- Mobile-only login response returns a random session token.
+- The server stores only the SHA-256 digest of the session token, matching the existing session table.
+- Mobile requests authenticate with `Authorization: Bearer <token>`.
+- The token is stored using Expo SecureStore and removed on logout.
+- Existing browser login continues to use its HttpOnly Secure cookie.
+- The app loads the authenticated personnel profile and published SANG news.
+- Mandatory first-login password changes are respected: the app directs the user to complete the existing web flow first.
 
-## Planned integration
+## Backend changes included on this branch
 
-1. Inspect and document the existing SANG authentication/session flow.
-2. Add a dedicated mobile API contract to the Cloudflare Pages Functions backend.
-3. Implement secure token storage and login/logout.
-4. Replace prototype dashboard data with live news and account data.
-5. Add role-based access, electronic military ID and QR verification.
-6. Add push notifications and EAS Android/iOS builds.
+- `functions/api/auth/_session.js`: reads a bearer token or the existing session cookie.
+- `functions/api/auth/login.js`: returns a session token only when `clientType: "mobile"` is supplied; browser login remains cookie-based.
+- `functions/api/auth/logout.js`: revokes either a bearer-token or cookie session.
+- `functions/api/profile.js`: accepts either session method.
 
-## Security
+These backend changes must be deployed to the SANG Cloudflare Pages project before mobile sign-in can work against production. They are isolated on the `mobile-app` branch and do not change the live site's main branch until merged/deployed.
 
-Do not embed `SHEETS_API_SECRET`, `SANG_API_SECRET`, service credentials, or other server secrets in the mobile application. All privileged requests must go through the SANG backend.
+## Security notes
+
+- Never put `SHEETS_API_SECRET`, `SANG_API_SECRET`, database credentials, or other server secrets in the app.
+- The mobile token is short-lived (8 hours), revocable, and stored in Keychain/Keystore through SecureStore.
+- Passwords are sent only to the HTTPS login endpoint and are not saved on-device.
+- Do not log session tokens or password values.
+
+## Next steps
+
+1. Deploy this branch to a Cloudflare Pages preview and verify the mobile auth flow.
+2. Test valid credentials, invalid credentials, inactive accounts, expired sessions, logout and mandatory password change.
+3. Add role-aware navigation, personnel ID QR verification, notifications and remaining cabinet modules.
+4. Prepare signed Android and iOS builds with EAS.
