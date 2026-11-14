@@ -1,4 +1,4 @@
-import { json, readCookie, tokenDigest, COOKIE } from "./auth/_session.js";
+import { json, readSessionToken, tokenDigest } from "./auth/_session.js";
 
 async function currentAccount(request, env) {
   if (!env.DB) return { error: json({ message: "База даних недоступна." }, 503) };
@@ -6,7 +6,7 @@ async function currentAccount(request, env) {
     return { error: json({ message: "Запит відхилено." }, 403) };
   }
 
-  const token = readCookie(request, COOKIE);
+  const token = readSessionToken(request);
   if (!token || token.length > 128) return { error: json({ message: "Потрібна авторизація." }, 401) };
 
   const account = await env.DB.prepare(
