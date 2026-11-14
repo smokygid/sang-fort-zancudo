@@ -69,6 +69,7 @@ export async function onRequestPost({ request, env }) {
     ? body.serviceId.trim().toUpperCase()
     : "";
   const password = typeof body.password === "string" ? body.password : "";
+  const mobileClient = body.clientType === "mobile";
 
   if (!/^[A-Z0-9-]{3,32}$/.test(serviceNumber) || password.length < 1 || password.length > 256) {
     return json({ message: "Невірний військовий номер або пароль." }, 400);
@@ -98,10 +99,19 @@ export async function onRequestPost({ request, env }) {
       "INSERT INTO cabinet_sessions (id, account_id, expires_at) VALUES (?, ?, ?)"
     ).bind(tokenHash, account.id, expiresAt).run();
 
-    return json({ redirect: "/cabinet/dashboard/", mustChangePassword: account.must_change_password === 1 }, 200, {
+    const response = {
+      success: true,
+      redirect: "/cabinet/dashboard/",
+      mustChangePassword: account.must_change_password === 1
+    };
+    if (mobileClient) response.sessionToken = token;
+
+    const headers = mobileClient ? {} : {
       "Set-Cookie": `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_SECONDS}`
-    });
-  } catch {
+    };
+    return json(response, 200, headers);
+  } catch (error) {
+    console.error("SANG authentication error:", error);
     return json({ message: "Помилка сервера авторизації. Спробуйте пізніше." }, 500);
   }
 }
